@@ -55,6 +55,29 @@ export default function RootLayout({
     <html lang="en">
       <body className={ibmPlexSans.variable}>
         {children}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Viracis Technology Solutions",
+              "url": "https://viracis.com",
+              "logo": "https://viracis.com/viracis-logo.png",
+              "sameAs": [
+                "https://www.linkedin.com/company/viracis",
+              ],
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+1-804-503-3954",
+                "contactType": "customer service",
+                "areaServed": "US",
+                "availableLanguage": "en",
+              },
+              "description": "Technology consulting bridging strategy and execution through AI automation, cloud infrastructure, and enterprise software.",
+            }),
+          }}
+        />
       </body>
     </html>
   );
