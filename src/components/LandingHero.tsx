@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { Typewriter } from "./ui/typewriter";
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -13,17 +14,30 @@ const fadeUp = (delay: number) => ({
 });
 
 export default function LandingHero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // Force play on mount to ensure reliability on mobile Safari/Chrome
+    if (videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log("Autoplay prevented:", error);
+      });
+    }
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center bg-viracis-navy overflow-hidden">
       {/* Background Video */}
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
+        preload="auto"
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
       >
-        <source src="/Hero Section.mp4" type="video/mp4" />
+        <source src="/Updated Hero Section.mp4" type="video/mp4" />
       </video>
 
       {/* Overlay — 35% for better text readability */}
