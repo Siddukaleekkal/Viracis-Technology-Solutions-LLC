@@ -145,9 +145,10 @@ export default function LandingNavbar() {
           <div className="grid grid-cols-2 gap-8 text-xs tracking-wider uppercase font-bold text-white/30">
             <div>
               <p className="mb-4 text-viracis-cyan/60">Connect</p>
-              <div className="space-y-2">
-                <a href="mailto:hello@viracis.com" className="block text-white/60 hover:text-white transition-colors">Email</a>
-                <a href="tel:+18045033954" className="block text-white/60 hover:text-white transition-colors">Phone</a>
+              <div className="flex gap-8">
+                <a href="mailto:hello@viracis.com" className="hover:text-white transition-colors">Email</a>
+                <a href="tel:+18045033954" className="hover:text-white transition-colors">Phone</a>
+                <a href="https://www.linkedin.com/in/viracis-viracis-technology-solutions-40a7b53b3/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
               </div>
             </div>
             <div>
