@@ -21,6 +21,7 @@ export default function LandingContact() {
     phone: "",
     service: "",
     message: "",
+    smsOptIn: false,
   });
   const [status, setStatus] = useState<Status>("idle");
 
@@ -40,7 +41,7 @@ export default function LandingContact() {
       });
       if (!res.ok) throw new Error();
       setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", service: "", message: "" });
+      setForm({ name: "", company: "", email: "", phone: "", service: "", message: "", smsOptIn: false });
     } catch {
       setStatus("error");
     }
@@ -225,11 +226,30 @@ export default function LandingContact() {
                   />
                 </div>
 
+                {/* SMS Opt-in (TCR Compliance) */}
+                <div className="flex items-start gap-3 pt-2">
+                  <div className="flex items-center h-5">
+                    <input
+                      id="sms-opt-in"
+                      type="checkbox"
+                      checked={form.smsOptIn}
+                      onChange={(e) => setForm(prev => ({ ...prev, smsOptIn: e.target.checked }))}
+                      className="w-4 h-4 rounded border-gray-300 text-viracis-navy focus:ring-viracis-navy"
+                    />
+                  </div>
+                  <label htmlFor="sms-opt-in" className="text-xs text-gray-500 leading-relaxed">
+                    I agree to receive text messages from Viracis regarding my inquiry, including Marketing and Customer Care updates. 
+                    Message and data rates may apply. Message frequency varies. Text STOP to opt-out. View our 
+                    <a href="/privacy" className="text-viracis-navy underline mx-1">Privacy Policy</a> and 
+                    <a href="/terms" className="text-viracis-navy underline ml-1">Terms of Service</a>.
+                  </label>
+                </div>
+
                 {/* Submit */}
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="w-full py-4 bg-viracis-navy text-white text-sm font-bold tracking-wide hover:bg-[#122F54] disabled:opacity-50 transition-all duration-300 rounded-xl"
+                  className="w-full py-4 bg-viracis-navy text-white text-sm font-bold tracking-wide hover:bg-[#122F54] disabled:opacity-50 transition-all duration-300 rounded-xl mt-4"
                 >
                   {status === "loading" ? "Sending..." : "Send Message"}
                 </button>
