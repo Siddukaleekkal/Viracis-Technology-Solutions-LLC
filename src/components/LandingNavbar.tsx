@@ -14,6 +14,18 @@ const navLinks = [
 
 export default function LandingNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileOpen]);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
