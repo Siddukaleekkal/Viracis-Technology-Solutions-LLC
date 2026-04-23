@@ -104,58 +104,50 @@ export default function LandingNavbar() {
 
       {/* Mobile Menu Overlay */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: mobileOpen ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-        className={`md:hidden fixed inset-0 z-[55] bg-viracis-navy text-white flex flex-col p-6 ${
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: mobileOpen ? 1 : 0, y: mobileOpen ? 0 : -20 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className={`md:hidden fixed inset-0 z-[55] bg-viracis-navy text-white flex flex-col pt-32 px-8 ${
           mobileOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
       >
-        <div className="flex-1 flex flex-col justify-center items-center space-y-12">
+        <div className="space-y-8">
           {navLinks.map((link, i) => (
             <motion.div
               key={link.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: mobileOpen ? 1 : 0, y: mobileOpen ? 0 : 10 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: mobileOpen ? 1 : 0, x: mobileOpen ? 0 : -20 }}
               transition={{ duration: 0.4, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
               <Link
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="group flex flex-col items-center"
+                className="group block"
               >
-                <span className="text-[9px] tracking-[0.4em] uppercase text-viracis-cyan font-bold mb-2">
-                  0{i + 1}
-                </span>
-                <h2 className="text-4xl font-bold tracking-tight group-hover:scale-105 transition-transform duration-300">
-                  {link.label}
-                </h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-4xl font-bold tracking-tight group-hover:text-viracis-cyan transition-colors">
+                    {link.label}
+                  </h2>
+                  <span className="text-2xl text-white/20 group-hover:text-viracis-cyan transition-colors">→</span>
+                </div>
               </Link>
             </motion.div>
           ))}
         </div>
 
-        {/* Menu Footer */}
         <motion.div 
-          className="pb-32 pt-8 border-t border-white/5 w-full"
+          className="mt-auto pb-32 pt-10 border-t border-white/5"
           initial={{ opacity: 0 }}
           animate={{ opacity: mobileOpen ? 1 : 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <div className="grid grid-cols-1 gap-8 text-center text-[10px] tracking-widest uppercase font-bold text-white/30">
+          <div className="grid grid-cols-1 gap-10 text-[10px] tracking-widest uppercase font-bold text-white/30">
             <div>
               <p className="mb-4 text-viracis-cyan/60">Connect</p>
-              <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
+              <div className="flex flex-wrap gap-8">
                 <a href="mailto:hello@viracis.com" className="hover:text-white transition-colors">Email</a>
                 <a href="tel:+18045033954" className="hover:text-white transition-colors">Phone</a>
                 <a href="https://www.linkedin.com/in/viracis-viracis-technology-solutions-40a7b53b3/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
-              </div>
-            </div>
-            <div>
-              <p className="mb-4 text-viracis-cyan/60">Location</p>
-              <div className="space-y-1">
-                <p>Richmond, VA</p>
-                <p>© {new Date().getFullYear()} Viracis</p>
               </div>
             </div>
           </div>
