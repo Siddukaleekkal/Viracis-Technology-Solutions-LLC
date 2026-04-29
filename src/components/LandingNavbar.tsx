@@ -68,8 +68,14 @@ export default function LandingNavbar() {
               </Link>
             ))}
             <Link
+              href="/login"
+              className="inline-flex items-center px-4 py-3 text-[11px] tracking-[0.2em] uppercase font-bold text-viracis-navy border-2 border-viracis-navy hover:bg-viracis-navy hover:text-white transition-all duration-300"
+            >
+              Client Login
+            </Link>
+            <Link
               href="/contact"
-              className="inline-flex items-center px-6 py-3 text-[11px] tracking-[0.2em] uppercase font-bold bg-viracis-navy text-white hover:bg-[#122F54] transition-all duration-300"
+              className="inline-flex items-center px-6 py-3 text-[11px] tracking-[0.2em] uppercase font-bold bg-viracis-navy text-white border-2 border-viracis-navy hover:bg-[#122F54] hover:border-[#122F54] transition-all duration-300"
             >
               Get in Touch
             </Link>
@@ -145,6 +151,26 @@ export default function LandingNavbar() {
               </Link>
             </motion.div>
           ))}
+          
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: mobileOpen ? 1 : 0, x: mobileOpen ? 0 : -20 }}
+            transition={{ duration: 0.4, delay: navLinks.length * 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="pt-6 border-t border-white/10"
+          >
+            <Link
+              href="/login"
+              onClick={() => setMobileOpen(false)}
+              className="group block"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-4xl font-bold tracking-tight text-viracis-cyan group-hover:text-white transition-colors">
+                  Client Login
+                </h2>
+                <span className="text-2xl text-viracis-cyan group-hover:text-white transition-colors">→</span>
+              </div>
+            </Link>
+          </motion.div>
         </div>
 
         <motion.div 

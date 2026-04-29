@@ -24,6 +24,7 @@ export default function LandingContact() {
     smsOptIn: false,
   });
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const set =
     (field: keyof typeof form) =>
@@ -33,16 +34,26 @@ export default function LandingContact() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("loading");
+    setErrorMessage("");
+    
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      if (!res.ok) throw new Error();
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
       setStatus("success");
       setForm({ name: "", company: "", email: "", phone: "", service: "", message: "", smsOptIn: false });
-    } catch {
+    } catch (err: any) {
+      console.error("Form submission error:", err);
+      setErrorMessage(err.message || "Something went wrong.");
       setStatus("error");
     }
   }
@@ -256,7 +267,7 @@ export default function LandingContact() {
 
                 {status === "error" && (
                   <p className="text-sm font-medium text-red-500 text-center">
-                    Something went wrong. Please try again or email us directly.
+                    {errorMessage || "Something went wrong. Please try again or email us directly."}
                   </p>
                 )}
               </form>

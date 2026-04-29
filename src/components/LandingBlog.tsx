@@ -7,6 +7,14 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "Beyond SEO: The Plain English Guide to the New Rules of Search",
+    slug: "beyond-seo-new-rules-of-search",
+    date: "April 29, 2026",
+    excerpt: "SEO alone will not cut it anymore. Here is a plain English breakdown of GEO, AIO, AEO, and SXO, the four strategies your business needs to stay visible in the age of AI search.",
+    category: "Marketing",
+    image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "5 Ways AI Can Save Your Small Business 10+ Hours a Week",
     slug: "ai-for-small-business-operations",
     date: "April 22, 2026",
@@ -59,11 +67,11 @@ const LandingBlog = ({ isFeaturedOnly = false }: LandingBlogProps) => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8">
-          {posts.map((post, i) => (
-            <Link 
-              key={post.slug} 
-              href={`/blog/${post.slug}`} 
-              className={isFeaturedOnly && i > 0 ? "hidden md:block" : "block"}
+          {(isFeaturedOnly ? posts.slice(0, 3) : posts).map((post, i) => (
+            <Link
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="block"
             >
               <motion.article
                 initial={{ opacity: 0, y: 20 }}
