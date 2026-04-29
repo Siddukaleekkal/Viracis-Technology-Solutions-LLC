@@ -9,10 +9,10 @@ const LandingFooter = () => {
         {/* Main row */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           {/* Logo */}
-          <Link href="/" className="shrink-0">
+          <Link href="/" className="shrink-0" title="Viracis Home">
             <Image
               src="/viracis-logo.png"
-              alt="Viracis"
+              alt="Viracis Technology Solutions"
               width={110}
               height={38}
               className="brightness-0 invert"

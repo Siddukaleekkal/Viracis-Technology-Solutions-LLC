@@ -36,7 +36,7 @@ export default function LandingAbout() {
             Our Mission
           </p>
           <h2 className="text-4xl lg:text-5xl leading-[1.1] font-normal tracking-[-0.02em] text-viracis-navy">
-            We help small businesses achieve better outcomes through technology.
+            Viracis helps small businesses achieve better outcomes through technology.
           </h2>
           <p className="mt-6 text-lg text-gray-600 leading-relaxed">
             Viracis partners with small and growing businesses to make

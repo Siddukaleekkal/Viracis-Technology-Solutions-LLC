@@ -12,11 +12,11 @@ const ibmPlexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://viracis.com"),
   title: {
-    default: "Viracis Technology Solutions",
+    default: "Viracis",
     template: "%s | Viracis",
   },
   description:
-    "Technology consulting that bridges strategy and execution. Cloud infrastructure, AI automation, digital transformation, and enterprise software.",
+    "Viracis provides technology consulting that bridges strategy and execution. Cloud infrastructure, AI automation, and enterprise software.",
   keywords: [
     "AI Consulting",
     "Software Engineering",
@@ -61,11 +61,12 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "Viracis Technology Solutions",
+              "name": "Viracis",
+              "legalName": "Viracis Technology Solutions LLC",
               "url": "https://viracis.com",
               "logo": "https://viracis.com/viracis-logo.png",
               "sameAs": [
-                "https://www.linkedin.com/company/viracis",
+                "https://www.linkedin.com/in/viracis-viracis-technology-solutions-40a7b53b3/",
               ],
               "contactPoint": {
                 "@type": "ContactPoint",

@@ -46,10 +46,10 @@ export default function LandingNavbar() {
           }`}
       >
         <nav className="w-full px-8 flex items-center justify-between">
-          <Link href="/" className="relative flex items-center shrink-0">
+          <Link href="/" className="relative flex items-center shrink-0" title="Viracis Home">
             <Image
               src="/viracis-logo.png"
-              alt="Viracis"
+              alt="Viracis Technology Solutions"
               width={180}
               height={60}
               className={`transition-all duration-300 ${isScrolled ? "h-10" : "h-12"} w-auto object-contain`}
@@ -85,10 +85,10 @@ export default function LandingNavbar() {
 
       {/* Mobile Top Logo Header (Matching Web View) */}
       <header className="md:hidden fixed top-0 left-0 right-0 z-[60] bg-white border-b border-gray-100 px-6 py-4">
-        <Link href="/" className="block">
+        <Link href="/" className="block" title="Viracis Home">
           <Image
             src="/viracis-logo.png"
-            alt="Viracis"
+            alt="Viracis Technology Solutions"
             width={100}
             height={32}
             className="h-8 w-auto object-contain"
