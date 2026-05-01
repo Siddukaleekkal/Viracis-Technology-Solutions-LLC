@@ -7,6 +7,14 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "Infrastructure for Intelligence: How We Built an AI Lead Scorer (And Why It Matters)",
+    slug: "infrastructure-for-intelligence",
+    date: "May 01, 2026",
+    excerpt: "Scaling a business requires moving from brute force to intelligent targeting. Here is how we engineered an AI lead scorer to rank opportunities and save 80% of sales time.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "Beyond SEO: The Plain English Guide to the New Rules of Search",
     slug: "beyond-seo-new-rules-of-search",
     date: "April 29, 2026",

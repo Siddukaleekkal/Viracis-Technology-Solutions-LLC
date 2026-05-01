@@ -37,16 +37,26 @@ export default function LandingContact() {
     setErrorMessage("");
     
     try {
-      const res = await fetch("/api/contact", {
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+      if (!accessKey) {
+        throw new Error("Web3Forms Access Key is not configured. Please add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY to your environment variables.");
+      }
+
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `New Inquiry from ${form.name} via Viracis`,
+          from_name: "Viracis Website",
+          ...form,
+        }),
       });
       
       const data = await res.json();
       
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to send message");
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to send message");
       }
 
       setStatus("success");
