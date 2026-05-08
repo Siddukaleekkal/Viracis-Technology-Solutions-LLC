@@ -7,6 +7,14 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "Custom Software vs. Off-the-Shelf: What's Right for Your Small Business?",
+    slug: "custom-vs-off-the-shelf-software",
+    date: "May 07, 2026",
+    excerpt: "As your small business grows, you eventually hit a wall where spreadsheets and basic tools no longer cut it. Explore when off-the-shelf software makes sense, and when it's time to build custom.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "Infrastructure for Intelligence: How We Built an AI Lead Scorer (And Why It Matters)",
     slug: "infrastructure-for-intelligence",
     date: "May 01, 2026",

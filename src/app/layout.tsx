@@ -64,7 +64,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "Viracis",
-              "legalName": "Viracis Technology Solutions LLC",
+              "legalName": "Viracis LLC",
               "url": "https://viracis.com",
               "logo": "https://viracis.com/viracis-logo.png",
               "sameAs": [

@@ -49,10 +49,14 @@ const LandingFooter = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-6 pt-6 border-t border-white/5">
+        <div className="mt-6 pt-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-500">
-            &copy; {year} Viracis Technology Solutions LLC. All rights reserved.
+            &copy; {year} Viracis LLC. All rights reserved.
           </p>
+          <div className="flex items-center gap-4 text-xs text-gray-500">
+            <Link href="/privacy" className="hover:text-white transition-colors duration-200">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors duration-200">Terms of Service</Link>
+          </div>
         </div>
       </div>
     </footer>
