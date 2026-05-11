@@ -7,6 +7,14 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "The ROI of Custom Automation: Turning Expense into Investment",
+    slug: "roi-of-custom-automation",
+    date: "May 11, 2026",
+    excerpt: "When business owners think about their expenses, they usually look at software subscriptions, payroll, and infrastructure. But one of the most significant, yet frequently ignored, costs is the price of manual, repetitive tasks.",
+    category: "Strategy",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "Custom Software vs. Off-the-Shelf: What's Right for Your Small Business?",
     slug: "custom-vs-off-the-shelf-software",
     date: "May 07, 2026",
