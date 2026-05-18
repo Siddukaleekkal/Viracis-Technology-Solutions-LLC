@@ -8,7 +8,7 @@ export default function DataGrowthLocalPage() {
     title: "Why Every Local Business Needs a CRM (Even If You Only Have 50 Customers)",
     author: {
       name: "Viracis Team",
-      avatar: "/viracis-team-logo.png",
+      avatar: "/favicon.png",
       date: "April 15, 2026",
       readTime: "7 min read"
     },

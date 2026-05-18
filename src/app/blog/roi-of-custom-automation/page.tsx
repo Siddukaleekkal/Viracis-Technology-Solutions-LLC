@@ -8,7 +8,7 @@ export default function ROICustomAutomationPage() {
     title: "The ROI of Custom Automation: Turning Expense into Investment",
     author: {
       name: "Viracis Strategy",
-      avatar: "/viracis-team-logo.png",
+      avatar: "/favicon.png",
       date: "May 11, 2026",
       readTime: "5 min read"
     },

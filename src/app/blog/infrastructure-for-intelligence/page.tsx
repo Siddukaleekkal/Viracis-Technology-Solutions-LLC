@@ -8,7 +8,7 @@ export default function InfrastructureIntelligencePage() {
     title: "Infrastructure for Intelligence: How We Built an AI Lead Scorer (And Why It Matters)",
     author: {
       name: "Viracis Engineering",
-      avatar: "/viracis-team-logo.png",
+      avatar: "/favicon.png",
       date: "May 01, 2026",
       readTime: "6 min read"
     },

@@ -8,7 +8,7 @@ export default function SmallBusinessAIPage() {
     title: "5 Ways AI Can Save Your Small Business 10+ Hours a Week",
     author: {
       name: "Viracis Team",
-      avatar: "/viracis-team-logo.png",
+      avatar: "/favicon.png",
       date: "April 22, 2026",
       readTime: "8 min read"
     },

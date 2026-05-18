@@ -8,7 +8,7 @@ export default function CustomVsOffTheShelfPage() {
     title: "Custom Software vs. Off-the-Shelf: What's Right for Your Small Business?",
     author: {
       name: "Viracis Engineering",
-      avatar: "/viracis-team-logo.png",
+      avatar: "/favicon.png",
       date: "May 07, 2026",
       readTime: "5 min read"
     },

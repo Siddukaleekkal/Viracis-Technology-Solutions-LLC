@@ -40,9 +40,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/VIRACIS Logo - Hexagon.png", type: "image/png" },
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: "/VIRACIS Logo - Hexagon.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 

@@ -8,7 +8,7 @@ export default function BeyondSEOPage() {
     title: "Beyond SEO: The Plain English Guide to the New Rules of Search",
     author: {
       name: "Viracis Team",
-      avatar: "/viracis-team-logo.png",
+      avatar: "/favicon.png",
       date: "April 29, 2026",
       readTime: "7 min read"
     },

@@ -8,7 +8,7 @@ export default function ServerlessSMBPage() {
     title: "What Your Website Should Actually Do For You (Besides Look Nice)",
     author: {
       name: "Viracis Team",
-      avatar: "/viracis-team-logo.png",
+      avatar: "/favicon.png",
       date: "April 08, 2026",
       readTime: "7 min read"
     },

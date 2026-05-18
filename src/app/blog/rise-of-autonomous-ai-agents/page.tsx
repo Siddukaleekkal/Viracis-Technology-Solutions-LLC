@@ -8,7 +8,7 @@ export default function AutonomousAgentsPage() {
     title: "The Rise of Autonomous AI Agents in Enterprise Workflows",
     author: {
       name: "Viracis Engineering",
-      avatar: "/viracis-team-logo.png",
+      avatar: "/favicon.png",
       date: "May 18, 2026",
       readTime: "7 min read"
     },
