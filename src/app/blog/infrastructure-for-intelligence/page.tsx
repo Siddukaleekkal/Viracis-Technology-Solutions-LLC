@@ -72,6 +72,7 @@ export default function InfrastructureIntelligencePage() {
   return (
     <ArticleTemplate 
       {...post}
+      imageClassName="object-[center_35%]"
       backLink="/blog"
       backText="Back to Insights"
     />

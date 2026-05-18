@@ -33,6 +33,7 @@ interface ArticleTemplateProps {
   recentPosts: RecentPost[];
   backLink: string;
   backText: string;
+  imageClassName?: string;
 }
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -47,6 +48,7 @@ export default function ArticleTemplate({
   recentPosts,
   backLink,
   backText,
+  imageClassName = "object-center",
 }: ArticleTemplateProps) {
   const [scrollProgress, setScrollProgress] = React.useState(0);
 
@@ -98,8 +100,8 @@ export default function ArticleTemplate({
             </h1>
             <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-gray-200 text-sm text-gray-500">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0">
-                  <img src={author.avatar} alt={author.name} className="w-full h-full object-contain p-1" />
+                <div className="w-8 h-8 flex items-center justify-center shrink-0">
+                  <img src={author.avatar} alt={author.name} className="w-full h-full object-contain" />
                 </div>
                 <span className="font-medium text-viracis-navy">{author.name}</span>
               </div>
@@ -117,7 +119,7 @@ export default function ArticleTemplate({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease }}
           >
-            <img src={mainImage} alt={title} className="w-full h-full object-cover" />
+            <img src={mainImage} alt={title} className={`w-full h-full object-cover ${imageClassName}`} />
           </motion.div>
 
           {/* Body + sidebar */}

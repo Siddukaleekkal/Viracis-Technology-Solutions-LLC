@@ -13,8 +13,8 @@ const ibmPlexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://viracis.com"),
   title: {
-    default: "Viracis",
-    template: "%s | Viracis",
+    default: "Viracis | Technology Consulting",
+    template: "%s | Viracis | Technology Consulting",
   },
   description:
     "Viracis provides technology consulting that bridges strategy and execution. Cloud infrastructure, AI automation, and enterprise software.",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Viracis Technology Solutions" }],
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Viracis Technology Solutions",
+    title: "Viracis | Technology Consulting",
     description:
       "Technology consulting that bridges strategy and execution.",
     url: "https://viracis.com",
@@ -40,10 +40,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon.png", sizes: "512x512", type: "image/png" },
+      { url: "/VIRACIS Logo - Hexagon.png", type: "image/png" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: "/VIRACIS Logo - Hexagon.png",
   },
 };
 

@@ -7,6 +7,14 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "The Rise of Autonomous AI Agents in Enterprise Workflows",
+    slug: "rise-of-autonomous-ai-agents",
+    date: "May 18, 2026",
+    excerpt: "Discover how AI is moving from reactive chatbots to proactive agents capable of orchestrating complex, multi-step business workflows autonomously.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "The ROI of Custom Automation: Turning Expense into Investment",
     slug: "roi-of-custom-automation",
     date: "May 11, 2026",
