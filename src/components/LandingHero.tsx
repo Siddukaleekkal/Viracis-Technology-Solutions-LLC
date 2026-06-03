@@ -53,16 +53,16 @@ export default function LandingHero() {
             {...fadeUp(0.22)}
             className="text-[clamp(2.8rem,5.5vw,5.5rem)] leading-[1.05] tracking-[-0.03em] text-white font-normal mb-10"
           >
-            Scale your business with Viracis
+            Enterprise digital transformation
             <br />
-            technology built for
+            architected for
             <br />
             <Typewriter
               text={[
-                "Efficiency.",
-                "Growth.",
-                "Profit.",
-                "Longevity.",
+                "Scale.",
+                "Resilience.",
+                "Performance.",
+                "Innovation.",
               ]}
               speed={70}
               className="text-white/80"

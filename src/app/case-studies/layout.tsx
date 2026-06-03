@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Case Studies",
-  description: "See how Viracis has helped businesses transform through strategic technology implementation and automation.",
+  title: "Enterprise Case Studies",
+  description: "Explore how Viracis partners with industry leaders to drive digital transformation through strategic enterprise technology implementation and AI automation.",
 };
 
 export default function CaseStudiesLayout({

@@ -13,11 +13,11 @@ const ibmPlexSans = IBM_Plex_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://viracis.com"),
   title: {
-    default: "Viracis | Technology Consulting",
-    template: "%s | Viracis | Technology Consulting",
+    default: "Viracis | Enterprise Technology Consulting & Solutions",
+    template: "%s | Viracis | Enterprise Technology Consulting",
   },
   description:
-    "Viracis provides technology consulting that bridges strategy and execution. Cloud infrastructure, AI automation, and enterprise software.",
+    "Viracis delivers enterprise-grade technology consulting, specializing in scalable cloud infrastructure, AI-driven automation, and custom enterprise software solutions for global businesses.",
   keywords: [
     "AI Consulting",
     "Software Engineering",
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Viracis Technology Solutions" }],
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Viracis | Technology Consulting",
+    title: "Viracis | Enterprise Technology Consulting & Solutions",
     description:
-      "Technology consulting that bridges strategy and execution.",
+      "Enterprise-grade technology consulting bridging strategy and execution.",
     url: "https://viracis.com",
     siteName: "Viracis",
     locale: "en_US",
@@ -77,7 +77,7 @@ export default function RootLayout({
                 "areaServed": "US",
                 "availableLanguage": "en",
               },
-              "description": "Technology consulting bridging strategy and execution through AI automation, cloud infrastructure, and enterprise software.",
+              "description": "Viracis delivers enterprise-grade technology consulting, specializing in scalable cloud infrastructure, AI-driven automation, and custom enterprise software solutions for global businesses.",
             }),
           }}
         />

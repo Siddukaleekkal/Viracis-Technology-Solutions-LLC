@@ -116,6 +116,15 @@ export default function LandingContact() {
                 <h3 className="text-sm font-bold text-viracis-navy mb-2">We put together a plan</h3>
                 <p className="text-sm text-gray-400 leading-relaxed">Only what makes sense for your business and budget.</p>
               </div>
+
+              {/* Locations */}
+              <div className="pt-8 border-t border-gray-100">
+                <span className="text-[10px] tracking-[0.2em] uppercase font-bold text-gray-300 block mb-3">Locations</span>
+                <p className="text-sm text-gray-400 leading-relaxed">
+                  Dallas, TX<br />
+                  Richmond, VA
+                </p>
+              </div>
             </div>
           </motion.div>
 
