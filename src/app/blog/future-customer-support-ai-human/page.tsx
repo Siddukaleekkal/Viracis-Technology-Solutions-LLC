@@ -21,7 +21,7 @@ export default function FutureCustomerSupportPage() {
     ],
     content: `
       <h2 id="ai-deflection">The Power of AI Deflection</h2>
-      <p>In the modern customer support landscape, volume is often the biggest challenge. Customers expect instant resolutions, and support teams frequently find themselves bogged down by repetitive inquiries. This is where AI excels. By deploying intelligent agents to handle routine queries—such as password resets, order tracking, and basic troubleshooting—businesses can significantly reduce ticket volume.</p>
+      <p>In the modern customer support landscape, volume is often the biggest challenge. Customers expect instant resolutions, and support teams frequently find themselves bogged down by repetitive inquiries. This is where AI excels. By deploying intelligent agents to handle routine queries, such as password resets, order tracking, and basic troubleshooting, organizations can significantly reduce ticket volume and optimize resource allocation.</p>
       <p>Effective AI deflection doesn't just save time; it provides customers with the immediate answers they crave, improving overall satisfaction for simple issues.</p>
 
       <h2 id="human-escalation">Seamless Human Escalation</h2>

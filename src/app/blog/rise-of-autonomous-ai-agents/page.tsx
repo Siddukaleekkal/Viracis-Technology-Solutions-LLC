@@ -21,7 +21,7 @@ export default function AutonomousAgentsPage() {
     ],
     content: `
       <h2 id="beyond-chatbots">Beyond Chatbots: Enter Agents</h2>
-      <p>For the past few years, artificial intelligence in the enterprise has largely been synonymous with conversational AI—chatbots, copilots, and assistants that wait for user prompts to perform isolated tasks. While useful, this paradigm is inherently limited. The real transformation happens when AI moves from being a reactive assistant to a proactive, autonomous agent.</p>
+      <p>For the past few years, artificial intelligence in the enterprise has largely been synonymous with conversational AI technologies such as chatbots, copilots, and assistants that wait for user prompts to perform isolated tasks. While useful, this paradigm is inherently limited. The real transformation happens when AI moves from being a reactive assistant to a proactive, autonomous agent.</p>
       <p>Autonomous AI agents are systems capable of planning, executing, and iterating on multi-step tasks without constant human intervention. They don't just answer questions; they solve problems. This shift from <em>chat</em> to <em>action</em> represents the most significant leap in enterprise software since the cloud.</p>
 
       <h2 id="orchestrating-workflows">Orchestrating Complex Workflows</h2>

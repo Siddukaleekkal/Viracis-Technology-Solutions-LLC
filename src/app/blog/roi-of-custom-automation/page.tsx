@@ -34,7 +34,7 @@ export default function ROICustomAutomationPage() {
       <p>By targeting these bottlenecks, businesses can quickly reclaim thousands of lost hours each year.</p>
 
       <h2 id="calculating-roi">Calculating the Real ROI</h2>
-      <p>A major hesitation when investing in custom software is the upfront cost. However, treating automation purely as an expense misses the point—it's an investment with a measurable return.</p>
+      <p>A major hesitation when investing in custom software is the upfront cost. However, treating automation purely as an expense ignores its true value as a strategic investment with a measurable return.</p>
       <p>To calculate the ROI of an automated solution, you must evaluate the hours saved multiplied by the hourly rate of the employees performing those tasks, plus the estimated value of eliminating costly errors.</p>
       
       <blockquote>
