@@ -76,8 +76,7 @@ export default function LandingHero() {
           </motion.h1>
 
           {/* CTAs */}
-          <motion.div
-            {...fadeUp(0.52)}
+          <div
             className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
           >
             <Link
@@ -93,7 +92,7 @@ export default function LandingHero() {
               Case Studies
               <span className="text-white/60 text-lg leading-none">→</span>
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
 

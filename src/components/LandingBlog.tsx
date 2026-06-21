@@ -7,6 +7,38 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "Security First: Protecting Your Automation Pipelines from Vulnerabilities",
+    slug: "protecting-automation-pipelines-security",
+    date: "June 15, 2026",
+    excerpt: "As businesses automate more workflows, the attack surface expands. Discover the essential security practices for protecting your automated systems and sensitive data.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
+    title: "The Future of Customer Support: Blending AI Efficiency with Human Empathy",
+    slug: "future-customer-support-ai-human",
+    date: "June 08, 2026",
+    excerpt: "AI can handle 80% of customer inquiries, but the remaining 20% requires a human touch. Learn how to strike the perfect balance for a stellar customer experience.",
+    category: "Strategy",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
+    title: "Data Quality: The Unsung Hero of Effective AI Implementation",
+    slug: "data-quality-hero-ai-implementation",
+    date: "June 01, 2026",
+    excerpt: "Before you can leverage the power of AI and machine learning, you need clean, reliable data. Here's why data quality is the foundation of any successful automation strategy.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
+    title: "From Monolith to Micro-Agents: Rethinking Software Architecture",
+    slug: "from-monolith-to-micro-agents",
+    date: "May 25, 2026",
+    excerpt: "As AI capabilities grow, the way we design software is changing. Explore how micro-agents are replacing monolithic applications for more agile, intelligent systems.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "The Rise of Autonomous AI Agents in Enterprise Workflows",
     slug: "rise-of-autonomous-ai-agents",
     date: "May 18, 2026",
