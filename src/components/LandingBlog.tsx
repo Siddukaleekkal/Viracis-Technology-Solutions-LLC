@@ -7,6 +7,30 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "AI in 2026: Mid-Year Review and Future Trends",
+    slug: "ai-2026-mid-year-review",
+    date: "July 06, 2026",
+    excerpt: "We're halfway through 2026, and the AI landscape has evolved rapidly. Here is a look at the most impactful trends we've seen so far and what's next.",
+    category: "Strategy",
+    image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
+    title: "Building Resilient Automation: Preparing for the Unexpected",
+    slug: "building-resilient-automation",
+    date: "June 29, 2026",
+    excerpt: "Automated systems are great when things go right, but what happens when they fail? Learn how to build resilient automation that handles edge cases gracefully.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1553172574-1eb37430181e?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
+    title: "The Rise of Edge AI: Processing Data Where It Lives",
+    slug: "edge-ai-processing-data",
+    date: "June 22, 2026",
+    excerpt: "Sending everything to the cloud is no longer efficient. Explore how Edge AI brings computation closer to the data source for faster, more secure processing.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "Security First: Protecting Your Automation Pipelines from Vulnerabilities",
     slug: "protecting-automation-pipelines-security",
     date: "June 15, 2026",
