@@ -22,57 +22,34 @@ const differentiators = [
 
 export default function LandingAbout() {
   return (
-    <section id="about" className="py-32 bg-gray-50 border-t border-gray-200">
+    <section id="about" className="py-24 lg:py-32 bg-gray-50 border-t border-gray-200">
       <div className="max-w-[1200px] mx-auto px-8">
-        {/* Centered header */}
-        <motion.div
-          className="text-center max-w-3xl mx-auto"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease }}
-        >
-          <p className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium mb-5">
+        <div className="max-w-4xl">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500 mb-6">
             Our Mission
-          </p>
-          <h2 className="text-4xl lg:text-5xl leading-[1.1] font-normal tracking-[-0.02em] text-viracis-navy">
-            Viracis helps small businesses achieve better outcomes through technology.
           </h2>
-          <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-            Viracis partners with small and growing businesses to make
-            enterprise-grade technology accessible and practical, turning
-            complex challenges into competitive advantages.
+          <p className="text-3xl lg:text-4xl xl:text-5xl font-light leading-tight mb-10 text-viracis-navy">
+            Viracis partners with small and growing businesses to make enterprise-grade technology accessible, turning complex challenges into competitive advantages.
           </p>
           <Link
             href="/contact"
-            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-viracis-navy hover:gap-3 transition-all duration-200"
+            className="inline-flex items-center gap-2 text-viracis-navy font-medium hover:text-blue-600 transition-colors duration-200 pb-1 border-b border-viracis-navy/30 hover:border-blue-600"
           >
             Work with us
-            <span>→</span>
+            <span aria-hidden="true">&rarr;</span>
           </Link>
-        </motion.div>
+        </div>
 
-        {/* Differentiator cards */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 pt-16 border-t border-gray-200">
           {differentiators.map((item, i) => (
-            <motion.div
-              key={i}
-              className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-md transition-shadow duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: i * 0.12, ease }}
-            >
-              <span className="text-xs tracking-[0.2em] uppercase font-medium text-viracis-navy/40">
-                0{i + 1}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold text-viracis-navy tracking-tight">
+            <div key={i} className="flex flex-col">
+              <h3 className="text-xl font-medium mb-4 text-viracis-navy">
                 {item.title}
               </h3>
-              <p className="mt-2.5 text-base text-gray-600 leading-relaxed">
+              <p className="text-base text-gray-600 leading-relaxed">
                 {item.body}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

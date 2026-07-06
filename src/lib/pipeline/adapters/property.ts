@@ -26,7 +26,7 @@ export async function fetchPropertiesByRegion(): Promise<PropertyData[]> {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': 'application/json',
-      'User-Agent': 'Viracis B2B Engine (contact@viracis.com)'
+      'User-Agent': 'Viracis B2B Engine (siddu@viracis.com)'
     },
     body: `data=${encodeURIComponent(query)}`
   })

@@ -57,78 +57,68 @@ const services: Service[] = [
 
 const LandingServices = () => {
   return (
-    <section id="services" className="py-32 bg-white border-t border-gray-200">
-      <div className="max-w-[1200px] mx-auto px-8">
-        {/* Section header */}
-        <motion.div
-          className="mb-12"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease }}
-        >
-          <div className="flex items-center gap-5 mb-5">
-            <span className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium whitespace-nowrap">
+    <section id="services" className="bg-white border-t border-gray-200">
+      {/* Heavy, structured header - Light Theme */}
+      <div className="bg-gray-50 pt-24 pb-40 px-8 border-b border-gray-200">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="max-w-3xl">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-6">
               What We Do
-            </span>
-            <div className="flex-1 h-px bg-gray-200" />
+            </h2>
+            <p className="text-4xl lg:text-5xl font-semibold leading-tight text-viracis-navy mb-6">
+              Enterprise-grade solutions built to scale.
+            </p>
+            <p className="text-xl text-gray-600">
+              We deliver end-to-end technology services that move your business from manual chaos to automated clarity.
+            </p>
           </div>
-          <h2 className="text-3xl lg:text-4xl leading-[1.1] font-normal tracking-[-0.02em] text-viracis-navy">
-            Solutions built for small business growth.
-          </h2>
-        </motion.div>
+        </div>
+      </div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {/* Rigid, Sharp Card Grid */}
+      <div className="max-w-[1200px] mx-auto px-8 -mt-24 pb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, i) => (
-            <motion.div
-              key={service.id}
-              className={`${service.colSpan} rounded-2xl p-8 flex flex-col ${
-                service.accent
-                  ? "bg-viracis-navy"
-                  : "bg-gray-50 border border-gray-200"
+            <div 
+              key={service.id} 
+              className={`flex flex-col p-8 sm:p-10 shadow-lg ${
+                service.accent 
+                  ? "bg-viracis-navy text-white border-t-4 border-viracis-cyan" 
+                  : "bg-white border-t-4 border-viracis-navy"
               }`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: i * 0.08, ease }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
             >
-              <h3
-                className={`text-xl font-semibold tracking-tight ${
-                  service.accent ? "text-white" : "text-viracis-navy"
-                }`}
-              >
+              <h3 className={`text-xl font-bold mb-4 ${service.accent ? "text-white" : "text-viracis-navy"}`}>
                 {service.title}
               </h3>
-              <p
-                className={`mt-3 text-base leading-relaxed ${
-                  service.accent ? "text-white/70" : "text-gray-600"
-                }`}
-              >
+              <p className={`text-base leading-relaxed mb-8 flex-1 ${service.accent ? "text-gray-300" : "text-gray-600"}`}>
                 {service.description}
               </p>
+              
               {service.features && (
-                <ul className="mt-6 space-y-3">
+                <ul className="mb-8 space-y-3">
                   {service.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
-                      <span className="mt-0.5 text-viracis-cyan text-sm font-bold shrink-0">
-                        ✓
+                      <div className={`mt-1.5 w-1.5 h-1.5 shrink-0 ${service.accent ? "bg-viracis-cyan" : "bg-viracis-navy"}`} />
+                      <span className={`text-sm font-medium ${service.accent ? "text-gray-200" : "text-gray-700"}`}>
+                        {feature}
                       </span>
-                      <span className="text-sm text-white/80">{feature}</span>
                     </li>
                   ))}
                 </ul>
               )}
-              {service.accent && (
+              
+              <div className="mt-auto pt-6 border-t border-gray-200/20">
                 <Link
                   href="/contact"
-                  className="mt-8 inline-flex items-center justify-center px-6 py-3 bg-white text-viracis-navy text-sm font-bold rounded-lg hover:bg-gray-100 transition-colors duration-200 self-start"
+                  className={`inline-flex items-center text-sm font-bold uppercase tracking-wider ${
+                    service.accent ? "text-viracis-cyan hover:text-white" : "text-viracis-navy hover:text-blue-600"
+                  } transition-colors`}
                 >
-                  Get started
+                  Learn More
+                  <span className="ml-2" aria-hidden="true">&rarr;</span>
                 </Link>
-              )}
-            </motion.div>
+              </div>
+            </div>
           ))}
         </div>
       </div>

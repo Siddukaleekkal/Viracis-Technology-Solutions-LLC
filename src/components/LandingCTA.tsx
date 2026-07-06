@@ -31,7 +31,7 @@ export default function LandingCTA() {
             transition={{ duration: 0.6, delay: 0.1, ease }}
           >
             <a
-              href="mailto:hello@viracis.com"
+              href="mailto:siddu@viracis.com"
               className="inline-flex items-center px-10 py-5 bg-white text-viracis-navy text-sm font-bold tracking-wide hover:bg-gray-100 transition-all duration-200"
             >
               Get in Touch
