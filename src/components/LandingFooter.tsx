@@ -4,7 +4,7 @@ import Link from "next/link";
 const LandingFooter = () => {
   const year = new Date().getFullYear();
   return (
-    <footer className="bg-viracis-navy py-8 border-t border-white/5">
+    <footer className="bg-viracis-navy pt-8 pb-16 md:pb-8 border-t border-white/5 relative z-30">
       <div className="max-w-[1200px] mx-auto px-4 md:px-8">
         {/* Main row */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

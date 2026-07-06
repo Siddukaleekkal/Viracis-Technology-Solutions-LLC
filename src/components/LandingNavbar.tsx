@@ -84,41 +84,30 @@ export default function LandingNavbar() {
       </header>
 
       {/* Mobile Top Logo Header (Matching Web View) */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-[60] bg-white border-b border-gray-100 px-6 py-4">
-        <Link href="/" className="block" title="Viracis Home">
+      <header className={`md:hidden fixed top-0 left-0 right-0 z-[70] border-b transition-colors duration-300 px-6 py-4 flex items-center justify-between ${mobileOpen ? 'bg-viracis-navy border-white/10' : 'bg-white border-gray-100'}`}>
+        <Link href="/" className="block" title="Viracis Home" onClick={() => setMobileOpen(false)}>
           <Image
             src="/viracis-logo.png"
             alt="Viracis Technology Solutions"
             width={100}
             height={32}
-            className="h-8 w-auto object-contain"
+            className={`h-8 w-auto object-contain transition-all duration-300 ${mobileOpen ? 'brightness-0 invert' : ''}`}
           />
         </Link>
-      </header>
 
-      {/* Mobile Bottom Action Bar */}
-      <div className="md:hidden fixed bottom-6 left-6 right-6 z-[60] flex items-center justify-between gap-2">
         {/* Hamburger */}
         <button
           onClick={() => setMobileOpen((v) => !v)}
-          className="w-12 h-12 bg-viracis-navy rounded-sm flex items-center justify-center shadow-2xl"
+          className="w-10 h-10 flex items-center justify-center"
           aria-label="Menu"
         >
-          <div className="w-5 flex flex-col gap-[3px]">
-            <span className={`h-[2px] bg-white transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-[5px]" : ""}`} />
-            <span className={`h-[2px] bg-white transition-all duration-300 ${mobileOpen ? "opacity-0" : ""}`} />
-            <span className={`h-[2px] bg-white transition-all duration-300 ${mobileOpen ? "-rotate-45 -translate-y-[5px]" : ""}`} />
+          <div className="w-6 flex flex-col gap-[5px]">
+            <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white rotate-45 translate-y-[7px]" : "bg-viracis-navy"}`} />
+            <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "opacity-0" : "bg-viracis-navy"}`} />
+            <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white -rotate-45 -translate-y-[7px]" : "bg-viracis-navy"}`} />
           </div>
         </button>
-
-        {/* Get Started Button */}
-        <Link
-          href="/contact"
-          className="px-6 h-12 bg-white text-viracis-navy font-bold text-sm flex items-center justify-center rounded-sm shadow-2xl"
-        >
-          Get Started
-        </Link>
-      </div>
+      </header>
 
       {/* Mobile Menu Overlay */}
       <motion.div
@@ -161,13 +150,26 @@ export default function LandingNavbar() {
             <Link
               href="/login"
               onClick={() => setMobileOpen(false)}
-              className="group block"
+              className="group block mb-6"
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-4xl font-bold tracking-tight text-viracis-cyan group-hover:text-white transition-colors">
                   Client Login
                 </h2>
                 <span className="text-2xl text-viracis-cyan group-hover:text-white transition-colors">→</span>
+              </div>
+            </Link>
+            
+            <Link
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              className="group block"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-4xl font-bold tracking-tight text-white group-hover:text-viracis-cyan transition-colors">
+                  Get Started
+                </h2>
+                <span className="text-2xl text-white group-hover:text-viracis-cyan transition-colors">→</span>
               </div>
             </Link>
           </motion.div>
