@@ -7,6 +7,22 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "Optimizing Remote Teams with AI Collaboration Tools",
+    slug: "optimizing-remote-teams-ai-tools",
+    date: "July 20, 2026",
+    excerpt: "Remote work is here to stay, but collaboration remains a challenge. Discover how new AI tools are bridging the gap, improving communication, and boosting productivity across distributed teams.",
+    category: "Strategy",
+    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
+    title: "AI-Driven Security: Next Generation Threat Detection",
+    slug: "ai-driven-security-threat-detection",
+    date: "July 13, 2026",
+    excerpt: "Traditional security measures are no longer enough to combat modern cyber threats. Learn how AI-driven security tools are revolutionizing threat detection and response times.",
+    category: "Engineering",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "AI in 2026: Mid-Year Review and Future Trends",
     slug: "ai-2026-mid-year-review",
     date: "July 06, 2026",
