@@ -4,7 +4,7 @@ import LandingAbout from "@/components/LandingAbout";
 import LandingServices from "@/components/LandingServices";
 import LandingPartners from "@/components/LandingPartners";
 import LandingBlog from "@/components/LandingBlog";
-import LandingCaseStudies from "@/components/LandingCaseStudies";
+
 import LandingFooter from "@/components/LandingFooter";
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
       <LandingPartners />
       <LandingServices />
       <LandingBlog isFeaturedOnly={true} />
-      <LandingCaseStudies />
+
       <LandingFooter />
     </main>
   );
