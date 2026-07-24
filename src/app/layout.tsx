@@ -68,7 +68,7 @@ export default function RootLayout({
               "url": "https://viracis.com",
               "logo": "https://viracis.com/viracis-logo.png",
               "sameAs": [
-                "https://www.linkedin.com/in/viracis-viracis-technology-solutions-40a7b53b3/",
+                "https://www.linkedin.com/company/viracis",
               ],
               "contactPoint": {
                 "@type": "ContactPoint",

@@ -8,18 +8,18 @@ const ease = [0.16, 1, 0.3, 1] as const;
 const cases = [
   {
     company: "Wizard Wash",
-    title: "From Manual Chaos to 42% More Bookings in 60 Days",
+    title: "Architecting a Scalable Digital Infrastructure for 42% Revenue Growth",
     slug: "wizard-wash-automation",
-    description: "How a Virginia power washing company reclaimed 12+ hours per week and cut invoice turnaround from 5 days to 60 seconds.",
-    tag: "Small Business Automation",
+    description: "Re-engineered core operational workflows with an automated billing and CRM ecosystem, eliminating manual bottlenecks and reducing invoice processing time by 99.9%.",
+    tag: "Digital Transformation",
     image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=1200"
   },
   {
     company: "Virginia Scoopers",
-    title: "Scaling Local Service Revenue Through Custom Sales Automation",
+    title: "Deploying AI-Driven Route Optimization to Maximize Field Service Efficiency",
     slug: "virginia-scoopers-automation",
-    description: "Modernizing a pet waste management firm with custom route optimization via Zoho Route IQ and a complete brand overhaul.",
-    tag: "Operational Strategy",
+    description: "Implemented a fully integrated telemetry and routing platform utilizing advanced geofencing and automated sales pipelines to scale enterprise logistics.",
+    tag: "Logistics & Automation",
     image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=1200"
   },
 ];

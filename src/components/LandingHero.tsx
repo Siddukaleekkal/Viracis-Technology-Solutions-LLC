@@ -85,13 +85,6 @@ export default function LandingHero() {
             >
               Start a Conversation
             </Link>
-            <a
-              href="#case-studies"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/5 backdrop-blur-lg border border-white/10 text-sm font-semibold text-white hover:bg-white/10 hover:border-white/20 hover:gap-4 transition-all duration-300 min-h-[56px]"
-            >
-              Case Studies
-              <span className="text-white/60 text-lg leading-none">→</span>
-            </a>
           </div>
         </div>
       </div>
