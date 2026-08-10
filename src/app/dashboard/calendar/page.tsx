@@ -169,74 +169,56 @@ export default function CalendarPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans text-slate-900">
       
-      {/* Enterprise Header Bar */}
-      <div className="bg-white p-5 px-6 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Enterprise Header Bar - Redesigned for mobile viewport fit */}
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 font-sans">
         
-        {/* Left: Title & Controls */}
-        <div className="flex items-center gap-4">
+        {/* Row 1: Title & Controls */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Schedule & Dispatch Calendar</h1>
-            <p className="text-xs text-slate-500 font-medium mt-0.5 flex items-center gap-3">
-              <span>Google Calendar Sync Active</span>
-              <span>•</span>
-              <span className="flex items-center gap-2">
-                <span className="flex items-center gap-1 font-semibold text-blue-700"><span className="w-2 h-2 rounded-full bg-blue-600"></span> Confirmed</span>
-                <span className="flex items-center gap-1 font-semibold text-emerald-700"><span className="w-2 h-2 rounded-full bg-emerald-600"></span> Completed</span>
-                <span className="flex items-center gap-1 font-semibold text-amber-700"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Pending</span>
-              </span>
-            </p>
+            <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Schedule & Dispatch Calendar</h1>
+            <div className="flex items-center gap-2.5 mt-0.5 text-[11px] font-medium text-slate-500">
+              <span className="flex items-center gap-1 font-semibold text-blue-700"><span className="w-2 h-2 rounded-full bg-blue-600"></span> Confirmed</span>
+              <span className="flex items-center gap-1 font-semibold text-emerald-700"><span className="w-2 h-2 rounded-full bg-emerald-600"></span> Completed</span>
+              <span className="flex items-center gap-1 font-semibold text-amber-700"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Pending</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => {
                 setSelectedDayNum(13)
                 setViewMode('Week')
               }}
-              className="px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+              className="px-2.5 py-1.5 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50"
             >
               Today
             </button>
-            <div className="flex items-center text-slate-600">
-              <button className="p-1.5 hover:bg-slate-100 rounded-lg font-bold text-sm">‹</button>
-              <button className="p-1.5 hover:bg-slate-100 rounded-lg font-bold text-sm">›</button>
+            <div className="flex items-center text-slate-600 border border-slate-200 rounded-xl px-1">
+              <button className="px-1.5 py-1 hover:bg-slate-100 rounded-md font-bold text-xs">‹</button>
+              <button className="px-1.5 py-1 hover:bg-slate-100 rounded-md font-bold text-xs">›</button>
             </div>
+            <button
+              onClick={() => setIsScheduleOpen(true)}
+              className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition-all"
+            >
+              + Create Event
+            </button>
           </div>
         </div>
 
-        {/* Right: Interactive View Switchers (Week / Month / Day / Schedule) */}
-        <div className="flex items-center gap-3">
-          
-          <div className="flex bg-slate-100 p-1 rounded-lg text-xs font-semibold text-slate-600">
-            {(['Week', 'Month', 'Day', 'Schedule'] as const).map((mode) => (
-              <button
-                key={mode}
-                onClick={() => setViewMode(mode)}
-                className={`px-3 py-1.5 rounded transition-all ${
-                  viewMode === mode ? 'bg-white text-slate-900 shadow-sm font-bold' : 'hover:text-slate-900'
-                }`}
-              >
-                {mode}
-              </button>
-            ))}
-          </div>
-
-          {/* Google Calendar Integration Button */}
-          <button
-            onClick={() => setIsGoogleSyncModalOpen(true)}
-            className="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 font-semibold text-xs rounded-lg shadow-sm transition-colors flex items-center gap-2"
-          >
-            <span>Google Calendar Sync</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-          </button>
-
-          {/* Schedule Job Button */}
-          <button
-            onClick={() => setIsScheduleOpen(true)}
-            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg shadow-sm transition-all"
-          >
-            + Create Event
-          </button>
+        {/* Row 2: View Mode Switcher (Full Width on Mobile) */}
+        <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold text-slate-600 w-full sm:w-auto sm:inline-flex">
+          {(['Week', 'Month', 'Day', 'Schedule'] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setViewMode(mode)}
+              className={`flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-center transition-all ${
+                viewMode === mode ? 'bg-white text-slate-900 shadow-sm font-extrabold' : 'hover:text-slate-900'
+              }`}
+            >
+              {mode}
+            </button>
+          ))}
         </div>
 
       </div>
