@@ -13,65 +13,116 @@ export default function DashboardPage() {
 
   const loadMetrics = () => {
     try {
-      let completedSum = 0
-      let scheduledSum = 0
-      let quotedSum = 0
+      // Map to hold unique customer/job records to prevent double-counting/stacking across LocalStorage collections
+      // Key: normalized customer name (e.g. "robert taylor")
+      const recordMap = new Map<string, { status: 'Completed' | 'Scheduled' | 'Quoted'; amount: number }>()
 
-      // 1. Customers Revenue & Status Breakdown
-      const savedCust = localStorage.getItem('wizardwash_customers')
-      if (savedCust) {
-        const parsed = JSON.parse(savedCust)
-        setCustomerCount(parsed.length)
-        parsed.forEach((c: any) => {
-          const val = parseFloat((c.totalSpent || '$0').replace(/[^0-9.]/g, '')) || 0
-          if (c.status === 'Completed') completedSum += val
-          else if (c.status === 'Scheduled') scheduledSum += val
-          else if (c.status === 'Quoted') quotedSum += val
+      // 1. Calendar Jobs (primary dispatch events)
+      const savedJobs = localStorage.getItem('wizardwash_calendar_jobs')
+      let totalJobsCount = 0
+      if (savedJobs) {
+        const parsed = JSON.parse(savedJobs)
+        totalJobsCount = parsed.length
+        parsed.forEach((job: any) => {
+          const val = parseFloat((job.amount || '$0').replace(/[^0-9.]/g, '')) || 0
+          const key = (job.customer || '').trim().toLowerCase()
+          if (key) {
+            const status: 'Completed' | 'Scheduled' | 'Quoted' =
+              job.status === 'Completed' ? 'Completed' : job.status === 'Confirmed' || job.status === 'Scheduled' ? 'Scheduled' : 'Quoted'
+            recordMap.set(key, { status, amount: val })
+          }
         })
       }
 
-      // 2. Invoices Revenue Breakdown
+      // 2. Customer Directory
+      const savedCust = localStorage.getItem('wizardwash_customers')
+      let totalCustomerCount = 0
+      if (savedCust) {
+        const parsed = JSON.parse(savedCust)
+        totalCustomerCount = parsed.length
+        parsed.forEach((c: any) => {
+          const val = parseFloat((c.totalSpent || '$0').replace(/[^0-9.]/g, '')) || 0
+          const key = (c.name || '').trim().toLowerCase()
+          if (key) {
+            const status: 'Completed' | 'Scheduled' | 'Quoted' =
+              c.status === 'Completed' ? 'Completed' : c.status === 'Scheduled' ? 'Scheduled' : 'Quoted'
+
+            if (recordMap.has(key)) {
+              const existing = recordMap.get(key)!
+              // Upgrade status or take higher valid amount without double counting
+              if (c.status === 'Completed' || (c.status === 'Scheduled' && existing.status === 'Quoted')) {
+                recordMap.set(key, { status, amount: Math.max(val, existing.amount) })
+              }
+            } else {
+              recordMap.set(key, { status, amount: val })
+            }
+          }
+        })
+      }
+
+      // 3. Map View Pins
+      const savedPins = localStorage.getItem('wizardwash_mappins')
+      if (savedPins) {
+        const parsed = JSON.parse(savedPins)
+        parsed.forEach((p: any) => {
+          const val = parseFloat((p.value || '$0').replace(/[^0-9.]/g, '')) || 0
+          const key = (p.customer || '').trim().toLowerCase()
+          if (key) {
+            const status: 'Completed' | 'Scheduled' | 'Quoted' =
+              p.status === 'Completed' ? 'Completed' : p.status === 'Scheduled' ? 'Scheduled' : 'Quoted'
+
+            if (recordMap.has(key)) {
+              const existing = recordMap.get(key)!
+              if (p.status === 'Completed' || (p.status === 'Scheduled' && existing.status === 'Quoted')) {
+                recordMap.set(key, { status, amount: Math.max(val, existing.amount) })
+              }
+            } else {
+              recordMap.set(key, { status, amount: val })
+            }
+          }
+        })
+      }
+
+      // 4. Invoices
       const savedInv = localStorage.getItem('wizardwash_invoices')
       if (savedInv) {
         const parsed = JSON.parse(savedInv)
         parsed.forEach((inv: any) => {
           const val = parseFloat((inv.amount || '$0').replace(/[^0-9.]/g, '')) || 0
-          if (inv.status === 'Paid') completedSum += val
-          else if (inv.status === 'Pending') scheduledSum += val
+          const key = (inv.customer || '').trim().toLowerCase()
+          if (key) {
+            const status: 'Completed' | 'Scheduled' | 'Quoted' =
+              inv.status === 'Paid' ? 'Completed' : inv.status === 'Pending' ? 'Scheduled' : 'Quoted'
+
+            if (recordMap.has(key)) {
+              const existing = recordMap.get(key)!
+              if (inv.status === 'Paid' || existing.status !== 'Completed') {
+                recordMap.set(key, { status, amount: Math.max(val, existing.amount) })
+              }
+            } else {
+              recordMap.set(key, { status, amount: val })
+            }
+          }
         })
       }
 
-      // 3. Calendar Jobs Breakdown
-      const savedJobs = localStorage.getItem('wizardwash_calendar_jobs')
-      if (savedJobs) {
-        const parsed = JSON.parse(savedJobs)
-        setJobCount(parsed.length)
-        parsed.forEach((job: any) => {
-          const val = parseFloat((job.amount || '$0').replace(/[^0-9.]/g, '')) || 0
-          if (job.status === 'Completed') completedSum += val
-          else if (job.status === 'Confirmed' || job.status === 'Scheduled') scheduledSum += val
-        })
-      }
+      // Sum exact non-stacked revenue totals
+      let completedSum = 0
+      let scheduledSum = 0
+      let quotedSum = 0
 
-      // 4. Map Pins Breakdown
-      const savedPins = localStorage.getItem('wizardwash_mappins')
-      if (savedPins) {
-        const parsed = JSON.parse(savedPins)
-        parsed.forEach((pin: any) => {
-          const val = parseFloat((pin.value || '$0').replace(/[^0-9.]/g, '')) || 0
-          if (pin.status === 'Completed') completedSum += val
-          else if (pin.status === 'Scheduled') scheduledSum += val
-          else if (pin.status === 'Quoted') quotedSum += val
-        })
-      }
+      recordMap.forEach((entry) => {
+        if (entry.status === 'Completed') {
+          completedSum += entry.amount
+        } else if (entry.status === 'Scheduled') {
+          scheduledSum += entry.amount
+        } else if (entry.status === 'Quoted') {
+          quotedSum += entry.amount
+        }
+      })
 
-      // 5. Messages Count
-      const savedMsgs = localStorage.getItem('wizardwash_conversations')
-      if (savedMsgs) {
-        const parsed = JSON.parse(savedMsgs)
-        setMessageCount(parsed.length)
-      }
-
+      setCustomerCount(totalCustomerCount)
+      setJobCount(totalJobsCount)
       setCompletedRevenue(completedSum)
       setScheduledRevenue(scheduledSum)
       setQuotedRevenue(quotedSum)

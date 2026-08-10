@@ -166,8 +166,8 @@ export default function CustomersPage() {
     const updatedList = customers.map((c) => (c.id === customerId ? { ...c, status: newStatus } : c))
     saveCustomers(updatedList)
 
-    // Synchronize status update with corresponding Map View pin
     try {
+      // 1. Synchronize Map View pins
       const savedPinsStr = localStorage.getItem('wizardwash_mappins')
       if (savedPinsStr) {
         const pins = JSON.parse(savedPinsStr)
@@ -175,12 +175,37 @@ export default function CustomersPage() {
           p.customer.toLowerCase() === target.name.toLowerCase() ? { ...p, status: newStatus } : p
         )
         localStorage.setItem('wizardwash_mappins', JSON.stringify(updatedPins))
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('wizardwash_pin_added'))
-        }
+      }
+
+      // 2. Synchronize Calendar dispatches
+      const savedJobsStr = localStorage.getItem('wizardwash_calendar_jobs')
+      if (savedJobsStr) {
+        const jobs = JSON.parse(savedJobsStr)
+        const updatedJobs = jobs.map((j: any) =>
+          j.customer.toLowerCase() === target.name.toLowerCase()
+            ? { ...j, status: newStatus === 'Completed' ? 'Completed' : newStatus === 'Scheduled' ? 'Confirmed' : 'Pending' }
+            : j
+        )
+        localStorage.setItem('wizardwash_calendar_jobs', JSON.stringify(updatedJobs))
+      }
+
+      // 3. Synchronize Invoices
+      const savedInvStr = localStorage.getItem('wizardwash_invoices')
+      if (savedInvStr) {
+        const invs = JSON.parse(savedInvStr)
+        const updatedInvs = invs.map((inv: any) =>
+          inv.customer.toLowerCase() === target.name.toLowerCase()
+            ? { ...inv, status: newStatus === 'Completed' ? 'Paid' : 'Pending' }
+            : inv
+        )
+        localStorage.setItem('wizardwash_invoices', JSON.stringify(updatedInvs))
+      }
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('wizardwash_pin_added'))
       }
     } catch (e) {
-      console.error('Failed to sync status change to map pins:', e)
+      console.error('Failed to sync status change across CRM storage:', e)
     }
   }
 
