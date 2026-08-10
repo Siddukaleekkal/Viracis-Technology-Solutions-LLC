@@ -420,7 +420,10 @@ export default function AppleMapComponent() {
           title="Recenter Map"
           className="w-10 h-10 bg-white/90 backdrop-blur-xl border border-white/70 text-gray-700 rounded-2xl shadow-lg flex items-center justify-center hover:bg-white transition-all text-sm font-bold active:scale-95"
         >
-          🎯
+          <svg className="w-4 h-4 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
         </button>
         <div className="bg-white/90 backdrop-blur-xl border border-white/70 text-gray-700 rounded-2xl shadow-lg flex flex-col overflow-hidden divide-y divide-gray-200">
           <button
@@ -526,8 +529,8 @@ export default function AppleMapComponent() {
                   onChange={(e) => setSelectedTruckSync(e.target.value as 'Truck 1' | 'Truck 2')}
                   className="px-2 py-1.5 bg-white border border-blue-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:ring-2 focus:ring-blue-600"
                 >
-                  <option value="Truck 1">🚛 Truck 1</option>
-                  <option value="Truck 2">🚛 Truck 2</option>
+                  <option value="Truck 1">Truck 1</option>
+                  <option value="Truck 2">Truck 2</option>
                 </select>
                 <button
                   type="button"
@@ -557,15 +560,15 @@ export default function AppleMapComponent() {
                 href={`https://maps.apple.com/?daddr=${encodeURIComponent(selectedPin.address)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 py-2.5 bg-[#007AFF] hover:bg-blue-600 text-white font-bold text-xs rounded-xl shadow-md text-center transition-all"
+                className="flex-1 py-2.5 bg-[#007AFF] hover:bg-blue-600 text-white font-bold text-xs rounded-xl shadow-md text-center transition-all flex items-center justify-center gap-1.5"
               >
-                🧭 Apple Maps
+                Apple Maps
               </a>
               <a
                 href={`tel:${selectedPin.phone}`}
-                className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl transition-all"
+                className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5"
               >
-                📞 Call
+                Call Client
               </a>
               <button
                 onClick={() => setPinToDelete({ id: selectedPin.id, name: selectedPin.customer, address: selectedPin.address })}
@@ -596,7 +599,7 @@ export default function AppleMapComponent() {
                     </>
                   ) : (
                     <>
-                      <span>📍 Resolved Address</span>
+                      <span>Resolved Address</span>
                     </>
                   )}
                 </p>
@@ -733,7 +736,6 @@ export default function AppleMapComponent() {
                   type="submit"
                   className="px-6 py-2.5 bg-[#007AFF] hover:bg-blue-600 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5"
                 >
-                  <span>📍</span>
                   <span>Save Property & Drop Pin</span>
                 </button>
               </div>
@@ -747,8 +749,11 @@ export default function AppleMapComponent() {
         <div className="fixed inset-0 z-[2000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4 font-sans text-slate-900">
             <div className="flex items-center gap-3 text-red-600">
-              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center font-bold text-lg shrink-0">
-                📍
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center font-bold text-lg shrink-0 text-red-600">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
               </div>
               <div>
                 <h3 className="font-bold text-slate-900 text-sm">Delete Property Pin</h3>

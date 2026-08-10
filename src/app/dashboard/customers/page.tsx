@@ -338,9 +338,12 @@ export default function CustomersPage() {
           {/* Import CSV Button */}
           <button
             onClick={() => setIsImportModalOpen(true)}
-            className="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 text-xs font-semibold rounded-lg transition-all shadow-sm flex items-center gap-2"
+            className="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 text-xs font-semibold rounded-lg transition-all shadow-sm flex items-center gap-1.5"
           >
-            <span>📥 Import CSV</span>
+            <svg className="w-3.5 h-3.5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>Import CSV</span>
           </button>
 
           <button
@@ -436,17 +439,21 @@ export default function CustomersPage() {
 
                     <a
                       href={`tel:${customer.phone}`}
-                      className="w-7.5 h-7.5 bg-emerald-50 text-emerald-800 rounded-md border border-emerald-200 flex items-center justify-center text-xs"
+                      className="w-7.5 h-7.5 bg-emerald-50 text-emerald-800 rounded-md border border-emerald-200 flex items-center justify-center"
                       title="Call"
                     >
-                      📞
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
                     </a>
                     <a
                       href={`sms:${customer.phone}`}
-                      className="w-7.5 h-7.5 bg-blue-50 text-blue-800 rounded-md border border-blue-200 flex items-center justify-center text-xs"
+                      className="w-7.5 h-7.5 bg-blue-50 text-blue-800 rounded-md border border-blue-200 flex items-center justify-center"
                       title="SMS"
                     >
-                      💬
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
                     </a>
                     <button
                       onClick={() => setExpandedCustomerId(isExpanded ? null : customer.id)}
@@ -470,9 +477,9 @@ export default function CustomersPage() {
                     <div className="flex items-center justify-end gap-2 pt-1">
                       <button
                         onClick={() => setScheduleModalCustomer(customer)}
-                        className="px-2.5 py-1 bg-purple-50 text-purple-700 font-bold rounded-lg text-[11px] border border-purple-100"
+                        className="px-2.5 py-1 bg-purple-50 text-purple-700 font-bold rounded-lg text-[11px] border border-purple-100 flex items-center gap-1"
                       >
-                        📅 Schedule
+                        Schedule
                       </button>
                       <Link
                         href="/dashboard/messages"
@@ -528,7 +535,7 @@ export default function CustomersPage() {
                       onClick={() => setIsImportModalOpen(true)}
                       className="px-4 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-xs rounded-lg transition-colors inline-block mt-2"
                     >
-                      📥 Import CSV Customer File
+                      Import CSV Customer File
                     </button>
                   </td>
                 </tr>
@@ -585,7 +592,7 @@ export default function CustomersPage() {
                           className="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded text-[11px] font-semibold transition-colors flex items-center gap-1"
                           title="Schedule Date for Calendar"
                         >
-                          📅 Schedule
+                          Schedule
                         </button>
                         <Link
                           href="/dashboard/messages"
@@ -649,8 +656,8 @@ export default function CustomersPage() {
                   onChange={(e) => setScheduleTruckInput(e.target.value as 'Truck 1' | 'Truck 2')}
                   className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-bold"
                 >
-                  <option value="Truck 1">🚛 Truck 1</option>
-                  <option value="Truck 2">🚛 Truck 2</option>
+                  <option value="Truck 1">Truck 1</option>
+                  <option value="Truck 2">Truck 2</option>
                 </select>
               </div>
 
@@ -672,7 +679,7 @@ export default function CustomersPage() {
               </div>
 
               <p className="text-[11px] text-slate-500 bg-blue-50 p-2.5 rounded-lg border border-blue-100">
-                ⚡ Scheduling automatically creates a dispatch event on your <strong>Calendar</strong> page and sets account status to <strong>Scheduled</strong>.
+                Scheduling automatically creates a dispatch event on your <strong>Calendar</strong> page and sets account status to <strong>Scheduled</strong>.
               </p>
 
               <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100">
@@ -771,7 +778,7 @@ export default function CustomersPage() {
                   disabled={!!importStatus}
                   className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm transition-all flex items-center justify-center gap-2"
                 >
-                  {importStatus ? importStatus : '⚡ Execute CSV Data Import Now'}
+                  {importStatus ? importStatus : 'Execute CSV Data Import Now'}
                 </button>
               </div>
             </div>

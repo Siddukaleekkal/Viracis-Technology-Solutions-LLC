@@ -282,7 +282,7 @@ export default function CalendarPage() {
                   className="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer"
                 />
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-                <span>🚛 Truck 1</span>
+                <span>Truck 1</span>
               </label>
 
               <label className="flex items-center gap-2.5 cursor-pointer font-medium text-slate-800">
@@ -293,7 +293,7 @@ export default function CalendarPage() {
                   className="w-4 h-4 rounded text-purple-600 focus:ring-0 cursor-pointer"
                 />
                 <span className="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
-                <span>🚛 Truck 2</span>
+                <span>Truck 2</span>
               </label>
 
               <label className="flex items-center gap-2.5 cursor-pointer font-medium text-slate-800">
@@ -562,7 +562,7 @@ export default function CalendarPage() {
                           </span>
                         </div>
                         <p className="text-xs text-slate-600 mt-0.5">{job.service} • {job.time}</p>
-                        <p className="text-[11px] text-slate-400 mt-0.5">📍 {job.address} ({job.crew})</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">{job.address} ({job.crew})</p>
                       </div>
                     </div>
 
@@ -623,8 +623,8 @@ export default function CalendarPage() {
               }}
               className="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-xs font-extrabold text-slate-800 outline-none cursor-pointer"
             >
-              <option value="Truck 1">🚛 Truck 1</option>
-              <option value="Truck 2">🚛 Truck 2</option>
+              <option value="Truck 1">Truck 1</option>
+              <option value="Truck 2">Truck 2</option>
             </select>
 
             <a
@@ -781,8 +781,8 @@ export default function CalendarPage() {
                     onChange={(e) => setNewJob({ ...newJob, crew: e.target.value as any })}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 font-medium"
                   >
-                    <option value="Truck 1">🚛 Truck 1</option>
-                    <option value="Truck 2">🚛 Truck 2</option>
+                    <option value="Truck 1">Truck 1</option>
+                    <option value="Truck 2">Truck 2</option>
                   </select>
                 </div>
                 <div>
