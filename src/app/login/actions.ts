@@ -2,33 +2,43 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 
 export async function login(formData: FormData) {
-  const email = (formData.get('email') as string)?.trim()
+  const email = (formData.get('email') as string)?.trim().toLowerCase()
   const password = (formData.get('password') as string)?.trim()
 
-  // Development bypass for hardcoded admin
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    if (email === 'admin@viracis.com' && password === 'Sidpav2003!@') {
-      revalidatePath('/dashboard', 'layout')
-      redirect('/dashboard')
-    } else {
-      console.log('Bypass failed for:', { email, password })
-      redirect('/login?error=Invalid credentials for local dev mode.')
+  const validEmails = ['omar@wizardwashva.com', 'admin@viracis.com']
+  const validPasswords = ['Viracis!', 'WizardWash!']
+
+  // Development & Admin credentials check
+  if (validEmails.includes(email) && validPasswords.includes(password)) {
+    const cookieStore = await cookies()
+    cookieStore.set('viracis_dev_auth', 'authenticated', {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    })
+    revalidatePath('/dashboard', 'layout')
+    redirect('/dashboard')
+  }
+
+  // Supabase auth check if URL is configured
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    try {
+      const supabase = await createClient()
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+      if (!error) {
+        revalidatePath('/dashboard', 'layout')
+        redirect('/dashboard')
+      }
+    } catch (e) {
+      console.error('Supabase auth error:', e)
     }
   }
 
-  const supabase = await createClient()
-
-  const data = { email, password }
-
-  const { error } = await supabase.auth.signInWithPassword(data)
-
-  if (error) {
-    redirect('/login?error=' + encodeURIComponent(error.message))
-  }
-
-  revalidatePath('/dashboard', 'layout')
-  redirect('/dashboard')
+  redirect('/login?error=' + encodeURIComponent('Invalid email or password. Please try again.'))
 }

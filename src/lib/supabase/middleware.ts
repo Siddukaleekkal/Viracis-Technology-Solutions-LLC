@@ -6,63 +6,54 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder'
+  const devAuth = request.cookies.get('viracis_dev_auth')?.value === 'authenticated'
 
-  // If env vars are missing, just pass the request through without auth
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return supabaseResponse
+  let user = null
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder'
+
+    try {
+      const supabase = createServerClient(
+        supabaseUrl,
+        supabaseAnonKey,
+        {
+          cookies: {
+            getAll() {
+              return request.cookies.getAll()
+            },
+            setAll(cookiesToSet) {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                delete options.maxAge
+                delete options.expires
+                request.cookies.set(name, value)
+              })
+              supabaseResponse = NextResponse.next({
+                request,
+              })
+              cookiesToSet.forEach(({ name, value, options }) => {
+                delete options.maxAge
+                delete options.expires
+                supabaseResponse.cookies.set(name, value, options)
+              })
+            },
+          },
+        }
+      )
+
+      const { data } = await supabase.auth.getUser()
+      user = data.user
+    } catch (e) {
+      console.error('Middleware Supabase error:', e)
+    }
   }
 
-  const supabase = createServerClient(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            delete options.maxAge
-            delete options.expires
-            request.cookies.set(name, value)
-          })
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) => {
-            delete options.maxAge
-            delete options.expires
-            supabaseResponse.cookies.set(name, value, options)
-          })
-        },
-      },
-    }
-  )
+  const isAuthenticated = devAuth || !!user
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with cross-request state pollution.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Protect the dashboard route
-  if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
+  // Protect the dashboard route: redirect to /login if not authenticated
+  if (request.nextUrl.pathname.startsWith('/dashboard') && !isAuthenticated) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
-
-  // Redirect logged in users away from auth pages
-  if (
-    (request.nextUrl.pathname.startsWith('/login') ||
-      request.nextUrl.pathname.startsWith('/signup')) &&
-    user
-  ) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 

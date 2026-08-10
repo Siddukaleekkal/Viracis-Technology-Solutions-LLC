@@ -1,0 +1,824 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+
+interface JobEvent {
+  id: string
+  day: 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun'
+  dateNum: number
+  time: string
+  durationHours: number
+  customer: string
+  service: string
+  crew: 'Crew Alpha' | 'Crew Bravo'
+  status: 'Confirmed' | 'Pending' | 'Completed'
+  amount: string
+  address: string
+  googleSynced: boolean
+}
+
+const initialJobs: JobEvent[] = []
+
+export default function CalendarPage() {
+  const [jobs, setJobs] = useState<JobEvent[]>(initialJobs)
+  const [viewMode, setViewMode] = useState<'Week' | 'Month' | 'Day' | 'Schedule'>('Week')
+  const [selectedJob, setSelectedJob] = useState<JobEvent | null>(null)
+  const [selectedDayNum, setSelectedDayNum] = useState<number>(13) // Aug 13
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false)
+  const [isGoogleSyncModalOpen, setIsGoogleSyncModalOpen] = useState(false)
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [syncedCount, setSyncedCount] = useState(0)
+
+  // Load persistent jobs from localStorage on mount & listen for real-time schedule events
+  useEffect(() => {
+    const loadJobs = () => {
+      try {
+        const saved = localStorage.getItem('wizardwash_calendar_jobs')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          setJobs(parsed)
+          setSyncedCount(parsed.length)
+        }
+      } catch (e) {
+        console.error('Failed to load calendar jobs:', e)
+      }
+    }
+
+    loadJobs()
+    window.addEventListener('storage', loadJobs)
+    window.addEventListener('wizardwash_job_scheduled', loadJobs)
+
+    return () => {
+      window.removeEventListener('storage', loadJobs)
+      window.removeEventListener('wizardwash_job_scheduled', loadJobs)
+    }
+  }, [])
+
+  const saveJobs = (updated: JobEvent[]) => {
+    setJobs(updated)
+    setSyncedCount(updated.length)
+    try {
+      localStorage.setItem('wizardwash_calendar_jobs', JSON.stringify(updated))
+    } catch (e) {
+      console.error('Failed to save calendar jobs:', e)
+    }
+  }
+
+  // Filter Checkboxes for Calendars
+  const [calendars, setCalendars] = useState({
+    crewAlpha: true,
+    crewBravo: true,
+    completed: true,
+  })
+
+  const [newJob, setNewJob] = useState({
+    customer: '',
+    service: 'Driveway Power Wash',
+    day: 'Thu' as const,
+    dateNum: 13,
+    time: '10:00 AM',
+    durationHours: 2,
+    crew: 'Crew Alpha' as const,
+    amount: '350.00',
+    address: '100 Main St, Richmond, VA',
+  })
+
+  const weekDays = [
+    { day: 'Mon', dateNum: 10 },
+    { day: 'Tue', dateNum: 11 },
+    { day: 'Wed', dateNum: 12 },
+    { day: 'Thu', dateNum: 13 },
+    { day: 'Fri', dateNum: 14 },
+    { day: 'Sat', dateNum: 15 },
+    { day: 'Sun', dateNum: 16 },
+  ]
+
+  const handleAddJob = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newJob.customer) return
+
+    const created: JobEvent = {
+      id: `J-${Date.now()}`,
+      day: newJob.day,
+      dateNum: newJob.dateNum,
+      time: newJob.time,
+      durationHours: newJob.durationHours,
+      customer: newJob.customer,
+      service: newJob.service,
+      crew: newJob.crew,
+      status: 'Confirmed',
+      amount: `$${newJob.amount}`,
+      address: newJob.address,
+      googleSynced: true,
+    }
+
+    saveJobs([...jobs, created])
+    setSelectedJob(created)
+    setIsScheduleOpen(false)
+    setSyncedCount((prev) => prev + 1)
+  }
+
+  // Generate iCal (.ics) download for Google Calendar import
+  const exportGoogleCalendarICS = () => {
+    let icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Viracis Enterprise CRM//Dispatch Schedule Feed//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+    ].join('\r\n')
+
+    jobs.forEach((job) => {
+      icsContent += '\r\n' + [
+        'BEGIN:VEVENT',
+        `UID:${job.id}@viracis.com`,
+        `SUMMARY:Viracis Job: ${job.customer} (${job.service})`,
+        `DESCRIPTION:Customer: ${job.customer}\\nService: ${job.service}\\nPrice: ${job.amount}\\nCrew: ${job.crew}`,
+        `LOCATION:${job.address}`,
+        `STATUS:${job.status === 'Completed' ? 'CONFIRMED' : 'TENTATIVE'}`,
+        'END:VEVENT',
+      ].join('\r\n')
+    })
+
+    icsContent += '\r\nEND:VCALENDAR'
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.setAttribute('download', 'viracis-dispatch-schedule.ics')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const triggerGoogleSync = () => {
+    setIsSyncing(true)
+    setTimeout(() => {
+      setIsSyncing(false)
+      setSyncedCount(jobs.length)
+    }, 1000)
+  }
+
+  const filteredJobs = jobs.filter((j) => {
+    if (j.crew === 'Crew Alpha' && !calendars.crewAlpha) return false
+    if (j.crew === 'Crew Bravo' && !calendars.crewBravo) return false
+    if (j.status === 'Completed' && !calendars.completed) return false
+    return true
+  })
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-6 font-sans text-slate-900">
+      
+      {/* Enterprise Header Bar */}
+      <div className="bg-white p-5 px-6 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        {/* Left: Title & Controls */}
+        <div className="flex items-center gap-4">
+          <div>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Schedule & Dispatch Calendar</h1>
+            <p className="text-xs text-slate-500 font-medium mt-0.5 flex items-center gap-3">
+              <span>Google Calendar Sync Active</span>
+              <span>•</span>
+              <span className="flex items-center gap-2">
+                <span className="flex items-center gap-1 font-semibold text-blue-700"><span className="w-2 h-2 rounded-full bg-blue-600"></span> Confirmed</span>
+                <span className="flex items-center gap-1 font-semibold text-emerald-700"><span className="w-2 h-2 rounded-full bg-emerald-600"></span> Completed</span>
+                <span className="flex items-center gap-1 font-semibold text-amber-700"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Pending</span>
+              </span>
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
+            <button
+              onClick={() => {
+                setSelectedDayNum(13)
+                setViewMode('Week')
+              }}
+              className="px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+            >
+              Today
+            </button>
+            <div className="flex items-center text-slate-600">
+              <button className="p-1.5 hover:bg-slate-100 rounded-lg font-bold text-sm">‹</button>
+              <button className="p-1.5 hover:bg-slate-100 rounded-lg font-bold text-sm">›</button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Interactive View Switchers (Week / Month / Day / Schedule) */}
+        <div className="flex items-center gap-3">
+          
+          <div className="flex bg-slate-100 p-1 rounded-lg text-xs font-semibold text-slate-600">
+            {(['Week', 'Month', 'Day', 'Schedule'] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className={`px-3 py-1.5 rounded transition-all ${
+                  viewMode === mode ? 'bg-white text-slate-900 shadow-sm font-bold' : 'hover:text-slate-900'
+                }`}
+              >
+                {mode}
+              </button>
+            ))}
+          </div>
+
+          {/* Google Calendar Integration Button */}
+          <button
+            onClick={() => setIsGoogleSyncModalOpen(true)}
+            className="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 font-semibold text-xs rounded-lg shadow-sm transition-colors flex items-center gap-2"
+          >
+            <span>Google Calendar Sync</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          </button>
+
+          {/* Schedule Job Button */}
+          <button
+            onClick={() => setIsScheduleOpen(true)}
+            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg shadow-sm transition-all"
+          >
+            + Create Event
+          </button>
+        </div>
+
+      </div>
+
+      {/* Main Grid: Sidebar + Interactive Dynamic Calendar Canvas */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* Left Sidebar */}
+        <div className="lg:col-span-3 space-y-4">
+          
+          {/* Mini Month Grid */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800 px-1">
+              <span>August 2026</span>
+              <div className="flex gap-1 text-slate-400">
+                <span className="cursor-pointer hover:text-slate-900">‹</span>
+                <span className="cursor-pointer hover:text-slate-900">›</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-7 gap-1 text-center text-[10px] text-slate-400 font-bold">
+              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+
+            <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-slate-700">
+              {Array.from({ length: 31 }).map((_, i) => {
+                const dayNum = i + 1
+                const isSelected = selectedDayNum === dayNum
+                return (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setSelectedDayNum(dayNum)
+                      setViewMode('Day')
+                    }}
+                    className={`h-7 w-7 rounded-md flex items-center justify-center text-xs font-semibold transition-colors ${
+                      isSelected
+                        ? 'bg-blue-600 text-white font-bold'
+                        : dayNum >= 10 && dayNum <= 16
+                        ? 'bg-blue-50 text-blue-700 font-semibold'
+                        : 'hover:bg-slate-100'
+                    }`}
+                  >
+                    {dayNum}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Calendar Categories Filter */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3 text-xs">
+            <h3 className="font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Dispatch Layers</h3>
+            
+            <div className="space-y-2.5">
+              <label className="flex items-center gap-2.5 cursor-pointer font-medium text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={calendars.crewAlpha}
+                  onChange={(e) => setCalendars({ ...calendars, crewAlpha: e.target.checked })}
+                  className="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer"
+                />
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                <span>Field Crew Alpha</span>
+              </label>
+
+              <label className="flex items-center gap-2.5 cursor-pointer font-medium text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={calendars.crewBravo}
+                  onChange={(e) => setCalendars({ ...calendars, crewBravo: e.target.checked })}
+                  className="w-4 h-4 rounded text-purple-600 focus:ring-0 cursor-pointer"
+                />
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+                <span>Field Crew Bravo</span>
+              </label>
+
+              <label className="flex items-center gap-2.5 cursor-pointer font-medium text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={calendars.completed}
+                  onChange={(e) => setCalendars({ ...calendars, completed: e.target.checked })}
+                  className="w-4 h-4 rounded text-emerald-600 focus:ring-0 cursor-pointer"
+                />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span>Completed Jobs</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Sync Information */}
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs space-y-2">
+            <p className="font-semibold text-slate-900">Google Calendar Status</p>
+            <p className="text-slate-600 text-[11px] leading-relaxed">
+              Account: <span className="font-semibold text-slate-800">admin@viracis.com</span><br/>
+              {syncedCount} dispatch jobs synchronized.
+            </p>
+          </div>
+
+        </div>
+
+        {/* Right Dynamic Interactive Calendar View Container */}
+        <div className="lg:col-span-9 bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-x-auto">
+          
+          {/* MODE 1: WEEK VIEW */}
+          {viewMode === 'Week' && (
+            <div className="space-y-4 min-w-[700px]">
+              <div className="grid grid-cols-7 gap-2 border-b border-slate-200 pb-3 text-center">
+                {weekDays.map((wd) => {
+                  const isSelected = selectedDayNum === wd.dateNum
+                  return (
+                    <button
+                      key={wd.day}
+                      onClick={() => {
+                        setSelectedDayNum(wd.dateNum)
+                        setViewMode('Day')
+                      }}
+                      className="flex flex-col items-center group cursor-pointer"
+                    >
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 group-hover:text-slate-900">{wd.day}</span>
+                      <span
+                        className={`mt-1 h-7 w-7 rounded-md flex items-center justify-center font-bold text-xs transition-colors ${
+                          isSelected ? 'bg-blue-600 text-white' : 'text-slate-800 hover:bg-slate-100'
+                        }`}
+                      >
+                        {wd.dateNum}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              <div className="grid grid-cols-7 gap-2 min-h-[480px]">
+                {weekDays.map((wd) => {
+                  const dayJobs = filteredJobs.filter((j) => j.day === wd.day)
+                  return (
+                    <div key={wd.day} className="border-r border-slate-100 last:border-r-0 pr-1 space-y-3">
+                      {dayJobs.length === 0 ? (
+                        <div className="h-full min-h-[180px] flex items-center justify-center text-[10px] text-slate-300 font-medium">
+                          No events
+                        </div>
+                      ) : (
+                        dayJobs.map((job) => {
+                          const isSelected = selectedJob?.id === job.id
+                          const cardBg =
+                            job.status === 'Completed'
+                              ? 'bg-emerald-700 text-white'
+                              : job.status === 'Confirmed'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-amber-600 text-white'
+
+                          return (
+                            <button
+                              key={job.id}
+                              onClick={() => setSelectedJob(job)}
+                              className={`w-full p-2.5 rounded-lg text-left transition-all shadow-sm ${cardBg} ${
+                                isSelected ? 'ring-2 ring-slate-900 ring-offset-2 font-semibold' : 'hover:opacity-90'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between text-[10px] opacity-90">
+                                <span>{job.time}</span>
+                                <span className="font-mono text-[9px]">iCal</span>
+                              </div>
+                              <p className="font-bold text-xs mt-1 truncate">{job.customer}</p>
+                              <p className="text-[10px] opacity-90 truncate mt-0.5">{job.service}</p>
+                              <div className="mt-2 pt-1 border-t border-white/20 flex items-center justify-between text-[10px] font-semibold">
+                                <span>{job.crew}</span>
+                                <span>{job.amount}</span>
+                              </div>
+                            </button>
+                          )
+                        })
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* MODE 2: MONTH VIEW (FULL 31-DAY MONTH GRID) */}
+          {viewMode === 'Month' && (
+            <div className="space-y-3 min-w-[700px]">
+              <div className="grid grid-cols-7 gap-1 border-b border-slate-200 pb-2 text-center text-xs font-bold text-slate-600 uppercase">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+              </div>
+              
+              <div className="grid grid-cols-7 gap-1.5">
+                {/* August 2026 starts on Saturday (5 empty cells for previous month) */}
+                {Array.from({ length: 6 }).map((_, idx) => (
+                  <div key={`empty-${idx}`} className="h-24 bg-slate-50/50 rounded-lg p-1 text-[10px] text-slate-300"></div>
+                ))}
+
+                {Array.from({ length: 31 }).map((_, i) => {
+                  const dayNum = i + 1
+                  const dayJobs = filteredJobs.filter((j) => j.dateNum === dayNum)
+                  const isToday = dayNum === 13
+
+                  return (
+                    <div
+                      key={dayNum}
+                      onClick={() => {
+                        setSelectedDayNum(dayNum)
+                        setViewMode('Day')
+                      }}
+                      className={`h-24 rounded-lg p-1.5 border transition-all cursor-pointer flex flex-col justify-between ${
+                        isToday ? 'border-blue-500 bg-blue-50/20' : 'border-slate-200/80 hover:bg-slate-50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`text-xs font-bold ${isToday ? 'text-blue-600' : 'text-slate-800'}`}>
+                          {dayNum}
+                        </span>
+                        {dayJobs.length > 0 && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                        )}
+                      </div>
+
+                      <div className="space-y-1 overflow-y-auto max-h-14">
+                        {dayJobs.map((j) => (
+                          <div
+                            key={j.id}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setSelectedJob(j)
+                            }}
+                            className={`p-1 rounded text-[9px] font-semibold truncate ${
+                              j.status === 'Completed'
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : j.status === 'Confirmed'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-amber-100 text-amber-800'
+                            }`}
+                          >
+                            {j.time.split(' ')[0]} {j.customer.split(' ')[0]}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* MODE 3: DAY VIEW (DETAILED HOURLY TIMELINE) */}
+          {viewMode === 'Day' && (
+            <div className="space-y-4 min-w-[600px]">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div>
+                  <h2 className="text-base font-bold text-slate-900">
+                    Day Schedule — August {selectedDayNum}, 2026
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Assigned field technicians & customer appointments</p>
+                </div>
+                <button
+                  onClick={() => setIsScheduleOpen(true)}
+                  className="px-3 py-1.5 bg-blue-600 text-white font-semibold text-xs rounded-lg"
+                >
+                  + Add Event
+                </button>
+              </div>
+
+              {/* Day Time Axis Slots */}
+              <div className="space-y-3 divide-y divide-slate-100 pt-2">
+                {['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM'].map((timeSlot) => {
+                  const dayJobs = filteredJobs.filter(
+                    (j) => j.dateNum === selectedDayNum && j.time.includes(timeSlot.split(':')[0])
+                  )
+
+                  return (
+                    <div key={timeSlot} className="pt-3 flex items-start gap-4">
+                      <span className="w-16 text-xs font-mono text-slate-400 font-semibold shrink-0">
+                        {timeSlot}
+                      </span>
+                      
+                      <div className="flex-1 min-h-[44px]">
+                        {dayJobs.length === 0 ? (
+                          <div className="border border-dashed border-slate-200 rounded-lg h-10 flex items-center px-4 text-xs text-slate-300">
+                            Available time slot
+                          </div>
+                        ) : (
+                          dayJobs.map((j) => (
+                            <div
+                              key={j.id}
+                              onClick={() => setSelectedJob(j)}
+                              className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between cursor-pointer hover:bg-blue-100 transition-colors"
+                            >
+                              <div>
+                                <p className="font-bold text-xs text-slate-900">{j.customer} — {j.service}</p>
+                                <p className="text-[11px] text-slate-500 mt-0.5">{j.address} • {j.crew}</p>
+                              </div>
+                              <div className="text-right">
+                                <span className="font-bold text-xs text-slate-900">{j.amount}</span>
+                                <span className="block text-[10px] font-semibold text-blue-700 uppercase">{j.status}</span>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* MODE 4: SCHEDULE VIEW (CHRONOLOGICAL AGENDA LIST) */}
+          {viewMode === 'Schedule' && (
+            <div className="space-y-4 min-w-[600px]">
+              <div className="border-b border-slate-200 pb-3">
+                <h2 className="text-base font-bold text-slate-900">Agenda & Dispatch List</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Chronological list of field appointments</p>
+              </div>
+
+              <div className="space-y-3">
+                {filteredJobs.map((job) => (
+                  <div
+                    key={job.id}
+                    onClick={() => setSelectedJob(job)}
+                    className="p-4 bg-white border border-slate-200 rounded-xl hover:border-slate-300 transition-all cursor-pointer flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="text-center w-14 p-2 bg-slate-50 rounded-lg border border-slate-100 shrink-0">
+                        <span className="block text-[10px] font-bold uppercase text-slate-400">{job.day}</span>
+                        <span className="block text-base font-extrabold text-slate-900">Aug {job.dateNum}</span>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-sm text-slate-900">{job.customer}</h3>
+                          <span
+                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${
+                              job.status === 'Completed'
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : job.status === 'Confirmed'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-amber-100 text-amber-800'
+                            }`}
+                          >
+                            {job.status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 mt-0.5">{job.service} • {job.time}</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">📍 {job.address} ({job.crew})</p>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="font-bold text-sm text-slate-900 block">{job.amount}</span>
+                      <span className="text-[11px] text-blue-600 font-semibold hover:underline">
+                        View Details →
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </div>
+
+      </div>
+
+      {/* Selected Job Drawer */}
+      {selectedJob && (
+        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div
+              className={`w-10 h-10 rounded-lg text-white font-bold flex items-center justify-center text-sm ${
+                selectedJob.status === 'Completed'
+                  ? 'bg-emerald-600'
+                  : selectedJob.status === 'Confirmed'
+                  ? 'bg-blue-600'
+                  : 'bg-amber-600'
+              }`}
+            >
+              {selectedJob.customer.charAt(0)}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-slate-900 text-sm">{selectedJob.customer}</h3>
+                <span className="text-xs font-semibold px-2 py-0.5 bg-slate-100 text-slate-700 rounded">
+                  {selectedJob.status}
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 mt-0.5">
+                {selectedJob.day}, Aug {selectedJob.dateNum} at {selectedJob.time} ({selectedJob.durationHours} hrs) • <strong className="text-slate-900">{selectedJob.service}</strong>
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">Address: {selectedJob.address}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <a
+              href={`https://maps.apple.com/?daddr=${encodeURIComponent(selectedJob.address)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg transition-colors"
+            >
+              View Location Map
+            </a>
+            <button
+              onClick={() => {
+                setJobs(jobs.map((j) => (j.id === selectedJob.id ? { ...j, status: 'Completed' } : j)))
+                setSelectedJob({ ...selectedJob, status: 'Completed' })
+              }}
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg transition-all shadow-sm"
+            >
+              Mark Completed
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Google Calendar Live Sync Dialog */}
+      {isGoogleSyncModalOpen && (
+        <div className="fixed inset-0 z-[2000] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl space-y-5">
+            
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h2 className="text-base font-bold text-slate-900">Google Calendar Integration</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Synchronize dispatch schedule & field events</p>
+              </div>
+              <button
+                onClick={() => setIsGoogleSyncModalOpen(false)}
+                className="w-7 h-7 rounded-md bg-slate-100 text-slate-500 hover:bg-slate-200 font-bold text-xs flex items-center justify-center"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 flex items-center justify-between">
+                <div>
+                  <p className="font-semibold">Google OAuth Account Active</p>
+                  <p className="text-[11px] opacity-80">admin@viracis.com</p>
+                </div>
+                <span className="px-2 py-0.5 bg-emerald-600 text-white font-bold text-[10px] rounded">
+                  CONNECTED
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                  iCal Subscription Feed URL
+                </label>
+                <input
+                  type="text"
+                  readOnly
+                  value="https://calendar.google.com/calendar/ical/admin%40viracis.com/public/basic.ics"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 font-mono"
+                />
+              </div>
+
+              <div className="pt-2 space-y-2">
+                <button
+                  onClick={exportGoogleCalendarICS}
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-all"
+                >
+                  Download .ICS Feed File
+                </button>
+
+                <button
+                  onClick={triggerGoogleSync}
+                  disabled={isSyncing}
+                  className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg transition-all"
+                >
+                  {isSyncing ? 'Synchronizing with Google Calendar API...' : 'Force Sync Google Calendar Now'}
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Schedule Job / Create Event Dialog */}
+      {isScheduleOpen && (
+        <div className="fixed inset-0 z-[2000] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-base font-bold text-slate-900">Create Dispatch Event</h2>
+              <button onClick={() => setIsScheduleOpen(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddJob} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Customer Account</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Customer name"
+                  value={newJob.customer}
+                  onChange={(e) => setNewJob({ ...newJob, customer: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Service Address</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Street address, City, State"
+                  value={newJob.address}
+                  onChange={(e) => setNewJob({ ...newJob, address: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Day</label>
+                  <select
+                    value={newJob.day}
+                    onChange={(e) => setNewJob({ ...newJob, day: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 font-medium"
+                  >
+                    {weekDays.map((d) => (
+                      <option key={d.day} value={d.day}>{d.day} (Aug {d.dateNum})</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Start Time</label>
+                  <input
+                    type="text"
+                    value={newJob.time}
+                    onChange={(e) => setNewJob({ ...newJob, time: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Assigned Crew</label>
+                  <select
+                    value={newJob.crew}
+                    onChange={(e) => setNewJob({ ...newJob, crew: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 font-medium"
+                  >
+                    <option value="Crew Alpha">Crew Alpha</option>
+                    <option value="Crew Bravo">Crew Bravo</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Price ($)</label>
+                  <input
+                    type="number"
+                    value={newJob.amount}
+                    onChange={(e) => setNewJob({ ...newJob, amount: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 font-semibold"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsScheduleOpen(false)}
+                  className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm"
+                >
+                  Save & Sync Event
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  )
+}

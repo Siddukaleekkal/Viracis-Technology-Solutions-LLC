@@ -5,12 +5,11 @@ import { login } from './actions'
 export default async function LoginPage(props: { searchParams: Promise<{ error?: string }> }) {
   const searchParams = await props.searchParams
   return (
-    <div className="min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center relative bg-[#FAFAFA] overflow-hidden font-sans">
       
       {/* Premium Enterprise Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none"></div>
-        {/* Soft abstract orbs */}
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[50%] bg-viracis-cyan/10 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[50%] bg-viracis-navy/5 rounded-full blur-[120px] pointer-events-none"></div>
       </div>
@@ -26,6 +25,7 @@ export default async function LoginPage(props: { searchParams: Promise<{ error?:
               width={160}
               height={50}
               className="h-9 w-auto object-contain"
+              priority
             />
           </Link>
         </div>
@@ -41,7 +41,7 @@ export default async function LoginPage(props: { searchParams: Promise<{ error?:
             </p>
           </div>
 
-          <form className="space-y-5">
+          <form className="space-y-5" autoComplete="off">
             <div className="space-y-1.5">
               <label className="block text-[13px] font-medium text-gray-700" htmlFor="email">
                 Email address
@@ -51,8 +51,9 @@ export default async function LoginPage(props: { searchParams: Promise<{ error?:
                 name="email"
                 type="email"
                 required
+                autoComplete="off"
                 className="w-full px-3.5 py-2.5 bg-white border border-gray-200/80 rounded-lg text-[14px] text-gray-900 focus:ring-2 focus:ring-viracis-navy/20 focus:border-viracis-navy transition-all outline-none shadow-sm placeholder:text-gray-400"
-                placeholder="admin@viracis.com"
+                placeholder="name@example.com"
               />
             </div>
 
@@ -70,6 +71,7 @@ export default async function LoginPage(props: { searchParams: Promise<{ error?:
                 name="password"
                 type="password"
                 required
+                autoComplete="new-password"
                 className="w-full px-3.5 py-2.5 bg-white border border-gray-200/80 rounded-lg text-[14px] text-gray-900 focus:ring-2 focus:ring-viracis-navy/20 focus:border-viracis-navy transition-all outline-none shadow-sm placeholder:text-gray-400"
                 placeholder="••••••••"
               />
