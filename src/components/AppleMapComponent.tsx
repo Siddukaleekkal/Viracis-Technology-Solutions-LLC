@@ -65,7 +65,7 @@ export default function AppleMapComponent() {
   const [statusFilter, setStatusFilter] = useState<string>('All')
   const [isGeocoding, setIsGeocoding] = useState<boolean>(false)
   const [pinToDelete, setPinToDelete] = useState<{ id: string; name: string; address: string } | null>(null)
-  const [selectedDateSync, setSelectedDateSync] = useState<string>('2026-08-14')
+  const [selectedDateSync, setSelectedDateSync] = useState<string>('2026-08-09')
   const [selectedTruckSync, setSelectedTruckSync] = useState<'Truck 1' | 'Truck 2'>('Truck 1')
   const [dateSyncStatus, setDateSyncStatus] = useState<string | null>(null)
 

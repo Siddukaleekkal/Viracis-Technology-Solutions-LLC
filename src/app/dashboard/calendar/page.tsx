@@ -28,7 +28,7 @@ export default function CalendarPage() {
   const [jobs, setJobs] = useState<JobEvent[]>(initialJobs)
   const [viewMode, setViewMode] = useState<'Week' | 'Month' | 'Day' | 'Schedule'>('Week')
   const [selectedJob, setSelectedJob] = useState<JobEvent | null>(null)
-  const [selectedDayNum, setSelectedDayNum] = useState<number>(13) // Aug 13
+  const [selectedDayNum, setSelectedDayNum] = useState<number>(9) // Aug 9 (Eastern Time)
   const [monthIndex, setMonthIndex] = useState(7) // 7 = August
   const [currentYear, setCurrentYear] = useState(2026)
   const [isScheduleOpen, setIsScheduleOpen] = useState(false)
@@ -71,7 +71,7 @@ export default function CalendarPage() {
   const handleToday = () => {
     setMonthIndex(7) // August
     setCurrentYear(2026)
-    setSelectedDayNum(13)
+    setSelectedDayNum(9) // August 9th (Eastern Time)
     setViewMode('Week')
   }
 
@@ -222,10 +222,11 @@ export default function CalendarPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Schedule & Dispatch Calendar</h1>
-            <div className="flex items-center gap-2.5 mt-0.5 text-[11px] font-medium text-slate-500">
+            <div className="flex items-center gap-2.5 mt-0.5 text-[11px] font-medium text-slate-500 flex-wrap">
               <span className="flex items-center gap-1 font-semibold text-blue-700"><span className="w-2 h-2 rounded-full bg-blue-600"></span> Confirmed</span>
               <span className="flex items-center gap-1 font-semibold text-emerald-700"><span className="w-2 h-2 rounded-full bg-emerald-600"></span> Completed</span>
               <span className="flex items-center gap-1 font-semibold text-amber-700"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Pending</span>
+              <span className="px-2 py-0.5 bg-slate-100 text-slate-700 border border-slate-200 rounded font-bold text-[10px]">Eastern Time (EDT)</span>
             </div>
           </div>
 
@@ -480,7 +481,7 @@ export default function CalendarPage() {
                 {Array.from({ length: 31 }).map((_, i) => {
                   const dayNum = i + 1
                   const dayJobs = filteredJobs.filter((j) => j.dateNum === dayNum)
-                  const isToday = dayNum === 13
+                  const isToday = dayNum === 9
                   const isSelected = selectedDayNum === dayNum
 
                   return (

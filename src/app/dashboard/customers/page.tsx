@@ -82,7 +82,7 @@ export default function CustomersPage() {
   const [importStatus, setImportStatus] = useState<string | null>(null)
   const [customerToDelete, setCustomerToDelete] = useState<{ id: string; name: string } | null>(null)
   const [scheduleModalCustomer, setScheduleModalCustomer] = useState<Customer | null>(null)
-  const [scheduleDateInput, setScheduleDateInput] = useState<string>('2026-08-14')
+  const [scheduleDateInput, setScheduleDateInput] = useState<string>('2026-08-09')
   const [scheduleTimeInput, setScheduleTimeInput] = useState<string>('09:00 AM')
   const [scheduleTruckInput, setScheduleTruckInput] = useState<'Truck 1' | 'Truck 2'>('Truck 1')
   const [expandedCustomerId, setExpandedCustomerId] = useState<string | null>(null)
