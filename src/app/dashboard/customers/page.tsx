@@ -84,6 +84,7 @@ export default function CustomersPage() {
   const [scheduleModalCustomer, setScheduleModalCustomer] = useState<Customer | null>(null)
   const [scheduleDateInput, setScheduleDateInput] = useState<string>('2026-08-14')
   const [scheduleTimeInput, setScheduleTimeInput] = useState<string>('09:00 AM')
+  const [scheduleTruckInput, setScheduleTruckInput] = useState<'Truck 1' | 'Truck 2'>('Truck 1')
   const [expandedCustomerId, setExpandedCustomerId] = useState<string | null>(null)
 
   const [newCustomer, setNewCustomer] = useState({
@@ -200,7 +201,7 @@ export default function CustomersPage() {
       durationHours: 2,
       customer: scheduleModalCustomer.name,
       service: scheduleModalCustomer.lastService || 'Pressure Wash Service',
-      crew: 'Crew Alpha',
+      crew: scheduleTruckInput,
       status: 'Confirmed',
       amount: scheduleModalCustomer.totalSpent !== '$0.00' ? scheduleModalCustomer.totalSpent : '$350.00',
       address: scheduleModalCustomer.address,
@@ -639,6 +640,18 @@ export default function CustomersPage() {
                   onChange={(e) => setScheduleDateInput(e.target.value)}
                   className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-semibold"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Assigned Vehicle / Truck</label>
+                <select
+                  value={scheduleTruckInput}
+                  onChange={(e) => setScheduleTruckInput(e.target.value as 'Truck 1' | 'Truck 2')}
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-bold"
+                >
+                  <option value="Truck 1">🚛 Truck 1</option>
+                  <option value="Truck 2">🚛 Truck 2</option>
+                </select>
               </div>
 
               <div>

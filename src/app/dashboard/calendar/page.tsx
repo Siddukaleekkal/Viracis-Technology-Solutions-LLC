@@ -10,7 +10,7 @@ interface JobEvent {
   durationHours: number
   customer: string
   service: string
-  crew: 'Crew Alpha' | 'Crew Bravo'
+  crew: 'Truck 1' | 'Truck 2' | 'Crew Alpha' | 'Crew Bravo'
   status: 'Confirmed' | 'Pending' | 'Completed'
   amount: string
   address: string
@@ -64,10 +64,10 @@ export default function CalendarPage() {
     }
   }
 
-  // Filter Checkboxes for Calendars
+  // Filter Checkboxes for Rigs / Trucks
   const [calendars, setCalendars] = useState({
-    crewAlpha: true,
-    crewBravo: true,
+    truck1: true,
+    truck2: true,
     completed: true,
   })
 
@@ -78,7 +78,7 @@ export default function CalendarPage() {
     dateNum: 13,
     time: '10:00 AM',
     durationHours: 2,
-    crew: 'Crew Alpha' as const,
+    crew: 'Truck 1' as const,
     amount: '350.00',
     address: '100 Main St, Richmond, VA',
   })
@@ -160,8 +160,8 @@ export default function CalendarPage() {
   }
 
   const filteredJobs = jobs.filter((j) => {
-    if (j.crew === 'Crew Alpha' && !calendars.crewAlpha) return false
-    if (j.crew === 'Crew Bravo' && !calendars.crewBravo) return false
+    if ((j.crew === 'Truck 1' || j.crew === 'Crew Alpha') && !calendars.truck1) return false
+    if ((j.crew === 'Truck 2' || j.crew === 'Crew Bravo') && !calendars.truck2) return false
     if (j.status === 'Completed' && !calendars.completed) return false
     return true
   })
@@ -277,23 +277,23 @@ export default function CalendarPage() {
               <label className="flex items-center gap-2.5 cursor-pointer font-medium text-slate-800">
                 <input
                   type="checkbox"
-                  checked={calendars.crewAlpha}
-                  onChange={(e) => setCalendars({ ...calendars, crewAlpha: e.target.checked })}
+                  checked={calendars.truck1}
+                  onChange={(e) => setCalendars({ ...calendars, truck1: e.target.checked })}
                   className="w-4 h-4 rounded text-blue-600 focus:ring-0 cursor-pointer"
                 />
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-                <span>Field Crew Alpha</span>
+                <span>🚛 Truck 1</span>
               </label>
 
               <label className="flex items-center gap-2.5 cursor-pointer font-medium text-slate-800">
                 <input
                   type="checkbox"
-                  checked={calendars.crewBravo}
-                  onChange={(e) => setCalendars({ ...calendars, crewBravo: e.target.checked })}
+                  checked={calendars.truck2}
+                  onChange={(e) => setCalendars({ ...calendars, truck2: e.target.checked })}
                   className="w-4 h-4 rounded text-purple-600 focus:ring-0 cursor-pointer"
                 />
                 <span className="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
-                <span>Field Crew Bravo</span>
+                <span>🚛 Truck 2</span>
               </label>
 
               <label className="flex items-center gap-2.5 cursor-pointer font-medium text-slate-800">
@@ -612,6 +612,21 @@ export default function CalendarPage() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {/* Interactive Vehicle Assignment Selector */}
+            <select
+              value={selectedJob.crew}
+              onChange={(e) => {
+                const newCrew = e.target.value as any
+                const updated = jobs.map((j) => (j.id === selectedJob.id ? { ...j, crew: newCrew } : j))
+                saveJobs(updated)
+                setSelectedJob({ ...selectedJob, crew: newCrew })
+              }}
+              className="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg text-xs font-extrabold text-slate-800 outline-none cursor-pointer"
+            >
+              <option value="Truck 1">🚛 Truck 1</option>
+              <option value="Truck 2">🚛 Truck 2</option>
+            </select>
+
             <a
               href={`https://maps.apple.com/?daddr=${encodeURIComponent(selectedJob.address)}`}
               target="_blank"
@@ -760,14 +775,14 @@ export default function CalendarPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Assigned Crew</label>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Assigned Vehicle</label>
                   <select
                     value={newJob.crew}
                     onChange={(e) => setNewJob({ ...newJob, crew: e.target.value as any })}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 font-medium"
                   >
-                    <option value="Crew Alpha">Crew Alpha</option>
-                    <option value="Crew Bravo">Crew Bravo</option>
+                    <option value="Truck 1">🚛 Truck 1</option>
+                    <option value="Truck 2">🚛 Truck 2</option>
                   </select>
                 </div>
                 <div>

@@ -66,9 +66,10 @@ export default function AppleMapComponent() {
   const [isGeocoding, setIsGeocoding] = useState<boolean>(false)
   const [pinToDelete, setPinToDelete] = useState<{ id: string; name: string; address: string } | null>(null)
   const [selectedDateSync, setSelectedDateSync] = useState<string>('2026-08-14')
+  const [selectedTruckSync, setSelectedTruckSync] = useState<'Truck 1' | 'Truck 2'>('Truck 1')
   const [dateSyncStatus, setDateSyncStatus] = useState<string | null>(null)
 
-  const syncJobToCalendar = (customerName: string, service: string, address: string, dateStr: string, priceStr: string) => {
+  const syncJobToCalendar = (customerName: string, service: string, address: string, dateStr: string, priceStr: string, truckName: string = 'Truck 1') => {
     try {
       const d = new Date(dateStr + 'T00:00:00')
       const days: ('Sun' | 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat')[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -83,7 +84,7 @@ export default function AppleMapComponent() {
         durationHours: 2,
         customer: customerName,
         service: service || 'Exterior Power Wash',
-        crew: 'Crew Alpha',
+        crew: truckName,
         status: 'Confirmed',
         amount: priceStr || '$350.00',
         address: address || 'Richmond, VA',
@@ -98,7 +99,7 @@ export default function AppleMapComponent() {
         window.dispatchEvent(new CustomEvent('wizardwash_job_scheduled'))
       }
 
-      setDateSyncStatus(`Synced to Calendar for Aug ${dateNum}!`)
+      setDateSyncStatus(`Synced to ${truckName} for Aug ${dateNum}!`)
       setTimeout(() => setDateSyncStatus(null), 2500)
     } catch (e) {
       console.error('Failed to sync map pin job to calendar:', e)
@@ -510,18 +511,24 @@ export default function AppleMapComponent() {
               )}
             </div>
 
-            {/* Schedule Service Date & Calendar Sync */}
-            <div className="p-3 bg-blue-50/70 border border-blue-200/80 rounded-2xl space-y-2">
-              <label className="block text-[10px] font-bold text-blue-900 uppercase tracking-wider">
-                📅 Schedule Dispatch Date
-              </label>
+            {/* Calendar Dispatch Sync Box */}
+            <div className="p-3 bg-blue-50/80 rounded-2xl border border-blue-100 space-y-2 text-xs">
+              <label className="block text-[11px] font-bold text-blue-900 uppercase">📅 Schedule Dispatch & Vehicle</label>
               <div className="flex items-center gap-2">
                 <input
                   type="date"
                   value={selectedDateSync}
                   onChange={(e) => setSelectedDateSync(e.target.value)}
-                  className="px-3 py-1.5 bg-white border border-blue-200 rounded-xl text-xs font-semibold text-gray-900 outline-none focus:ring-2 focus:ring-blue-600 flex-1"
+                  className="px-2.5 py-1.5 bg-white border border-blue-200 rounded-xl text-xs font-semibold text-gray-900 outline-none focus:ring-2 focus:ring-blue-600 flex-1 min-w-0"
                 />
+                <select
+                  value={selectedTruckSync}
+                  onChange={(e) => setSelectedTruckSync(e.target.value as 'Truck 1' | 'Truck 2')}
+                  className="px-2 py-1.5 bg-white border border-blue-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:ring-2 focus:ring-blue-600"
+                >
+                  <option value="Truck 1">🚛 Truck 1</option>
+                  <option value="Truck 2">🚛 Truck 2</option>
+                </select>
                 <button
                   type="button"
                   onClick={() =>
@@ -530,12 +537,13 @@ export default function AppleMapComponent() {
                       selectedPin.service,
                       selectedPin.address,
                       selectedDateSync,
-                      selectedPin.value
+                      selectedPin.value,
+                      selectedTruckSync
                     )
                   }
-                  className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all whitespace-nowrap"
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all whitespace-nowrap"
                 >
-                  Sync to Calendar
+                  Sync
                 </button>
               </div>
               {dateSyncStatus && (
