@@ -75,11 +75,8 @@ export function MobileBottomNav() {
               isActive ? 'text-blue-400 font-bold scale-105' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <div className="relative">
+            <div>
               {link.icon}
-              {isActive && (
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full shadow-sm"></span>
-              )}
             </div>
             <span className="text-[10px] tracking-tight mt-0.5 font-medium">{link.name}</span>
           </Link>
