@@ -399,45 +399,63 @@ export default function CalendarPage() {
             </div>
           )}
 
-          {/* MODE 2: MONTH VIEW (FULL 31-DAY MONTH GRID) */}
+          {/* MODE 2: MONTH VIEW (FIT-ALL-ON-MOBILE 31-DAY MONTH MATRIX) */}
           {viewMode === 'Month' && (
-            <div className="space-y-3 min-w-[700px]">
-              <div className="grid grid-cols-7 gap-1 border-b border-slate-200 pb-2 text-center text-xs font-bold text-slate-600 uppercase">
+            <div className="space-y-3 w-full font-sans">
+              <div className="grid grid-cols-7 gap-1 border-b border-slate-200 pb-2 text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase">
                 <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
               </div>
               
-              <div className="grid grid-cols-7 gap-1.5">
-                {/* August 2026 starts on Saturday (5 empty cells for previous month) */}
+              <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
+                {/* August 2026 starts on Saturday (6 empty cells) */}
                 {Array.from({ length: 6 }).map((_, idx) => (
-                  <div key={`empty-${idx}`} className="h-24 bg-slate-50/50 rounded-lg p-1 text-[10px] text-slate-300"></div>
+                  <div key={`empty-${idx}`} className="h-11 sm:h-24 bg-slate-50/50 rounded-lg p-1 text-[10px] text-slate-300"></div>
                 ))}
 
                 {Array.from({ length: 31 }).map((_, i) => {
                   const dayNum = i + 1
                   const dayJobs = filteredJobs.filter((j) => j.dateNum === dayNum)
                   const isToday = dayNum === 13
+                  const isSelected = selectedDayNum === dayNum
 
                   return (
                     <div
                       key={dayNum}
                       onClick={() => {
                         setSelectedDayNum(dayNum)
-                        setViewMode('Day')
                       }}
-                      className={`h-24 rounded-lg p-1.5 border transition-all cursor-pointer flex flex-col justify-between ${
-                        isToday ? 'border-blue-500 bg-blue-50/20' : 'border-slate-200/80 hover:bg-slate-50'
+                      className={`h-11 sm:h-24 rounded-xl p-1 sm:p-1.5 border transition-all cursor-pointer flex flex-col justify-between ${
+                        isSelected
+                          ? 'border-blue-600 bg-blue-50/60 ring-2 ring-blue-500'
+                          : isToday
+                          ? 'border-blue-400 bg-blue-50/20'
+                          : 'border-slate-200/80 hover:bg-slate-50'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className={`text-xs font-bold ${isToday ? 'text-blue-600' : 'text-slate-800'}`}>
+                        <span className={`text-[11px] sm:text-xs font-bold ${isToday || isSelected ? 'text-blue-700' : 'text-slate-800'}`}>
                           {dayNum}
                         </span>
                         {dayJobs.length > 0 && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                          <span className="flex items-center gap-0.5">
+                            {dayJobs.slice(0, 3).map((j) => (
+                              <span
+                                key={j.id}
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  j.status === 'Completed'
+                                    ? 'bg-emerald-500'
+                                    : j.status === 'Confirmed'
+                                    ? 'bg-blue-600'
+                                    : 'bg-amber-500'
+                                }`}
+                              ></span>
+                            ))}
+                          </span>
                         )}
                       </div>
 
-                      <div className="space-y-1 overflow-y-auto max-h-14">
+                      {/* Desktop Job Titles (Hidden on Mobile to fit all 31 days) */}
+                      <div className="hidden sm:block space-y-1 overflow-y-auto max-h-14">
                         {dayJobs.map((j) => (
                           <div
                             key={j.id}
@@ -460,6 +478,54 @@ export default function CalendarPage() {
                     </div>
                   )
                 })}
+              </div>
+
+              {/* Selected Day Agenda Box (Shown below month grid on Mobile) */}
+              <div className="pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Aug {selectedDayNum}, 2026 Dispatches ({filteredJobs.filter((j) => j.dateNum === selectedDayNum).length})
+                  </h3>
+                  <button
+                    onClick={() => setViewMode('Day')}
+                    className="text-[11px] font-bold text-blue-600 hover:text-blue-800"
+                  >
+                    Full Day View →
+                  </button>
+                </div>
+
+                {filteredJobs.filter((j) => j.dateNum === selectedDayNum).length === 0 ? (
+                  <p className="text-xs text-slate-400 py-2">No field dispatches scheduled for Aug {selectedDayNum}.</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {filteredJobs
+                      .filter((j) => j.dateNum === selectedDayNum)
+                      .map((job) => (
+                        <div
+                          key={job.id}
+                          onClick={() => setSelectedJob(job)}
+                          className="p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-slate-300 transition-colors flex items-center justify-between"
+                        >
+                          <div>
+                            <p className="font-bold text-xs text-slate-900">{job.customer}</p>
+                            <p className="text-[11px] text-slate-500">{job.service} • {job.time}</p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">{job.address} ({job.crew})</p>
+                          </div>
+                          <span
+                            className={`px-2 py-0.5 text-[10px] font-bold rounded ${
+                              job.status === 'Completed'
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : job.status === 'Confirmed'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-amber-100 text-amber-800'
+                            }`}
+                          >
+                            {job.status}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
