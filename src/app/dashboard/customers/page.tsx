@@ -85,7 +85,94 @@ export default function CustomersPage() {
   const [scheduleDateInput, setScheduleDateInput] = useState<string>('2026-08-09')
   const [scheduleTimeInput, setScheduleTimeInput] = useState<string>('09:00 AM')
   const [scheduleTruckInput, setScheduleTruckInput] = useState<'Truck 1' | 'Truck 2'>('Truck 1')
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState<string[]>([])
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false)
   const [expandedCustomerId, setExpandedCustomerId] = useState<string | null>(null)
+
+  const toggleSelectAll = () => {
+    if (selectedCustomerIds.length === filteredCustomers.length && filteredCustomers.length > 0) {
+      setSelectedCustomerIds([])
+    } else {
+      setSelectedCustomerIds(filteredCustomers.map((c) => c.id))
+    }
+  }
+
+  const toggleSelectCustomer = (id: string) => {
+    setSelectedCustomerIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    )
+  }
+
+  const handleBulkStatusUpdate = (newStatus: 'Quoted' | 'Scheduled' | 'Completed') => {
+    if (selectedCustomerIds.length === 0) return
+    const updated = customers.map((c) =>
+      selectedCustomerIds.includes(c.id) ? { ...c, status: newStatus } : c
+    )
+    saveCustomers(updated)
+
+    try {
+      // 1. Sync Map View pins
+      const savedPinsStr = localStorage.getItem('wizardwash_mappins')
+      if (savedPinsStr) {
+        const pins = JSON.parse(savedPinsStr)
+        const selectedNames = new Set(customers.filter((c) => selectedCustomerIds.includes(c.id)).map((c) => c.name.toLowerCase()))
+        const updatedPins = pins.map((p: any) =>
+          selectedNames.has(p.customer.toLowerCase()) ? { ...p, status: newStatus } : p
+        )
+        localStorage.setItem('wizardwash_mappins', JSON.stringify(updatedPins))
+      }
+
+      // 2. Sync Calendar dispatches
+      const savedJobsStr = localStorage.getItem('wizardwash_calendar_jobs')
+      if (savedJobsStr) {
+        const jobs = JSON.parse(savedJobsStr)
+        const selectedNames = new Set(customers.filter((c) => selectedCustomerIds.includes(c.id)).map((c) => c.name.toLowerCase()))
+        const updatedJobs = jobs.map((j: any) =>
+          selectedNames.has(j.customer.toLowerCase())
+            ? { ...j, status: newStatus === 'Completed' ? 'Completed' : newStatus === 'Scheduled' ? 'Confirmed' : 'Pending' }
+            : j
+        )
+        localStorage.setItem('wizardwash_calendar_jobs', JSON.stringify(updatedJobs))
+      }
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('wizardwash_pin_added'))
+      }
+    } catch (e) {
+      console.error('Bulk status sync error:', e)
+    }
+
+    setSelectedCustomerIds([])
+  }
+
+  const handleBulkTruckTransfer = (targetTruck: 'Truck 1' | 'Truck 2') => {
+    if (selectedCustomerIds.length === 0) return
+    try {
+      const savedJobsStr = localStorage.getItem('wizardwash_calendar_jobs')
+      const jobs = savedJobsStr ? JSON.parse(savedJobsStr) : []
+      const selectedNames = new Set(customers.filter((c) => selectedCustomerIds.includes(c.id)).map((c) => c.name.toLowerCase()))
+
+      const updatedJobs = jobs.map((j: any) =>
+        selectedNames.has(j.customer.toLowerCase()) ? { ...j, crew: targetTruck } : j
+      )
+
+      localStorage.setItem('wizardwash_calendar_jobs', JSON.stringify(updatedJobs))
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('wizardwash_job_scheduled'))
+      }
+    } catch (e) {
+      console.error('Bulk truck transfer error:', e)
+    }
+    setSelectedCustomerIds([])
+  }
+
+  const handleBulkDelete = () => {
+    if (selectedCustomerIds.length === 0) return
+    const updated = customers.filter((c) => !selectedCustomerIds.includes(c.id))
+    saveCustomers(updated)
+    setSelectedCustomerIds([])
+    setIsBulkDeleteModalOpen(false)
+  }
 
   const [newCustomer, setNewCustomer] = useState({
     name: '',
@@ -527,6 +614,78 @@ function parseCSVLine(text: string): string[] {
         </div>
       </div>
 
+      {/* Floating / Sticky Bulk Actions Toolbar */}
+      {selectedCustomerIds.length > 0 && (
+        <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-2xl flex items-center justify-between flex-wrap gap-3 animate-in fade-in border border-slate-800">
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 bg-blue-600 text-white font-extrabold text-xs rounded-xl shadow-sm">
+              {selectedCustomerIds.length} Selected
+            </span>
+            <p className="text-xs text-slate-300 font-medium hidden sm:block">
+              Perform mass updates across selected accounts
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Mass Status Update */}
+            <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
+              <span className="text-[10px] text-slate-400 font-bold uppercase px-1.5">Status:</span>
+              <button
+                onClick={() => handleBulkStatusUpdate('Quoted')}
+                className="px-2 py-1 bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 font-bold text-[11px] rounded-lg transition-colors"
+              >
+                Quoted
+              </button>
+              <button
+                onClick={() => handleBulkStatusUpdate('Scheduled')}
+                className="px-2 py-1 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 font-bold text-[11px] rounded-lg transition-colors"
+              >
+                Scheduled
+              </button>
+              <button
+                onClick={() => handleBulkStatusUpdate('Completed')}
+                className="px-2 py-1 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 font-bold text-[11px] rounded-lg transition-colors"
+              >
+                Completed
+              </button>
+            </div>
+
+            {/* Mass Rig Transfer */}
+            <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
+              <span className="text-[10px] text-slate-400 font-bold uppercase px-1.5">Transfer:</span>
+              <button
+                onClick={() => handleBulkTruckTransfer('Truck 1')}
+                className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] rounded-lg transition-colors"
+              >
+                Truck 1
+              </button>
+              <button
+                onClick={() => handleBulkTruckTransfer('Truck 2')}
+                className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white font-bold text-[11px] rounded-lg transition-colors"
+              >
+                Truck 2
+              </button>
+            </div>
+
+            {/* Mass Delete Button */}
+            <button
+              onClick={() => setIsBulkDeleteModalOpen(true)}
+              className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors"
+            >
+              Mass Delete
+            </button>
+
+            {/* Deselect All */}
+            <button
+              onClick={() => setSelectedCustomerIds([])}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition-colors"
+            >
+              Deselect
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Ultra-Compact Collapsible Card Feed View (Shown on Mobile Viewports) */}
       <div className="space-y-2 md:hidden">
         {filteredCustomers.length === 0 ? (
@@ -545,16 +704,24 @@ function parseCSVLine(text: string): string[] {
             return (
               <div key={customer.id} className="bg-white rounded-xl border border-slate-200 p-3 shadow-sm font-sans space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <div
-                    onClick={() => setExpandedCustomerId(isExpanded ? null : customer.id)}
-                    className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-slate-900 text-white font-extrabold flex items-center justify-center text-xs shrink-0">
-                      {customer.name.charAt(0)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-bold text-slate-900 text-xs truncate">{customer.name}</h3>
-                      <p className="text-[10px] text-slate-400 truncate">{customer.phone}</p>
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <input
+                      type="checkbox"
+                      checked={selectedCustomerIds.includes(customer.id)}
+                      onChange={() => toggleSelectCustomer(customer.id)}
+                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer shrink-0"
+                    />
+                    <div
+                      onClick={() => setExpandedCustomerId(isExpanded ? null : customer.id)}
+                      className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-slate-900 text-white font-extrabold flex items-center justify-center text-xs shrink-0">
+                        {customer.name.charAt(0)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-bold text-slate-900 text-xs truncate">{customer.name}</h3>
+                        <p className="text-[10px] text-slate-400 truncate">{customer.phone}</p>
+                      </div>
                     </div>
                   </div>
 
@@ -654,6 +821,14 @@ function parseCSVLine(text: string): string[] {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
               <tr>
+                <th className="py-3 px-4 w-10 text-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedCustomerIds.length > 0 && selectedCustomerIds.length === filteredCustomers.length}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                  />
+                </th>
                 <th className="py-3 px-5">Deal / Customer Name</th>
                 <th className="py-3 px-4">Contact Info</th>
                 <th className="py-3 px-4">Location</th>
@@ -681,7 +856,15 @@ function parseCSVLine(text: string): string[] {
                 </tr>
               ) : (
                 filteredCustomers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-slate-50/80 transition-colors">
+                  <tr key={customer.id} className={`hover:bg-slate-50/80 transition-colors ${selectedCustomerIds.includes(customer.id) ? 'bg-blue-50/50' : ''}`}>
+                    <td className="py-4 px-4 text-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedCustomerIds.includes(customer.id)}
+                        onChange={() => toggleSelectCustomer(customer.id)}
+                        className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      />
+                    </td>
                     <td className="py-4 px-5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-xs shrink-0">
@@ -883,6 +1066,40 @@ function parseCSVLine(text: string): string[] {
                 className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors"
               >
                 Yes, Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mass Delete Confirmation Modal */}
+      {isBulkDeleteModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-red-600">
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center font-bold text-lg shrink-0">
+                ⚠️
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 text-sm">Confirm Mass Deletion</h3>
+                <p className="text-[11px] text-slate-500">Permanently delete selected accounts</p>
+              </div>
+            </div>
+            <p className="text-xs text-slate-700">
+              Are you sure you want to delete <strong className="text-slate-900 font-bold">{selectedCustomerIds.length} customer account(s)</strong>? This will remove them from your CRM directory and map pin dispatches.
+            </p>
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+              <button
+                onClick={() => setIsBulkDeleteModalOpen(false)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBulkDelete}
+                className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors"
+              >
+                Yes, Mass Delete
               </button>
             </div>
           </div>
