@@ -231,21 +231,21 @@ export default function CalendarPage() {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={handleToday}
+              onClick={() => handleToday()}
               className="px-2.5 py-1.5 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
             >
               Today
             </button>
             <div className="flex items-center text-slate-600 border border-slate-200 rounded-xl px-1">
               <button
-                onClick={handlePrevDate}
+                onClick={() => handlePrevDate()}
                 className="px-2 py-1 hover:bg-slate-100 rounded-md font-bold text-xs transition-colors"
                 title="Previous Period"
               >
                 ‹
               </button>
               <button
-                onClick={handleNextDate}
+                onClick={() => handleNextDate()}
                 className="px-2 py-1 hover:bg-slate-100 rounded-md font-bold text-xs transition-colors"
                 title="Next Period"
               >
@@ -290,13 +290,13 @@ export default function CalendarPage() {
               <span>{monthsList[monthIndex]} {currentYear}</span>
               <div className="flex gap-1.5 text-slate-600">
                 <button
-                  onClick={handlePrevDate}
+                  onClick={() => handlePrevDate()}
                   className="px-1.5 py-0.5 hover:bg-slate-100 rounded font-bold hover:text-slate-900"
                 >
                   ‹
                 </button>
                 <button
-                  onClick={handleNextDate}
+                  onClick={() => handleNextDate()}
                   className="px-1.5 py-0.5 hover:bg-slate-100 rounded font-bold hover:text-slate-900"
                 >
                   ›

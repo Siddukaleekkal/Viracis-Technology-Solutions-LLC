@@ -96,7 +96,7 @@ export default function PipelinePage() {
         
         <div className="flex gap-3">
           <button 
-            onClick={handleRunOutreach}
+            onClick={() => handleRunOutreach()}
             disabled={isOutreachRunning || isPipelineRunning}
             className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
@@ -119,7 +119,7 @@ export default function PipelinePage() {
           </button>
           
           <button 
-            onClick={handleRunPipeline}
+            onClick={() => handleRunPipeline()}
             disabled={isPipelineRunning || isOutreachRunning}
             className="inline-flex items-center gap-2 px-4 py-2 bg-viracis-navy text-white text-sm font-medium rounded-lg hover:bg-[#122F54] transition-colors disabled:opacity-50"
           >
