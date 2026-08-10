@@ -19,15 +19,61 @@ interface JobEvent {
 
 const initialJobs: JobEvent[] = []
 
+const monthsList = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+]
+
 export default function CalendarPage() {
   const [jobs, setJobs] = useState<JobEvent[]>(initialJobs)
   const [viewMode, setViewMode] = useState<'Week' | 'Month' | 'Day' | 'Schedule'>('Week')
   const [selectedJob, setSelectedJob] = useState<JobEvent | null>(null)
   const [selectedDayNum, setSelectedDayNum] = useState<number>(13) // Aug 13
+  const [monthIndex, setMonthIndex] = useState(7) // 7 = August
+  const [currentYear, setCurrentYear] = useState(2026)
   const [isScheduleOpen, setIsScheduleOpen] = useState(false)
   const [isGoogleSyncModalOpen, setIsGoogleSyncModalOpen] = useState(false)
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncedCount, setSyncedCount] = useState(0)
+
+  const handlePrevDate = () => {
+    if (viewMode === 'Day') {
+      setSelectedDayNum((prev) => Math.max(1, prev - 1))
+    } else if (viewMode === 'Week') {
+      setSelectedDayNum((prev) => Math.max(1, prev - 7))
+    } else {
+      setMonthIndex((prev) => {
+        if (prev === 0) {
+          setCurrentYear((y) => y - 1)
+          return 11
+        }
+        return prev - 1
+      })
+    }
+  }
+
+  const handleNextDate = () => {
+    if (viewMode === 'Day') {
+      setSelectedDayNum((prev) => Math.min(31, prev + 1))
+    } else if (viewMode === 'Week') {
+      setSelectedDayNum((prev) => Math.min(31, prev + 7))
+    } else {
+      setMonthIndex((prev) => {
+        if (prev === 11) {
+          setCurrentYear((y) => y + 1)
+          return 0
+        }
+        return prev + 1
+      })
+    }
+  }
+
+  const handleToday = () => {
+    setMonthIndex(7) // August
+    setCurrentYear(2026)
+    setSelectedDayNum(13)
+    setViewMode('Week')
+  }
 
   // Load persistent jobs from localStorage on mount & listen for real-time schedule events
   useEffect(() => {
@@ -185,17 +231,26 @@ export default function CalendarPage() {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                setSelectedDayNum(13)
-                setViewMode('Week')
-              }}
-              className="px-2.5 py-1.5 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              onClick={handleToday}
+              className="px-2.5 py-1.5 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
             >
               Today
             </button>
             <div className="flex items-center text-slate-600 border border-slate-200 rounded-xl px-1">
-              <button className="px-1.5 py-1 hover:bg-slate-100 rounded-md font-bold text-xs">‹</button>
-              <button className="px-1.5 py-1 hover:bg-slate-100 rounded-md font-bold text-xs">›</button>
+              <button
+                onClick={handlePrevDate}
+                className="px-2 py-1 hover:bg-slate-100 rounded-md font-bold text-xs transition-colors"
+                title="Previous Period"
+              >
+                ‹
+              </button>
+              <button
+                onClick={handleNextDate}
+                className="px-2 py-1 hover:bg-slate-100 rounded-md font-bold text-xs transition-colors"
+                title="Next Period"
+              >
+                ›
+              </button>
             </div>
             <button
               onClick={() => setIsScheduleOpen(true)}
@@ -232,10 +287,20 @@ export default function CalendarPage() {
           {/* Mini Month Grid */}
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
             <div className="flex items-center justify-between text-xs font-bold text-slate-800 px-1">
-              <span>August 2026</span>
-              <div className="flex gap-1 text-slate-400">
-                <span className="cursor-pointer hover:text-slate-900">‹</span>
-                <span className="cursor-pointer hover:text-slate-900">›</span>
+              <span>{monthsList[monthIndex]} {currentYear}</span>
+              <div className="flex gap-1.5 text-slate-600">
+                <button
+                  onClick={handlePrevDate}
+                  className="px-1.5 py-0.5 hover:bg-slate-100 rounded font-bold hover:text-slate-900"
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={handleNextDate}
+                  className="px-1.5 py-0.5 hover:bg-slate-100 rounded font-bold hover:text-slate-900"
+                >
+                  ›
+                </button>
               </div>
             </div>
 
@@ -484,7 +549,7 @@ export default function CalendarPage() {
               <div className="pt-3 border-t border-slate-100">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Aug {selectedDayNum}, 2026 Dispatches ({filteredJobs.filter((j) => j.dateNum === selectedDayNum).length})
+                    {monthsList[monthIndex].slice(0, 3)} {selectedDayNum}, {currentYear} Dispatches ({filteredJobs.filter((j) => j.dateNum === selectedDayNum).length})
                   </h3>
                   <button
                     onClick={() => setViewMode('Day')}
