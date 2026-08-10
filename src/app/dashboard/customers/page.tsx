@@ -328,6 +328,43 @@ export default function CustomersPage() {
     setNewCustomer({ name: '', email: '', phone: '', address: '', cityZip: 'Richmond, VA 23220', status: 'Quoted', serviceDate: '2026-08-14' })
   }
 
+function parseCSVLine(text: string): string[] {
+  const result: string[] = []
+  let cell = ''
+  let inQuotes = false
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]
+    if (char === '"' || char === "'") {
+      inQuotes = !inQuotes
+    } else if (char === ',' && !inQuotes) {
+      result.push(cell.trim())
+      cell = ''
+    } else {
+      cell += char
+    }
+  }
+  result.push(cell.trim())
+  return result
+}
+
+  const handleDownloadSampleCSV = () => {
+    const csvContent = [
+      'Name,Email,Phone,Address,CityZip,Status,TotalSpent,LastService',
+      'Robert Taylor,r.taylor@gmail.com,(804) 555-0192,1402 Monument Ave,"Richmond, VA 23220",Completed,"$1850.00",Driveway & Deck Power Wash',
+      'Sarah Jenkins,s.jenkins@yahoo.com,(804) 555-8371,89 Pine Ave,"Henrico, VA 23229",Scheduled,"$620.00",Full House Wash',
+      'Marcus Vance,m.vance@techcorp.com,(804) 555-4920,402 Broad St,"Richmond, VA 23219",Quoted,"$0.00",Commercial Property Soft Wash',
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.setAttribute('download', 'wizardwash_customer_import_template.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   const handleImportCSV = (e?: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement>) => {
     if (e && typeof e === 'object' && 'target' in e && (e.target as HTMLInputElement).files?.[0]) {
       const file = (e.target as HTMLInputElement).files![0]
@@ -336,23 +373,57 @@ export default function CustomersPage() {
       reader.onload = (event) => {
         try {
           const text = event.target?.result as string
-          const lines = text.split('\n').filter((l) => l.trim().length > 0)
+          const rawLines = text.split(/\r?\n/).filter((l) => l.trim().length > 0)
           const newImported: Customer[] = []
           
-          lines.forEach((line, index) => {
-            if (index === 0 && line.toLowerCase().includes('name')) return // Skip CSV header row
-            const parts = line.split(',')
-            if (parts.length >= 1 && parts[0].trim()) {
+          let nameIdx = 0
+          let emailIdx = 1
+          let phoneIdx = 2
+          let addrIdx = 3
+          let cityIdx = 4
+          let statusIdx = 5
+          let spentIdx = 6
+          let serviceIdx = 7
+
+          if (rawLines.length > 0) {
+            const headerCells = parseCSVLine(rawLines[0]).map((h) => h.toLowerCase().replace(/[^a-z]/g, ''))
+            
+            if (headerCells.some((h) => h.includes('name') || h.includes('email') || h.includes('address'))) {
+              headerCells.forEach((col, i) => {
+                if (col.includes('name') || col.includes('client') || col.includes('customer')) nameIdx = i
+                else if (col.includes('email') || col.includes('mail')) emailIdx = i
+                else if (col.includes('phone') || col.includes('mobile') || col.includes('tel')) phoneIdx = i
+                else if (col.includes('address') || col.includes('street')) addrIdx = i
+                else if (col.includes('city') || col.includes('zip') || col.includes('location')) cityIdx = i
+                else if (col.includes('status') || col.includes('stage')) statusIdx = i
+                else if (col.includes('spent') || col.includes('total') || col.includes('revenue') || col.includes('amount')) spentIdx = i
+                else if (col.includes('service') || col.includes('job')) serviceIdx = i
+              })
+              rawLines.shift() // Remove header row
+            }
+          }
+
+          rawLines.forEach((line) => {
+            const cells = parseCSVLine(line)
+            if (cells.length >= 1 && cells[nameIdx]?.trim()) {
+              const rawStatus = cells[statusIdx]?.trim()
+              const validStatus: 'Quoted' | 'Scheduled' | 'Completed' =
+                rawStatus === 'Completed' || rawStatus === 'Paid'
+                  ? 'Completed'
+                  : rawStatus === 'Scheduled' || rawStatus === 'Confirmed'
+                  ? 'Scheduled'
+                  : 'Quoted'
+
               newImported.push({
-                id: `CSV-${Math.floor(100 + Math.random() * 900)}`,
-                name: parts[0]?.trim() || 'New Client',
-                email: parts[1]?.trim() || 'n/a',
-                phone: parts[2]?.trim() || 'n/a',
-                address: parts[3]?.trim() || 'Richmond, VA',
-                cityZip: parts[4]?.trim() || 'Richmond, VA 23220',
-                status: 'Quoted',
-                totalSpent: '$0.00',
-                lastService: 'Imported from CSV',
+                id: `CSV-${Math.floor(1000 + Math.random() * 9000)}`,
+                name: cells[nameIdx]?.trim() || 'New Client',
+                email: cells[emailIdx]?.trim() || 'n/a',
+                phone: cells[phoneIdx]?.trim() || 'n/a',
+                address: cells[addrIdx]?.trim() || 'Richmond, VA',
+                cityZip: cells[cityIdx]?.trim() || 'Richmond, VA 23220',
+                status: validStatus,
+                totalSpent: cells[spentIdx]?.trim() || '$0.00',
+                lastService: cells[serviceIdx]?.trim() || 'Imported via CSV',
               })
             }
           })
@@ -823,18 +894,28 @@ export default function CustomersPage() {
             </div>
 
             <div className="space-y-4 text-xs">
-              <div className="p-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 text-center space-y-2">
+              <div className="p-4 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 text-center space-y-2.5">
                 <p className="font-semibold text-slate-700">Option A: Upload .CSV File</p>
                 <p className="text-[11px] text-slate-500">
-                  Select a CSV file containing your client names, emails, phone numbers, and addresses.
+                  Select a CSV file containing client names, emails, phone numbers, and addresses.
                 </p>
-                <input type="file" accept=".csv" className="hidden" id="csv-file-upload" onChange={(e) => handleImportCSV(e)} />
-                <label
-                  htmlFor="csv-file-upload"
-                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg inline-block cursor-pointer transition-all shadow-sm"
-                >
-                  Browse & Select .CSV File
-                </label>
+                <div className="flex items-center justify-center gap-2">
+                  <input type="file" accept=".csv" className="hidden" id="csv-file-upload" onChange={(e) => handleImportCSV(e)} />
+                  <label
+                    htmlFor="csv-file-upload"
+                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl inline-block cursor-pointer transition-all shadow-sm"
+                  >
+                    Browse & Select .CSV File
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleDownloadSampleCSV}
+                    className="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl transition-all"
+                    title="Download pre-formatted CSV template"
+                  >
+                    Download Template
+                  </button>
+                </div>
               </div>
 
               <div className="p-4 border border-slate-200 rounded-xl bg-white space-y-3">
@@ -845,7 +926,7 @@ export default function CustomersPage() {
                 <button
                   onClick={() => handleImportCSV()}
                   disabled={!!importStatus}
-                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
                 >
                   {importStatus ? importStatus : 'Execute CSV Data Import Now'}
                 </button>
