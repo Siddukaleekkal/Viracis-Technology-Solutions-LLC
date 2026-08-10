@@ -1,0 +1,9 @@
+.next/
+node_modules/
+out/
+build/
+dist/
+scripts/
+*.config.js
+*.config.mjs
+*.config.ts
