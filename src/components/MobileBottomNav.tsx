@@ -64,7 +64,7 @@ export function MobileBottomNav() {
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 text-white flex items-center justify-around py-2 px-1 md:hidden shadow-2xl">
+    <nav className="fixed bottom-0 inset-x-0 z-[9999] bg-[#0F172A]/95 backdrop-blur-xl border-t border-slate-800/80 text-white flex items-center justify-around pt-2 pb-[calc(0.6rem+env(safe-area-inset-bottom))] px-1 md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
       {links.map((link) => {
         const isActive = pathname === link.href || (link.href !== '/dashboard' && pathname.startsWith(link.href))
         return (
@@ -78,13 +78,13 @@ export function MobileBottomNav() {
             <div className="relative">
               {link.icon}
               {isActive && (
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full"></span>
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full shadow-sm"></span>
               )}
             </div>
             <span className="text-[10px] tracking-tight mt-0.5 font-medium">{link.name}</span>
           </Link>
         )
       })}
-    </div>
+    </nav>
   )
 }
