@@ -350,10 +350,10 @@ function parseCSVLine(text: string): string[] {
 
   const handleDownloadSampleCSV = () => {
     const csvContent = [
-      'Name,Email,Phone,Address,CityZip,Status,TotalSpent,LastService',
-      'Robert Taylor,r.taylor@gmail.com,(804) 555-0192,1402 Monument Ave,"Richmond, VA 23220",Completed,"$1850.00",Driveway & Deck Power Wash',
-      'Sarah Jenkins,s.jenkins@yahoo.com,(804) 555-8371,89 Pine Ave,"Henrico, VA 23229",Scheduled,"$620.00",Full House Wash',
-      'Marcus Vance,m.vance@techcorp.com,(804) 555-4920,402 Broad St,"Richmond, VA 23219",Quoted,"$0.00",Commercial Property Soft Wash',
+      'Deal Name,Phone,Email,Location,CityZip,Status,TotalSpent,LastService',
+      'Robert Taylor Power Wash,(804) 555-0192,r.taylor@gmail.com,1402 Monument Ave,"Richmond, VA 23220",Completed,"$1850.00",Driveway & Deck Power Wash',
+      'Sarah Jenkins House Wash,(804) 555-8371,s.jenkins@yahoo.com,89 Pine Ave,"Henrico, VA 23229",Scheduled,"$620.00",Full House Wash',
+      'Marcus Vance Commercial Soft Wash,(804) 555-4920,m.vance@techcorp.com,402 Broad St,"Richmond, VA 23219",Quoted,"$0.00",Commercial Property Soft Wash',
     ].join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
@@ -386,17 +386,17 @@ function parseCSVLine(text: string): string[] {
           let serviceIdx = 7
 
           if (rawLines.length > 0) {
-            const headerCells = parseCSVLine(rawLines[0]).map((h) => h.toLowerCase().replace(/[^a-z]/g, ''))
+            const headerCells = parseCSVLine(rawLines[0]).map((h) => h.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim())
             
-            if (headerCells.some((h) => h.includes('name') || h.includes('email') || h.includes('address'))) {
+            if (headerCells.some((h) => h.includes('deal') || h.includes('name') || h.includes('email') || h.includes('location') || h.includes('address'))) {
               headerCells.forEach((col, i) => {
-                if (col.includes('name') || col.includes('client') || col.includes('customer')) nameIdx = i
+                if (col.includes('deal') || col.includes('name') || col.includes('client') || col.includes('customer')) nameIdx = i
                 else if (col.includes('email') || col.includes('mail')) emailIdx = i
-                else if (col.includes('phone') || col.includes('mobile') || col.includes('tel')) phoneIdx = i
-                else if (col.includes('address') || col.includes('street')) addrIdx = i
-                else if (col.includes('city') || col.includes('zip') || col.includes('location')) cityIdx = i
+                else if (col.includes('phone') || col.includes('mobile') || col.includes('tel') || col.includes('contact')) phoneIdx = i
+                else if (col.includes('location') || col.includes('address') || col.includes('street') || col.includes('property')) addrIdx = i
+                else if (col.includes('city') || col.includes('zip')) cityIdx = i
                 else if (col.includes('status') || col.includes('stage')) statusIdx = i
-                else if (col.includes('spent') || col.includes('total') || col.includes('revenue') || col.includes('amount')) spentIdx = i
+                else if (col.includes('spent') || col.includes('total') || col.includes('revenue') || col.includes('amount') || col.includes('value')) spentIdx = i
                 else if (col.includes('service') || col.includes('job')) serviceIdx = i
               })
               rawLines.shift() // Remove header row
@@ -654,7 +654,7 @@ function parseCSVLine(text: string): string[] {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
               <tr>
-                <th className="py-3 px-5">Customer</th>
+                <th className="py-3 px-5">Deal / Customer Name</th>
                 <th className="py-3 px-4">Contact Info</th>
                 <th className="py-3 px-4">Location</th>
                 <th className="py-3 px-4">Status</th>
@@ -694,8 +694,18 @@ function parseCSVLine(text: string): string[] {
                       </div>
                     </td>
                     <td className="py-4 px-4 text-slate-600">
-                      <p className="font-medium text-slate-900">{customer.email}</p>
-                      <p className="text-[11px] text-slate-400">{customer.phone}</p>
+                      {customer.phone && customer.phone !== 'n/a' && customer.email && customer.email !== 'n/a' ? (
+                        <>
+                          <p className="font-semibold text-slate-900">{customer.phone}</p>
+                          <p className="text-[11px] text-slate-400">{customer.email}</p>
+                        </>
+                      ) : customer.phone && customer.phone !== 'n/a' ? (
+                        <p className="font-semibold text-slate-900">{customer.phone}</p>
+                      ) : customer.email && customer.email !== 'n/a' ? (
+                        <p className="font-semibold text-slate-900">{customer.email}</p>
+                      ) : (
+                        <p className="text-slate-400 text-xs italic">N/A</p>
+                      )}
                     </td>
                     <td className="py-4 px-4 text-slate-600">
                       <p className="font-medium text-slate-900">{customer.address}</p>
