@@ -244,8 +244,8 @@ export default function CalendarPage() {
       {/* Main Grid: Sidebar + Interactive Dynamic Calendar Canvas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Left Sidebar */}
-        <div className="lg:col-span-3 space-y-4">
+        {/* Left Sidebar (Desktop Only) */}
+        <div className="lg:col-span-3 space-y-4 hidden lg:block">
           
           {/* Mini Month Grid */}
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">

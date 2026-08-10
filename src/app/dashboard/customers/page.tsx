@@ -84,6 +84,7 @@ export default function CustomersPage() {
   const [scheduleModalCustomer, setScheduleModalCustomer] = useState<Customer | null>(null)
   const [scheduleDateInput, setScheduleDateInput] = useState<string>('2026-08-14')
   const [scheduleTimeInput, setScheduleTimeInput] = useState<string>('09:00 AM')
+  const [expandedCustomerId, setExpandedCustomerId] = useState<string | null>(null)
 
   const [newCustomer, setNewCustomer] = useState({
     name: '',
@@ -382,117 +383,120 @@ export default function CustomersPage() {
         </div>
       </div>
 
-      {/* Mobile Card Feed View (Shown on Mobile Viewports) */}
-      <div className="space-y-4 md:hidden">
+      {/* Mobile Ultra-Compact Collapsible Card Feed View (Shown on Mobile Viewports) */}
+      <div className="space-y-2 md:hidden">
         {filteredCustomers.length === 0 ? (
-          <div className="bg-white p-8 rounded-xl border border-slate-200 text-center space-y-3">
-            <p className="text-sm font-semibold text-slate-600">No customer accounts found.</p>
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 text-center space-y-2">
+            <p className="text-xs font-semibold text-slate-600">No customer accounts found.</p>
             <button
               onClick={() => setIsImportModalOpen(true)}
-              className="px-4 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-xs rounded-lg transition-colors inline-block"
+              className="px-3.5 py-1.5 bg-blue-50 text-blue-700 font-bold text-xs rounded-xl inline-block"
             >
-              📥 Import CSV Customer File
+              📥 Import CSV File
             </button>
           </div>
         ) : (
-          filteredCustomers.map((customer) => (
-            <div key={customer.id} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3 font-sans">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-slate-900 text-white font-extrabold flex items-center justify-center text-sm shrink-0">
-                    {customer.name.charAt(0)}
+          filteredCustomers.map((customer) => {
+            const isExpanded = expandedCustomerId === customer.id
+            return (
+              <div key={customer.id} className="bg-white rounded-xl border border-slate-200 p-3 shadow-sm font-sans space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div
+                    onClick={() => setExpandedCustomerId(isExpanded ? null : customer.id)}
+                    className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-slate-900 text-white font-extrabold flex items-center justify-center text-xs shrink-0">
+                      {customer.name.charAt(0)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-bold text-slate-900 text-xs truncate">{customer.name}</h3>
+                      <p className="text-[10px] text-slate-400 truncate">{customer.phone}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-sm">{customer.name}</h3>
-                    <p className="text-[11px] text-slate-400">{customer.id}</p>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <select
+                      value={customer.status}
+                      onChange={(e) =>
+                        handleStatusChange(customer.id, e.target.value as 'Quoted' | 'Scheduled' | 'Completed')
+                      }
+                      className={`px-2 py-0.5 text-[10px] font-bold rounded-md border outline-none cursor-pointer ${
+                        customer.status === 'Completed'
+                          ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                          : customer.status === 'Scheduled'
+                          ? 'bg-blue-100 text-blue-800 border-blue-200'
+                          : 'bg-amber-100 text-amber-800 border-amber-200'
+                      }`}
+                    >
+                      <option value="Quoted">Quoted</option>
+                      <option value="Scheduled">Scheduled</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+
+                    <a
+                      href={`tel:${customer.phone}`}
+                      className="w-7.5 h-7.5 bg-emerald-50 text-emerald-800 rounded-md border border-emerald-200 flex items-center justify-center text-xs"
+                      title="Call"
+                    >
+                      📞
+                    </a>
+                    <a
+                      href={`sms:${customer.phone}`}
+                      className="w-7.5 h-7.5 bg-blue-50 text-blue-800 rounded-md border border-blue-200 flex items-center justify-center text-xs"
+                      title="SMS"
+                    >
+                      💬
+                    </a>
+                    <button
+                      onClick={() => setExpandedCustomerId(isExpanded ? null : customer.id)}
+                      className="w-7.5 h-7.5 bg-slate-100 text-slate-600 rounded-md text-xs font-bold flex items-center justify-center"
+                    >
+                      {isExpanded ? '▲' : '▼'}
+                    </button>
                   </div>
                 </div>
-                
-                {/* Interactive Mobile Status Selector */}
-                <select
-                  value={customer.status}
-                  onChange={(e) =>
-                    handleStatusChange(customer.id, e.target.value as 'Quoted' | 'Scheduled' | 'Completed')
-                  }
-                  className={`px-2.5 py-1 text-[11px] font-bold rounded-lg border outline-none cursor-pointer ${
-                    customer.status === 'Completed'
-                      ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
-                      : customer.status === 'Scheduled'
-                      ? 'bg-blue-100 text-blue-800 border-blue-200'
-                      : 'bg-amber-100 text-amber-800 border-amber-200'
-                  }`}
-                >
-                  <option value="Quoted">Quoted</option>
-                  <option value="Scheduled">Scheduled</option>
-                  <option value="Completed">Completed</option>
-                </select>
-              </div>
 
-              {/* 1-Tap Mobile Quick Actions */}
-              <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
-                <a
-                  href={`tel:${customer.phone}`}
-                  className="flex-1 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-xl text-center border border-emerald-200/80 transition-colors flex items-center justify-center gap-1.5"
-                >
-                  📞 Call
-                </a>
-                <a
-                  href={`sms:${customer.phone}`}
-                  className="flex-1 py-2 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs rounded-xl text-center border border-blue-200/80 transition-colors flex items-center justify-center gap-1.5"
-                >
-                  💬 SMS
-                </a>
-                <button
-                  onClick={() => setScheduleModalCustomer(customer)}
-                  className="py-2 px-3 bg-purple-50 hover:bg-purple-100 text-purple-800 font-bold text-xs rounded-xl border border-purple-200/80 transition-colors flex items-center justify-center gap-1"
-                >
-                  📅 Date
-                </button>
-              </div>
+                {/* Expandable Secondary Details Drawer */}
+                {isExpanded && (
+                  <div className="pt-2 border-t border-slate-100 space-y-2 text-xs">
+                    <div className="p-2.5 bg-slate-50 rounded-lg space-y-1 text-[11px]">
+                      <p><span className="text-slate-400 font-medium">Address:</span> <strong className="text-slate-800">{customer.address}</strong></p>
+                      <p><span className="text-slate-400 font-medium">Email:</span> <strong className="text-slate-800">{customer.email}</strong></p>
+                      <p><span className="text-slate-400 font-medium">Spent:</span> <strong className="text-slate-900">{customer.totalSpent}</strong></p>
+                      <p><span className="text-slate-400 font-medium">History:</span> <span className="text-slate-700">{customer.lastService}</span></p>
+                    </div>
 
-              {/* Account Details */}
-              <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-100 text-xs space-y-1.5">
-                <div className="flex justify-between">
-                  <span className="text-slate-500 font-medium">Address:</span>
-                  <span className="font-semibold text-slate-800 text-right">{customer.address}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500 font-medium">Email:</span>
-                  <span className="font-semibold text-slate-800">{customer.email}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500 font-medium">Total Spent:</span>
-                  <span className="font-bold text-slate-900">{customer.totalSpent}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500 font-medium">Service History:</span>
-                  <span className="font-semibold text-slate-700 truncate max-w-[180px]">{customer.lastService}</span>
-                </div>
+                    <div className="flex items-center justify-end gap-2 pt-1">
+                      <button
+                        onClick={() => setScheduleModalCustomer(customer)}
+                        className="px-2.5 py-1 bg-purple-50 text-purple-700 font-bold rounded-lg text-[11px] border border-purple-100"
+                      >
+                        📅 Schedule
+                      </button>
+                      <Link
+                        href="/dashboard/messages"
+                        className="px-2.5 py-1 bg-slate-100 text-slate-700 font-semibold rounded-lg text-[11px]"
+                      >
+                        Message
+                      </Link>
+                      <Link
+                        href="/dashboard/invoices"
+                        className="px-2.5 py-1 bg-blue-50 text-blue-700 font-semibold rounded-lg text-[11px]"
+                      >
+                        Invoice
+                      </Link>
+                      <button
+                        onClick={() => setCustomerToDelete({ id: customer.id, name: customer.name })}
+                        className="px-2.5 py-1 bg-red-50 text-red-600 font-semibold rounded-lg text-[11px] border border-red-100"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {/* Action Buttons Row */}
-              <div className="flex items-center justify-end gap-2 pt-1">
-                <Link
-                  href="/dashboard/messages"
-                  className="px-3 py-1.5 bg-slate-100 text-slate-700 font-semibold rounded-lg text-xs"
-                >
-                  Message Thread
-                </Link>
-                <Link
-                  href="/dashboard/invoices"
-                  className="px-3 py-1.5 bg-blue-50 text-blue-700 font-semibold rounded-lg text-xs"
-                >
-                  Invoice
-                </Link>
-                <button
-                  onClick={() => setCustomerToDelete({ id: customer.id, name: customer.name })}
-                  className="px-3 py-1.5 bg-red-50 text-red-600 font-semibold rounded-lg text-xs border border-red-100"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))
+            )
+          })
         )}
       </div>
 
