@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { SidebarNav } from '@/components/SidebarNav'
+import { MobileBottomNav } from '@/components/MobileBottomNav'
 
 export default async function DashboardLayout({
   children,
@@ -53,7 +54,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans">
-      {/* Sidebar Navigation */}
+      {/* Sidebar Navigation (Desktop Only) */}
       <aside className="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col">
         
         {/* Top Left of Screen: Viracis Logo */}
@@ -101,35 +102,43 @@ export default async function DashboardLayout({
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 md:hidden">
-          <Link href="/dashboard" className="flex items-center">
+        {/* Mobile Header */}
+        <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 shrink-0 md:hidden sticky top-0 z-40 shadow-sm">
+          <Link href="/dashboard" className="flex items-center gap-2">
             <Image
               src="/viracis-logo.png"
               alt="Viracis"
-              width={140}
-              height={36}
-              className="h-8 w-auto object-contain"
+              width={120}
+              height={32}
+              className="h-7 w-auto object-contain"
             />
           </Link>
           <div className="flex items-center gap-2">
-            <Image
-              src="/CRM/Wizard Wash Logo.png"
-              alt="Wizard Wash"
-              width={28}
-              height={28}
-              className="w-7 h-7 object-contain rounded"
-            />
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-lg border border-slate-200">
+              <Image
+                src="/CRM/Wizard Wash Logo.png"
+                alt="Wizard Wash"
+                width={20}
+                height={20}
+                className="w-5 h-5 object-contain rounded"
+              />
+              <span className="text-[11px] font-bold text-slate-800">Wizard Wash</span>
+            </div>
             <form action="/auth/signout" method="post">
-              <button className="text-xs text-red-600 font-semibold px-2.5 py-1 bg-red-50 rounded">
+              <button className="text-[11px] text-red-600 font-bold px-2 py-1 bg-red-50 hover:bg-red-100 rounded-md border border-red-100 transition-colors">
                 Sign out
               </button>
             </form>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-8">
+        {/* Page Content with padding bottom for mobile nav bar */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
           {children}
         </div>
+
+        {/* Mobile Bottom Navigation Bar */}
+        <MobileBottomNav />
       </main>
     </div>
   )

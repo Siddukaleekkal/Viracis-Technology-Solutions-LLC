@@ -354,7 +354,7 @@ export default function AppleMapComponent() {
   }
 
   return (
-    <div className="relative w-full h-[740px] rounded-3xl overflow-hidden border border-gray-200/80 shadow-2xl bg-slate-900 font-sans flex flex-col justify-between">
+    <div className="relative w-full h-[calc(100vh-170px)] min-h-[500px] md:h-[740px] rounded-3xl overflow-hidden border border-gray-200/80 shadow-2xl bg-slate-900 font-sans flex flex-col justify-between">
       
       {/* Top Floating Controls & Status Color Legend */}
       <div className="absolute top-4 left-4 right-4 z-[1000] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pointer-events-none">
@@ -441,7 +441,7 @@ export default function AppleMapComponent() {
 
       {/* Pin Click Callout Popup Overlay (Shows Name & Price ONLY when pin is clicked) */}
       {selectedPin && (
-        <div className="absolute bottom-6 left-4 right-4 sm:left-auto sm:right-6 z-[1000] max-w-md w-full pointer-events-auto animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed md:absolute bottom-16 md:bottom-6 left-3 right-3 md:left-auto md:right-6 z-[1000] max-w-md md:w-full pointer-events-auto max-h-[75vh] md:max-h-none overflow-y-auto animate-in fade-in slide-in-from-bottom-4 duration-300 shadow-2xl rounded-3xl">
           <div className="bg-white/95 backdrop-blur-2xl border border-white/80 shadow-2xl rounded-3xl p-6 text-gray-900 space-y-4 relative">
             
             {/* Close Button */}

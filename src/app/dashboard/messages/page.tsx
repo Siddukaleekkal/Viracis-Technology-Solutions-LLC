@@ -25,6 +25,7 @@ export default function MessagesPage() {
   const [conversations, setConversations] = useState<Conversation[]>(initialConversations)
   const [activeConvId, setActiveConvId] = useState<string>('')
   const [inputMessage, setInputMessage] = useState('')
+  const [showMobileChat, setShowMobileChat] = useState(false)
 
   // Load persistent conversations from localStorage on mount
   useEffect(() => {
@@ -105,7 +106,9 @@ export default function MessagesPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[650px]">
         
         {/* Left Column: Conversations List */}
-        <div className="lg:col-span-4 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+        <div className={`lg:col-span-4 bg-white rounded-xl border border-slate-200 shadow-sm flex-col overflow-hidden ${
+          showMobileChat ? 'hidden lg:flex' : 'flex'
+        }`}>
           <div className="p-4 border-b border-slate-100 bg-slate-50">
             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Conversations</h2>
           </div>
@@ -125,6 +128,7 @@ export default function MessagesPage() {
                     key={conv.id}
                     onClick={() => {
                       setActiveConvId(conv.id)
+                      setShowMobileChat(true)
                       setConversations((prev) =>
                         prev.map((c) => (c.id === conv.id ? { ...c, unreadCount: 0 } : c))
                       )
@@ -157,7 +161,9 @@ export default function MessagesPage() {
         </div>
 
         {/* Right Column: Chat View */}
-        <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+        <div className={`lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-sm flex-col overflow-hidden ${
+          showMobileChat ? 'flex' : 'hidden lg:flex'
+        }`}>
           
           {!activeConv ? (
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 space-y-2">
@@ -169,6 +175,12 @@ export default function MessagesPage() {
               {/* Active Chat Header */}
               <div className="p-4 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                 <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setShowMobileChat(false)}
+                    className="lg:hidden text-xs font-bold text-blue-600 hover:text-blue-800 pr-2 border-r border-slate-200"
+                  >
+                    ‹ Inbox
+                  </button>
                   <div className="w-8 h-8 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-xs">
                     {activeConv.avatar}
                   </div>
@@ -178,9 +190,12 @@ export default function MessagesPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
-                    Synced to CRM
-                  </span>
+                  <a
+                    href={`tel:${activeConv.customerPhone}`}
+                    className="px-2.5 py-1 bg-emerald-50 text-emerald-800 font-bold text-xs rounded-lg border border-emerald-200"
+                  >
+                    📞 Call
+                  </a>
                 </div>
               </div>
 
