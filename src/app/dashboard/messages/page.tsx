@@ -199,7 +199,7 @@ export default function MessagesPage() {
       {/* Header */}
       <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Viracis Client Messaging Center</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Messaging Center</h1>
           <p className="mt-1 text-xs text-slate-500 font-medium">
             Real-time SMS & Email communication feed for automated follow-ups, dispatches & client replies.
           </p>

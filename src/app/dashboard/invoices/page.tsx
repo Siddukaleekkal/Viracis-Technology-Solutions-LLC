@@ -231,7 +231,7 @@ export default function InvoicesPage() {
       {/* Header */}
       <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Viracis Billing & Invoices</h1>
+          <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Billing & Invoices</h1>
           <p className="mt-1 text-xs text-slate-500 font-medium">
             Curate PDF statements, dispatch automated client invoices to email, and manage payments.
           </p>
@@ -514,17 +514,14 @@ export default function InvoicesPage() {
               {/* Header: Company Logo & Statement Title */}
               <div className="flex items-start justify-between border-b border-slate-200 pb-6">
                 <div>
-                  <Image
-                    src="/viracis-logo.png"
-                    alt="Viracis Enterprise"
-                    width={160}
-                    height={48}
-                    className="h-10 w-auto object-contain"
-                    priority
+                  <img
+                    src="/CRM/Wizard Wash Logo.png"
+                    alt="Wizard Wash"
+                    className="h-12 w-auto object-contain"
                   />
-                  <p className="text-xs text-slate-500 font-semibold mt-2">Viracis Enterprise Technology Consulting</p>
-                  <p className="text-[11px] text-slate-400">100 West Broad Street • Richmond, VA 23220</p>
-                  <p className="text-[11px] text-slate-400">billing@viracis.com • (804) 503-3954</p>
+                  <p className="text-xs text-slate-500 font-semibold mt-2">Wizard Wash Exterior Cleaning</p>
+                  <p className="text-[11px] text-slate-400">Virginia Beach & Hampton Roads • VA</p>
+                  <p className="text-[11px] text-slate-400">omar@wizardwashva.com • (757) 555-0199</p>
                 </div>
 
                 <div className="text-right">

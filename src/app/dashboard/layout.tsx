@@ -32,8 +32,8 @@ export default async function DashboardLayout({
     redirect('/login')
   }
 
-  const userEmail = user?.email || 'admin@viracis.com'
-  let companyName = 'Viracis Enterprise'
+  const activeEmail = (user?.email && user.email !== 'admin@viracis.com') ? user.email : 'omar@wizardwashva.com'
+  let companyName = 'Wizard Wash'
 
   if (user) {
     try {
@@ -57,7 +57,7 @@ export default async function DashboardLayout({
       {/* Sidebar Navigation (Desktop Only) */}
       <aside className="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col">
         
-        {/* Top Left of Screen: Viracis Logo */}
+        {/* Top Left of Screen: Viracis Logo (Hardcoded for all portals) */}
         <div className="h-16 flex items-center px-6 border-b border-slate-200 shrink-0">
           <Link href="/dashboard" className="flex items-center">
             <Image
@@ -73,19 +73,17 @@ export default async function DashboardLayout({
         
         <SidebarNav />
 
-        {/* Viracis Account Section above Sign Out */}
+        {/* Wizard Wash Account Section above Sign Out */}
         <div className="p-4 border-t border-slate-200 space-y-3">
           <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-50 border border-slate-200/80">
-            <Image
-              src="/viracis-logo.png"
-              alt="Viracis"
-              width={36}
-              height={36}
-              className="w-8 h-8 object-contain rounded-lg shrink-0"
+            <img
+              src="/CRM/Wizard Wash Logo.png"
+              alt="Wizard Wash Logo"
+              className="w-8 h-8 object-contain rounded-lg shrink-0 bg-white p-0.5 border border-slate-200"
             />
             <div className="text-xs truncate min-w-0">
-              <p className="font-extrabold text-slate-900 truncate">Viracis CRM</p>
-              <p className="text-slate-500 truncate text-[11px] font-medium">{userEmail}</p>
+              <p className="font-extrabold text-slate-900 truncate">Wizard Wash CRM</p>
+              <p className="text-slate-500 truncate text-[11px] font-medium">{activeEmail}</p>
             </div>
           </div>
 
@@ -115,14 +113,12 @@ export default async function DashboardLayout({
           </Link>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-lg border border-slate-200">
-              <Image
-                src="/viracis-logo.png"
-                alt="Viracis"
-                width={20}
-                height={20}
+              <img
+                src="/CRM/Wizard Wash Logo.png"
+                alt="Wizard Wash"
                 className="w-5 h-5 object-contain rounded"
               />
-              <span className="text-[11px] font-bold text-slate-800">Viracis CRM</span>
+              <span className="text-[11px] font-bold text-slate-800">Wizard Wash CRM</span>
             </div>
             <form action="/auth/signout" method="post">
               <button className="text-[11px] text-red-600 font-bold px-2 py-1 bg-red-50 hover:bg-red-100 rounded-md border border-red-100 transition-colors">

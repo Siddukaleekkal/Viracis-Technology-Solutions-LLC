@@ -555,7 +555,7 @@ function parseCSVLine(text: string): string[] {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Viracis Account Directory</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Customer Directory</h1>
           <p className="mt-1 text-xs text-slate-500 font-medium">
             Manage your client contacts, service histories, and account statuses. Map pins auto-sync here.
           </p>

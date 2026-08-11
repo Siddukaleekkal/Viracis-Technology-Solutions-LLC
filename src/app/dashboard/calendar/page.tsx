@@ -379,7 +379,7 @@ export default function CalendarPage() {
           <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs space-y-2">
             <p className="font-semibold text-slate-900">Google Calendar Status</p>
             <p className="text-slate-600 text-[11px] leading-relaxed">
-              Account: <span className="font-semibold text-slate-800">admin@viracis.com</span><br/>
+              Account: <span className="font-semibold text-slate-800">omar@wizardwashva.com</span><br/>
               {syncedCount} dispatch jobs synchronized.
             </p>
           </div>
@@ -803,7 +803,7 @@ export default function CalendarPage() {
               <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 flex items-center justify-between">
                 <div>
                   <p className="font-semibold">Google OAuth Account Active</p>
-                  <p className="text-[11px] opacity-80">admin@viracis.com</p>
+                  <p className="text-[11px] opacity-80">omar@wizardwashva.com</p>
                 </div>
                 <span className="px-2 py-0.5 bg-emerald-600 text-white font-bold text-[10px] rounded">
                   CONNECTED
