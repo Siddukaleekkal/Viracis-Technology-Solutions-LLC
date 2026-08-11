@@ -788,7 +788,7 @@ function parseCSVLine(text: string): string[] {
                         Schedule
                       </button>
                       <Link
-                        href="/dashboard/messages"
+                        href={`/dashboard/messages?customer=${encodeURIComponent(customer.name)}`}
                         className="px-2.5 py-1 bg-slate-100 text-slate-700 font-semibold rounded-lg text-[11px]"
                       >
                         Message
@@ -923,7 +923,7 @@ function parseCSVLine(text: string): string[] {
                           Schedule
                         </button>
                         <Link
-                          href="/dashboard/messages"
+                          href={`/dashboard/messages?customer=${encodeURIComponent(customer.name)}`}
                           className="px-2.5 py-1 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded text-[11px] font-semibold transition-colors"
                         >
                           Message

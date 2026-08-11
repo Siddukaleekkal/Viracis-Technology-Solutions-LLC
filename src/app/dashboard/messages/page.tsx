@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 interface Message {
   id: string
@@ -19,25 +20,112 @@ interface Conversation {
   messages: Message[]
 }
 
-const initialConversations: Conversation[] = []
+const defaultDemoConversations: Conversation[] = [
+  {
+    id: 'conv-1',
+    customerName: 'Robert Taylor',
+    customerPhone: '(804) 555-0192',
+    unreadCount: 1,
+    lastActive: '10 min ago',
+    avatar: 'R',
+    messages: [
+      { id: 'm-1', sender: 'client', text: "Hi Wizard Wash! Are you available for a driveway power wash this Friday?", timestamp: '10:15 AM' },
+      { id: 'm-2', sender: 'admin', text: "Hello Robert! Yes, Truck 1 has an opening at 09:00 AM. Would that time work for you?", timestamp: '10:18 AM' },
+      { id: 'm-3', sender: 'client', text: "Perfect! Please schedule us in.", timestamp: '10:20 AM' },
+    ]
+  },
+  {
+    id: 'conv-2',
+    customerName: 'Sarah Jenkins',
+    customerPhone: '(804) 555-8371',
+    unreadCount: 0,
+    lastActive: '1 hour ago',
+    avatar: 'S',
+    messages: [
+      { id: 'm-4', sender: 'admin', text: "Hi Sarah, your exterior house soft wash invoice has been generated.", timestamp: '09:00 AM' },
+      { id: 'm-5', sender: 'client', text: "Thank you! Just paid via credit card.", timestamp: '09:12 AM' }
+    ]
+  },
+  {
+    id: 'conv-3',
+    customerName: 'Marcus Vance',
+    customerPhone: '(804) 555-4920',
+    unreadCount: 0,
+    lastActive: 'Yesterday',
+    avatar: 'M',
+    messages: [
+      { id: 'm-6', sender: 'client', text: "Need a quote for commercial property soft wash.", timestamp: 'Yesterday' }
+    ]
+  }
+]
 
 export default function MessagesPage() {
-  const [conversations, setConversations] = useState<Conversation[]>(initialConversations)
+  const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeConvId, setActiveConvId] = useState<string>('')
   const [inputMessage, setInputMessage] = useState('')
   const [showMobileChat, setShowMobileChat] = useState(false)
+  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false)
+  const [customerDirectory, setCustomerDirectory] = useState<any[]>([])
 
-  // Load persistent conversations from localStorage on mount
+  // Load persistent conversations and sync with CRM customer list on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('wizardwash_conversations')
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        setConversations(parsed)
-        if (parsed.length > 0) setActiveConvId(parsed[0].id)
+      let initialList: Conversation[] = []
+      const savedConvStr = localStorage.getItem('wizardwash_conversations')
+      
+      if (savedConvStr) {
+        initialList = JSON.parse(savedConvStr)
+      } else {
+        initialList = defaultDemoConversations
+        localStorage.setItem('wizardwash_conversations', JSON.stringify(defaultDemoConversations))
+      }
+
+      // Load customer directory from localStorage
+      const savedCustStr = localStorage.getItem('wizardwash_customers')
+      let custs = savedCustStr ? JSON.parse(savedCustStr) : []
+      setCustomerDirectory(custs)
+
+      // Auto-create threads for customers missing from conversations
+      custs.forEach((cust: any) => {
+        const exists = initialList.some((c) => c.customerName.toLowerCase() === cust.name.toLowerCase())
+        if (!exists) {
+          initialList.push({
+            id: `conv-${cust.id || Date.now()}`,
+            customerName: cust.name,
+            customerPhone: cust.phone || '(804) 555-0100',
+            unreadCount: 0,
+            lastActive: 'Just added',
+            avatar: cust.name.charAt(0).toUpperCase(),
+            messages: [
+              { id: `m-init-${Date.now()}`, sender: 'system', text: `SMS channel initialized for ${cust.name}`, timestamp: 'Just now' }
+            ]
+          })
+        }
+      })
+
+      setConversations(initialList)
+
+      // Handle URL query parameter targeting specific customer e.g. ?customer=John+Smith
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search)
+        const targetName = params.get('customer')
+        if (targetName) {
+          const matched = initialList.find((c) => c.customerName.toLowerCase().includes(targetName.toLowerCase()))
+          if (matched) {
+            setActiveConvId(matched.id)
+            setShowMobileChat(true)
+            return
+          }
+        }
+      }
+
+      if (initialList.length > 0 && !activeConvId) {
+        setActiveConvId(initialList[0].id)
       }
     } catch (e) {
       console.error('Failed to load conversations:', e)
+      setConversations(defaultDemoConversations)
+      setActiveConvId(defaultDemoConversations[0].id)
     }
   }, [])
 
@@ -56,11 +144,12 @@ export default function MessagesPage() {
     if (e) e.preventDefault()
     if (!inputMessage.trim() || !activeConvId) return
 
+    const sentText = inputMessage.trim()
     const newMsg: Message = {
       id: `m-${Date.now()}`,
       sender: 'admin',
-      text: inputMessage.trim(),
-      timestamp: 'Just now',
+      text: sentText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     }
 
     const updated = conversations.map((c) => {
@@ -77,6 +166,65 @@ export default function MessagesPage() {
 
     saveConversations(updated)
     setInputMessage('')
+
+    // Simulate automated client SMS reply after 2 seconds for active demo engagement
+    setTimeout(() => {
+      const autoReplies = [
+        "Received! Thanks for keeping me updated.",
+        "Sounds great, looking forward to the service!",
+        "Got it, thank you Wizard Wash!",
+        "Appreciate the quick response!",
+      ]
+      const randomReply = autoReplies[Math.floor(Math.random() * autoReplies.length)]
+
+      const replyMsg: Message = {
+        id: `m-reply-${Date.now()}`,
+        sender: 'client',
+        text: randomReply,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      }
+
+      setConversations((prev) => {
+        const refreshed = prev.map((c) => {
+          if (c.id === activeConvId) {
+            return {
+              ...c,
+              lastActive: 'Just now',
+              messages: [...c.messages, replyMsg],
+            }
+          }
+          return c
+        })
+        try {
+          localStorage.setItem('wizardwash_conversations', JSON.stringify(refreshed))
+        } catch (err) {}
+        return refreshed
+      })
+    }, 2000)
+  }
+
+  const startNewConversation = (cust: any) => {
+    const existing = conversations.find((c) => c.customerName.toLowerCase() === cust.name.toLowerCase())
+    if (existing) {
+      setActiveConvId(existing.id)
+    } else {
+      const newConv: Conversation = {
+        id: `conv-${Date.now()}`,
+        customerName: cust.name,
+        customerPhone: cust.phone || '(804) 555-0100',
+        unreadCount: 0,
+        lastActive: 'Just started',
+        avatar: cust.name.charAt(0).toUpperCase(),
+        messages: [
+          { id: `m-start-${Date.now()}`, sender: 'system', text: `Thread started with ${cust.name}`, timestamp: 'Just now' }
+        ]
+      }
+      const updated = [newConv, ...conversations]
+      saveConversations(updated)
+      setActiveConvId(newConv.id)
+    }
+    setShowMobileChat(true)
+    setIsNewChatModalOpen(false)
   }
 
   const applyTemplate = (text: string) => {
@@ -91,13 +239,19 @@ export default function MessagesPage() {
         <div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Client Messaging Center</h1>
           <p className="mt-1 text-xs text-slate-500 font-medium">
-            Real-time SMS & Email communication feed for automated follow-ups & customer replies.
+            Real-time SMS & Email communication feed for automated follow-ups, dispatches & client replies.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold text-xs rounded-lg flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            Twilio / SMS Gateway Ready
+          <button
+            onClick={() => setIsNewChatModalOpen(true)}
+            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+          >
+            <span>+</span> Start New Chat
+          </button>
+          <span className="px-3 py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold text-xs rounded-xl flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            SMS Gateway Active
           </span>
         </div>
       </div>
@@ -109,14 +263,26 @@ export default function MessagesPage() {
         <div className={`lg:col-span-4 bg-white rounded-xl border border-slate-200 shadow-sm flex-col overflow-hidden ${
           showMobileChat ? 'hidden lg:flex' : 'flex'
         }`}>
-          <div className="p-4 border-b border-slate-100 bg-slate-50">
-            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Conversations</h2>
+          <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Conversations ({conversations.length})</h2>
+            <button
+              onClick={() => setIsNewChatModalOpen(true)}
+              className="text-xs text-blue-600 hover:text-blue-800 font-bold"
+            >
+              + New
+            </button>
           </div>
           
           {conversations.length === 0 ? (
             <div className="flex-1 p-8 text-center text-slate-400 text-xs flex flex-col items-center justify-center space-y-2">
               <p className="font-semibold text-slate-600">No active threads</p>
               <p className="text-slate-400">Incoming customer SMS & email messages will appear here.</p>
+              <button
+                onClick={() => setIsNewChatModalOpen(true)}
+                className="px-3.5 py-1.5 bg-blue-600 text-white font-bold rounded-xl text-xs mt-2"
+              >
+                Start New Thread
+              </button>
             </div>
           ) : (
             <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
@@ -145,7 +311,7 @@ export default function MessagesPage() {
                         <p className="font-bold text-xs text-slate-900 truncate">{conv.customerName}</p>
                         <span className="text-[10px] text-slate-400 font-medium">{conv.lastActive}</span>
                       </div>
-                      <p className="text-[11px] text-slate-500 truncate mt-0.5">{lastMsg?.text}</p>
+                      <p className="text-[11px] text-slate-500 truncate mt-0.5">{lastMsg?.text || 'No messages'}</p>
                       <p className="text-[10px] text-slate-400 mt-1">{conv.customerPhone}</p>
                     </div>
                     {conv.unreadCount > 0 && (
@@ -169,6 +335,12 @@ export default function MessagesPage() {
             <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 space-y-2">
               <p className="font-semibold text-slate-600">Select or start a conversation</p>
               <p className="text-xs">Incoming messages and outbound SMS dispatches will load in this area.</p>
+              <button
+                onClick={() => setIsNewChatModalOpen(true)}
+                className="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl mt-2"
+              >
+                + Select Client from Directory
+              </button>
             </div>
           ) : (
             <>
@@ -186,10 +358,16 @@ export default function MessagesPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-slate-900">{activeConv.customerName}</h3>
-                    <p className="text-[11px] text-slate-500">{activeConv.customerPhone} • Active SMS Thread</p>
+                    <p className="text-[11px] text-slate-500">{activeConv.customerPhone} • Active 2-Way SMS</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  <a
+                    href={`sms:${activeConv.customerPhone}`}
+                    className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs rounded-lg border border-blue-200 flex items-center gap-1.5 transition-colors"
+                  >
+                    <span>Send SMS</span>
+                  </a>
                   <a
                     href={`tel:${activeConv.customerPhone}`}
                     className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs rounded-lg border border-emerald-200 flex items-center gap-1.5 transition-colors"
@@ -207,18 +385,32 @@ export default function MessagesPage() {
                 {activeConv.messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex flex-col ${msg.sender === 'admin' ? 'items-end' : 'items-start'}`}
+                    className={`flex flex-col ${
+                      msg.sender === 'admin'
+                        ? 'items-end'
+                        : msg.sender === 'system'
+                        ? 'items-center'
+                        : 'items-start'
+                    }`}
                   >
-                    <div
-                      className={`max-w-[80%] p-3 rounded-xl text-xs leading-relaxed shadow-sm ${
-                        msg.sender === 'admin'
-                          ? 'bg-slate-900 text-white'
-                          : 'bg-white text-slate-900 border border-slate-200'
-                      }`}
-                    >
-                      <p>{msg.text}</p>
-                    </div>
-                    <span className="text-[10px] text-slate-400 mt-1 px-1">{msg.timestamp}</span>
+                    {msg.sender === 'system' ? (
+                      <span className="px-3 py-1 bg-slate-200/60 text-slate-600 rounded-full text-[10px] font-semibold">
+                        {msg.text}
+                      </span>
+                    ) : (
+                      <>
+                        <div
+                          className={`max-w-[80%] p-3 rounded-xl text-xs leading-relaxed shadow-sm ${
+                            msg.sender === 'admin'
+                              ? 'bg-slate-900 text-white'
+                              : 'bg-white text-slate-900 border border-slate-200'
+                          }`}
+                        >
+                          <p>{msg.text}</p>
+                        </div>
+                        <span className="text-[10px] text-slate-400 mt-1 px-1">{msg.timestamp}</span>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>
@@ -228,19 +420,19 @@ export default function MessagesPage() {
                 <span className="font-semibold text-slate-400 uppercase text-[10px] whitespace-nowrap">Templates:</span>
                 <button
                   onClick={() => applyTemplate("Hi! Confirming our upcoming appointment for your house wash.")}
-                  className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded whitespace-nowrap font-medium"
+                  className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl whitespace-nowrap font-medium"
                 >
                   Confirm Job
                 </button>
                 <button
-                  onClick={() => applyTemplate("Your invoice has been generated and sent to your email. Thank you!")}
-                  className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded whitespace-nowrap font-medium"
+                  onClick={() => applyTemplate("Your invoice has been generated and sent. Thank you!")}
+                  className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl whitespace-nowrap font-medium"
                 >
                   Send Invoice Note
                 </button>
                 <button
                   onClick={() => applyTemplate("Our technician is en route to your address now!")}
-                  className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded whitespace-nowrap font-medium"
+                  className="px-2.5 py-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl whitespace-nowrap font-medium"
                 >
                   En Route
                 </button>
@@ -253,11 +445,11 @@ export default function MessagesPage() {
                   placeholder={`Message ${activeConv.customerName}...`}
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  className="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-medium"
+                  className="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-medium"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg shadow-sm shrink-0"
+                  className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm shrink-0 transition-colors"
                 >
                   Send SMS
                 </button>
@@ -268,6 +460,46 @@ export default function MessagesPage() {
         </div>
 
       </div>
+
+      {/* Start New Chat Modal */}
+      {isNewChatModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-base font-bold text-slate-900">Start New Message Thread</h2>
+              <button onClick={() => setIsNewChatModalOpen(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-500">
+              Select a customer account from your directory to open an SMS thread:
+            </p>
+
+            <div className="max-h-60 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl bg-slate-50">
+              {customerDirectory.length === 0 ? (
+                <div className="p-4 text-center text-xs text-slate-500">
+                  No customers found. Add customers in the Customers tab first.
+                </div>
+              ) : (
+                customerDirectory.map((cust: any) => (
+                  <button
+                    key={cust.id}
+                    onClick={() => startNewConversation(cust)}
+                    className="w-full p-3 text-left hover:bg-slate-100 flex items-center justify-between transition-colors"
+                  >
+                    <div>
+                      <p className="font-bold text-xs text-slate-900">{cust.name}</p>
+                      <p className="text-[11px] text-slate-400">{cust.phone} • {cust.address}</p>
+                    </div>
+                    <span className="text-xs font-bold text-blue-600">Message ›</span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )
