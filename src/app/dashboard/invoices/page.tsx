@@ -123,8 +123,84 @@ export default function InvoicesPage() {
     }, 1200)
   }
 
-  const handlePrintPdf = () => {
-    window.print()
+  const handleDownloadPdfFile = (inv: Invoice) => {
+    setSelectedPdfInvoice(inv)
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Invoice ${inv.id} - Viracis Enterprise</title>
+        <style>
+          body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #0F172A; padding: 40px; max-width: 800px; margin: 0 auto; }
+          .header { display: flex; justify-content: space-between; border-bottom: 2px solid #E2E8F0; padding-bottom: 20px; }
+          .logo { font-size: 24px; font-weight: bold; color: #0F172A; }
+          .title { font-size: 28px; font-weight: 900; text-align: right; }
+          .bill-to { background: #F8FAFC; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+          th { background: #F1F5F9; padding: 10px; text-align: left; text-transform: uppercase; font-size: 12px; }
+          td { padding: 12px 10px; border-bottom: 1px solid #E2E8F0; }
+          .total { text-align: right; margin-top: 20px; font-size: 18px; font-weight: bold; }
+          .footer { margin-top: 40px; font-size: 12px; color: #64748B; border-top: 1px solid #E2E8F0; padding-top: 15px; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="logo">Viracis Enterprise</div>
+            <p style="font-size:12px; color:#64748B; margin: 4px 0;">100 West Broad Street • Richmond, VA 23220</p>
+            <p style="font-size:12px; color:#64748B; margin: 0;">billing@viracis.com • (804) 503-3954</p>
+          </div>
+          <div class="title">
+            INVOICE
+            <div style="font-size: 14px; font-weight: bold; color: #475569; margin-top: 4px;">#${inv.id}</div>
+            <div style="font-size: 12px; color: #64748B; margin-top: 4px;">Date: ${inv.issueDate} | Due: ${inv.dueDate}</div>
+            <div style="font-size: 12px; color: ${inv.status === 'Paid' ? '#059669' : '#2563EB'}; font-weight: bold;">Status: ${inv.status.toUpperCase()}</div>
+          </div>
+        </div>
+
+        <div class="bill-to">
+          <strong>Billed To:</strong> ${inv.customer} (${inv.email})<br/>
+          <strong>Service Address:</strong> ${inv.address}
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Service Description</th>
+              <th style="text-align: center;">Qty</th>
+              <th style="text-align: right;">Unit Price</th>
+              <th style="text-align: right;">Total Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>${inv.service}</strong><br/><span style="font-size:11px; color:#64748B;">Complete exterior cleaning & surface treatment.</span></td>
+              <td style="text-align: center;">1</td>
+              <td style="text-align: right;">${inv.amount}</td>
+              <td style="text-align: right;"><strong>${inv.amount}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="total">
+          Total Balance Due: <span style="color: #2563EB;">${inv.amount}</span>
+        </div>
+
+        <div class="footer">
+          Thank you for your business! Please remit payments online or via check payable to <strong>Viracis LLC</strong>.
+        </div>
+        <script>
+          window.onload = function() { window.print(); }
+        </script>
+      </body>
+      </html>
+    `
+
+    const printWindow = window.open('', '_blank')
+    if (printWindow) {
+      printWindow.document.write(htmlContent)
+      printWindow.document.close()
+    }
   }
 
   const filteredInvoices = invoices.filter((inv) => filter === 'All' || inv.status === filter)
@@ -544,7 +620,7 @@ export default function InvoicesPage() {
                   <span>📧</span> Email PDF to {selectedPdfInvoice.email}
                 </button>
                 <button
-                  onClick={handlePrintPdf}
+                  onClick={() => handleDownloadPdfFile(selectedPdfInvoice)}
                   className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
                 >
                   <span>🖨️</span> Download / Print PDF
