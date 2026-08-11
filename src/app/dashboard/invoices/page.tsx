@@ -89,8 +89,8 @@ export default function InvoicesPage() {
       {/* Header */}
       <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Billing & Invoices</h1>
-          <p className="hidden sm:block mt-0.5 text-xs text-slate-500 font-medium">
+          <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Viracis Billing & Invoices</h1>
+          <p className="mt-1 text-xs text-slate-500 font-medium">
             Track client statements, record payments, and manage outstanding balances.
           </p>
         </div>

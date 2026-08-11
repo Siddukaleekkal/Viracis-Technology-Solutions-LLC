@@ -181,8 +181,8 @@ export default function DashboardPage() {
       {/* Executive Header - Streamlined for Mobile */}
       <div className="flex items-center justify-between gap-2 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Dashboard</h1>
-          <p className="hidden sm:block mt-0.5 text-xs text-slate-500 font-medium">
+          <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Viracis Operations Dashboard</h1>
+          <p className="mt-1 text-[11px] sm:text-xs text-slate-500 font-medium">
             System Account: <span className="font-semibold text-slate-800">omar@wizardwashva.com</span> • Real-time operational overview
           </p>
         </div>

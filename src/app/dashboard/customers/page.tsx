@@ -555,7 +555,7 @@ function parseCSVLine(text: string): string[] {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Account Directory</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Viracis Account Directory</h1>
           <p className="mt-1 text-xs text-slate-500 font-medium">
             Manage your client contacts, service histories, and account statuses. Map pins auto-sync here.
           </p>
@@ -1108,7 +1108,7 @@ function parseCSVLine(text: string): string[] {
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h2 className="text-base font-bold text-slate-900">Import CSV Customer Data</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Upload any CSV file to migrate client contacts into Wizard Wash</p>
+                <p className="text-xs text-slate-500 mt-0.5">Upload any CSV file to migrate client contacts into Viracis CRM</p>
               </div>
               <button onClick={() => setIsImportModalOpen(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
                 ✕
