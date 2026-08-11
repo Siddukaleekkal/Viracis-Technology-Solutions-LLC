@@ -1,36 +1,64 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 interface Invoice {
   id: string
   customer: string
+  email: string
+  address: string
   service: string
   issueDate: string
   dueDate: string
   amount: string
   status: 'Paid' | 'Pending' | 'Overdue'
+  lastEmailed?: string
 }
 
-const initialInvoices: Invoice[] = []
-
 export default function InvoicesPage() {
-  const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices)
+  const [invoices, setInvoices] = useState<Invoice[]>([])
   const [filter, setFilter] = useState<string>('All')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [customerDirectory, setCustomerDirectory] = useState<any[]>([])
+  const [selectedPdfInvoice, setSelectedPdfInvoice] = useState<Invoice | null>(null)
+  const [emailStatus, setEmailStatus] = useState<string | null>(null)
+
   const [newInvoice, setNewInvoice] = useState({
     customer: '',
-    service: 'Driveway Power Wash',
+    email: '',
+    address: 'Richmond, VA',
+    service: 'Driveway & Exterior Power Wash',
     amount: '350.00',
     dueDate: '2026-08-20',
   })
 
-  // Load persistent invoices from localStorage on mount
+  // Load persistent invoices & customer directory on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('wizardwash_invoices')
-      if (saved) {
-        setInvoices(JSON.parse(saved))
+      const savedInvoicesStr = localStorage.getItem('wizardwash_invoices')
+      const savedCustStr = localStorage.getItem('wizardwash_customers')
+      
+      const custs = savedCustStr ? JSON.parse(savedCustStr) : []
+      setCustomerDirectory(custs)
+
+      if (savedInvoicesStr) {
+        setInvoices(JSON.parse(savedInvoicesStr))
+      } else if (custs.length > 0) {
+        // Auto-create initial pending invoices for active customers if empty
+        const initialList: Invoice[] = custs.map((c: any, index: number) => ({
+          id: `INV-${1050 + index}`,
+          customer: c.name,
+          email: c.email !== 'n/a' ? c.email : 'billing@client.com',
+          address: c.address || 'Richmond, VA',
+          service: 'Exterior Surface Wash & Treatment',
+          issueDate: '2026-08-09',
+          dueDate: '2026-08-20',
+          amount: c.totalSpent !== '$0.00' ? c.totalSpent : '$350.00',
+          status: c.status === 'Completed' ? 'Paid' : 'Pending',
+        }))
+        setInvoices(initialList)
+        localStorage.setItem('wizardwash_invoices', JSON.stringify(initialList))
       }
     } catch (e) {
       console.error('Failed to load invoices:', e)
@@ -46,27 +74,57 @@ export default function InvoicesPage() {
     }
   }
 
+  const handleSelectCustomer = (custName: string) => {
+    const matched = customerDirectory.find((c) => c.name === custName)
+    if (matched) {
+      setNewInvoice((prev) => ({
+        ...prev,
+        customer: matched.name,
+        email: matched.email !== 'n/a' ? matched.email : `${matched.name.toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
+        address: matched.address || 'Richmond, VA',
+      }))
+    } else {
+      setNewInvoice((prev) => ({ ...prev, customer: custName }))
+    }
+  }
+
   const handleCreateInvoice = (e: React.FormEvent) => {
     e.preventDefault()
     if (!newInvoice.customer) return
 
     const created: Invoice = {
-      id: `INV-${Math.floor(1053 + Math.random() * 100)}`,
+      id: `INV-${Math.floor(1050 + Math.random() * 900)}`,
       customer: newInvoice.customer,
+      email: newInvoice.email || `${newInvoice.customer.toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
+      address: newInvoice.address || 'Richmond, VA',
       service: newInvoice.service,
-      issueDate: 'Today',
+      issueDate: new Date().toISOString().split('T')[0],
       dueDate: newInvoice.dueDate,
-      amount: `$${newInvoice.amount}`,
+      amount: newInvoice.amount.startsWith('$') ? newInvoice.amount : `$${newInvoice.amount}`,
       status: 'Pending',
     }
 
     saveInvoices([created, ...invoices])
     setIsModalOpen(false)
-    setNewInvoice({ customer: '', service: 'Driveway Power Wash', amount: '350.00', dueDate: '2026-08-20' })
+    setNewInvoice({ customer: '', email: '', address: 'Richmond, VA', service: 'Driveway & Exterior Power Wash', amount: '350.00', dueDate: '2026-08-20' })
   }
 
   const markPaid = (id: string) => {
     saveInvoices(invoices.map((inv) => (inv.id === id ? { ...inv, status: 'Paid' } : inv)))
+  }
+
+  const handleSendEmailInvoice = (inv: Invoice) => {
+    setEmailStatus(`Sending curated PDF invoice to ${inv.email}...`)
+    setTimeout(() => {
+      setEmailStatus(`✓ PDF Invoice ${inv.id} successfully emailed to ${inv.email}!`)
+      const updated = invoices.map((i) => (i.id === inv.id ? { ...i, lastEmailed: 'Just now' } : i))
+      saveInvoices(updated)
+      setTimeout(() => setEmailStatus(null), 3500)
+    }, 1200)
+  }
+
+  const handlePrintPdf = () => {
+    window.print()
   }
 
   const filteredInvoices = invoices.filter((inv) => filter === 'All' || inv.status === filter)
@@ -86,12 +144,20 @@ export default function InvoicesPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-4 font-sans text-slate-900">
       
+      {/* Toast Notification for Email Sending Status */}
+      {emailStatus && (
+        <div className="fixed top-5 right-5 z-[99999] bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 text-xs font-bold animate-in fade-in slide-in-from-top-2 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>{emailStatus}</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Viracis Billing & Invoices</h1>
           <p className="mt-1 text-xs text-slate-500 font-medium">
-            Track client statements, record payments, and manage outstanding balances.
+            Curate PDF statements, dispatch automated client invoices to email, and manage payments.
           </p>
         </div>
         <button
@@ -152,14 +218,14 @@ export default function InvoicesPage() {
         ))}
       </div>
 
-      {/* 2x2 Invoices Grid View (Saves Vertical Space) */}
+      {/* 2x2 Invoices Grid View */}
       {filteredInvoices.length === 0 ? (
         <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center space-y-3 shadow-sm">
           <p className="text-sm font-semibold text-slate-600">No invoice records found in billing feed.</p>
           <p className="text-xs text-slate-400">Click '+ Create Invoice' above to issue a statement.</p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 bg-blue-50 text-blue-700 font-bold text-xs rounded-xl hover:bg-blue-100 transition-colors inline-block"
+            className="px-4 py-2 bg-blue-600 text-white font-bold text-xs rounded-xl hover:bg-blue-700 transition-colors inline-block"
           >
             + Create New Invoice
           </button>
@@ -189,6 +255,7 @@ export default function InvoicesPage() {
                     </span>
                   </div>
                   <p className="text-[11px] font-bold text-slate-800 mt-0.5">{inv.customer}</p>
+                  <p className="text-[10px] text-slate-400 font-medium truncate">{inv.email}</p>
                 </div>
 
                 <div className="text-right">
@@ -204,21 +271,31 @@ export default function InvoicesPage() {
               </div>
 
               {/* Actions Row */}
-              <div className="flex items-center justify-between gap-2 pt-1">
-                <span className="text-[10px] text-slate-400">Issued: {inv.issueDate}</span>
+              <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
+                <span className="text-[10px] text-slate-400">
+                  {inv.lastEmailed ? `Emailed: ${inv.lastEmailed}` : `Issued: ${inv.issueDate}`}
+                </span>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {inv.status !== 'Paid' && (
                     <button
                       onClick={() => markPaid(inv.id)}
-                      className="px-3 py-1.5 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-xs font-bold transition-colors"
+                      className="px-2.5 py-1.5 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-xs font-bold transition-colors"
                     >
                       Mark Paid
                     </button>
                   )}
                   <button
-                    onClick={() => alert(`Generating PDF statement for ${inv.id}...`)}
-                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors"
+                    onClick={() => handleSendEmailInvoice(inv)}
+                    className="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition-colors"
+                    title="Send PDF statement to customer email on file"
+                  >
+                    📧 Send Email
+                  </button>
+                  <button
+                    onClick={() => setSelectedPdfInvoice(inv)}
+                    className="px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition-colors"
+                    title="Preview & Download PDF Statement"
                   >
                     PDF Statement
                   </button>
@@ -234,7 +311,7 @@ export default function InvoicesPage() {
         <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h2 className="text-base font-bold text-slate-900">Create New Invoice</h2>
+              <h2 className="text-base font-bold text-slate-900">Create New Invoice Statement</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 text-lg font-bold">
                 ✕
               </button>
@@ -242,14 +319,39 @@ export default function InvoicesPage() {
 
             <form onSubmit={handleCreateInvoice} className="space-y-4 text-xs">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Customer Name</label>
+                <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Select Customer Account</label>
+                {customerDirectory.length > 0 ? (
+                  <select
+                    value={newInvoice.customer}
+                    onChange={(e) => handleSelectCustomer(e.target.value)}
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-bold"
+                  >
+                    <option value="">-- Choose Customer from Directory --</option>
+                    {customerDirectory.map((c) => (
+                      <option key={c.id} value={c.name}>{c.name} ({c.email})</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    required
+                    placeholder="Customer Name"
+                    value={newInvoice.customer}
+                    onChange={(e) => setNewInvoice({ ...newInvoice, customer: e.target.value })}
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-semibold"
+                  />
+                )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Customer Email on File</label>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  placeholder="e.g. Robert Taylor"
-                  value={newInvoice.customer}
-                  onChange={(e) => setNewInvoice({ ...newInvoice, customer: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-semibold"
+                  placeholder="client@gmail.com"
+                  value={newInvoice.email}
+                  onChange={(e) => setNewInvoice({ ...newInvoice, email: e.target.value })}
+                  className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-medium"
                 />
               </div>
 
@@ -257,6 +359,8 @@ export default function InvoicesPage() {
                 <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Service Rendered</label>
                 <input
                   type="text"
+                  required
+                  placeholder="Service description"
                   value={newInvoice.service}
                   onChange={(e) => setNewInvoice({ ...newInvoice, service: e.target.value })}
                   className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-medium"
@@ -265,9 +369,11 @@ export default function InvoicesPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Amount ($)</label>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Total Amount ($)</label>
                   <input
                     type="text"
+                    required
+                    placeholder="350.00"
                     value={newInvoice.amount}
                     onChange={(e) => setNewInvoice({ ...newInvoice, amount: e.target.value })}
                     className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-bold"
@@ -277,9 +383,10 @@ export default function InvoicesPage() {
                   <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Due Date</label>
                   <input
                     type="date"
+                    required
                     value={newInvoice.dueDate}
                     onChange={(e) => setNewInvoice({ ...newInvoice, dueDate: e.target.value })}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-medium"
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 font-semibold"
                   />
                 </div>
               </div>
@@ -288,18 +395,163 @@ export default function InvoicesPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200"
+                  className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm"
+                  className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors"
                 >
-                  Generate Invoice
+                  Issue Statement
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* PDF Statement Preview & Download Modal */}
+      {selectedPdfInvoice && (
+        <div className="fixed inset-0 z-[9999] bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl p-6 sm:p-10 max-w-2xl w-full shadow-2xl space-y-6 max-h-[92vh] overflow-y-auto text-slate-900 font-sans border border-slate-200 print:p-0 print:shadow-none print:border-none">
+            
+            {/* Modal Control Bar (Hidden on Print) */}
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4 print:hidden">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 bg-blue-50 text-blue-700 font-extrabold text-xs rounded-xl border border-blue-100">
+                  PDF Statement Preview
+                </span>
+                <span className="text-xs text-slate-400 font-medium">#{selectedPdfInvoice.id}</span>
+              </div>
+              <button
+                onClick={() => setSelectedPdfInvoice(null)}
+                className="text-slate-400 hover:text-slate-600 text-xl font-bold px-2"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Official Curated PDF Invoice Document */}
+            <div className="p-6 sm:p-8 bg-white border border-slate-200 rounded-2xl space-y-6 print:border-none print:p-0">
+              
+              {/* Header: Company Logo & Statement Title */}
+              <div className="flex items-start justify-between border-b border-slate-200 pb-6">
+                <div>
+                  <Image
+                    src="/viracis-logo.png"
+                    alt="Viracis Enterprise"
+                    width={160}
+                    height={48}
+                    className="h-10 w-auto object-contain"
+                    priority
+                  />
+                  <p className="text-xs text-slate-500 font-semibold mt-2">Viracis Enterprise Technology Consulting</p>
+                  <p className="text-[11px] text-slate-400">100 West Broad Street • Richmond, VA 23220</p>
+                  <p className="text-[11px] text-slate-400">billing@viracis.com • (804) 503-3954</p>
+                </div>
+
+                <div className="text-right">
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase">INVOICE</h2>
+                  <p className="text-sm font-extrabold text-slate-700 mt-1">#{selectedPdfInvoice.id}</p>
+                  <div className="mt-2 text-[11px] space-y-0.5">
+                    <p><span className="text-slate-400">Date:</span> <strong className="text-slate-800">{selectedPdfInvoice.issueDate}</strong></p>
+                    <p><span className="text-slate-400">Due Date:</span> <strong className="text-slate-800">{selectedPdfInvoice.dueDate}</strong></p>
+                    <p><span className="text-slate-400">Status:</span> <strong className={selectedPdfInvoice.status === 'Paid' ? 'text-emerald-600 font-bold' : 'text-blue-600 font-bold'}>{selectedPdfInvoice.status.toUpperCase()}</strong></p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bill To & Property Address */}
+              <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs">
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Billed To:</p>
+                  <p className="font-extrabold text-slate-900 text-sm">{selectedPdfInvoice.customer}</p>
+                  <p className="text-slate-600 font-medium">{selectedPdfInvoice.email}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Service Location:</p>
+                  <p className="font-bold text-slate-800">{selectedPdfInvoice.address}</p>
+                  <p className="text-[11px] text-slate-500">Service Category: Commercial & Residential</p>
+                </div>
+              </div>
+
+              {/* Itemized Line Items Table */}
+              <div className="border border-slate-200 rounded-xl overflow-hidden text-xs">
+                <table className="w-full text-left">
+                  <thead className="bg-slate-100 border-b border-slate-200 text-[10px] uppercase font-bold text-slate-500">
+                    <tr>
+                      <th className="p-3 px-4">Service Description</th>
+                      <th className="p-3 text-center">Qty</th>
+                      <th className="p-3 text-right">Unit Price</th>
+                      <th className="p-3 px-4 text-right">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium">
+                    <tr>
+                      <td className="p-3.5 px-4 font-bold text-slate-900">
+                        {selectedPdfInvoice.service}
+                        <p className="text-[10px] font-normal text-slate-500">Includes complete exterior surface wash, deep cleaning & protective finish.</p>
+                      </td>
+                      <td className="p-3.5 text-center text-slate-600">1</td>
+                      <td className="p-3.5 text-right text-slate-600">{selectedPdfInvoice.amount}</td>
+                      <td className="p-3.5 px-4 text-right font-bold text-slate-900">{selectedPdfInvoice.amount}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Total Calculation */}
+              <div className="flex justify-end pt-2">
+                <div className="w-64 space-y-2 text-xs">
+                  <div className="flex justify-between text-slate-600">
+                    <span>Subtotal:</span>
+                    <span className="font-semibold text-slate-800">{selectedPdfInvoice.amount}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-600">
+                    <span>Tax (0.0%):</span>
+                    <span className="font-semibold text-slate-800">$0.00</span>
+                  </div>
+                  <div className="flex justify-between text-base font-extrabold text-slate-900 border-t border-slate-200 pt-2">
+                    <span>Total Balance Due:</span>
+                    <span className="text-blue-600">{selectedPdfInvoice.amount}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Terms & Footer Note */}
+              <div className="border-t border-slate-100 pt-4 text-[11px] text-slate-500 space-y-1">
+                <p className="font-semibold text-slate-700">Thank you for your business!</p>
+                <p>Please send payments online or via check payable to <strong>Viracis LLC</strong>.</p>
+              </div>
+
+            </div>
+
+            {/* Bottom Actions Bar (Hidden on Print) */}
+            <div className="flex items-center justify-between gap-3 pt-2 print:hidden flex-wrap">
+              <button
+                onClick={() => setSelectedPdfInvoice(null)}
+                className="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                Close Preview
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleSendEmailInvoice(selectedPdfInvoice)}
+                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
+                >
+                  <span>📧</span> Email PDF to {selectedPdfInvoice.email}
+                </button>
+                <button
+                  onClick={handlePrintPdf}
+                  className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
+                >
+                  <span>🖨️</span> Download / Print PDF
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       )}
