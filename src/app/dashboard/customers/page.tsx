@@ -778,7 +778,6 @@ function parseCSVLine(text: string): string[] {
                       <p><span className="text-slate-400 font-medium">Address:</span> <strong className="text-slate-800">{customer.address}</strong></p>
                       <p><span className="text-slate-400 font-medium">Email:</span> <strong className="text-slate-800">{customer.email}</strong></p>
                       <p><span className="text-slate-400 font-medium">Spent:</span> <strong className="text-slate-900">{customer.totalSpent}</strong></p>
-                      <p><span className="text-slate-400 font-medium">History:</span> <span className="text-slate-700">{customer.lastService}</span></p>
                     </div>
 
                     <div className="flex items-center justify-end gap-2 pt-1">
@@ -834,7 +833,6 @@ function parseCSVLine(text: string): string[] {
                 <th className="py-3 px-4">Location</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4">Total Spent</th>
-                <th className="py-3 px-4">Last Service</th>
                 <th className="py-3 px-5 text-right">Actions</th>
               </tr>
             </thead>
@@ -915,9 +913,6 @@ function parseCSVLine(text: string): string[] {
                       </select>
                     </td>
                     <td className="py-4 px-4 font-bold text-slate-900">{customer.totalSpent}</td>
-                    <td className="py-4 px-4 text-slate-600 max-w-[200px] truncate">
-                      {customer.lastService}
-                    </td>
                     <td className="py-4 px-5 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
