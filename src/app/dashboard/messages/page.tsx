@@ -20,45 +20,6 @@ interface Conversation {
   messages: Message[]
 }
 
-const defaultDemoConversations: Conversation[] = [
-  {
-    id: 'conv-1',
-    customerName: 'Robert Taylor',
-    customerPhone: '(804) 555-0192',
-    unreadCount: 1,
-    lastActive: '10 min ago',
-    avatar: 'R',
-    messages: [
-      { id: 'm-1', sender: 'client', text: "Hi Wizard Wash! Are you available for a driveway power wash this Friday?", timestamp: '10:15 AM' },
-      { id: 'm-2', sender: 'admin', text: "Hello Robert! Yes, Truck 1 has an opening at 09:00 AM. Would that time work for you?", timestamp: '10:18 AM' },
-      { id: 'm-3', sender: 'client', text: "Perfect! Please schedule us in.", timestamp: '10:20 AM' },
-    ]
-  },
-  {
-    id: 'conv-2',
-    customerName: 'Sarah Jenkins',
-    customerPhone: '(804) 555-8371',
-    unreadCount: 0,
-    lastActive: '1 hour ago',
-    avatar: 'S',
-    messages: [
-      { id: 'm-4', sender: 'admin', text: "Hi Sarah, your exterior house soft wash invoice has been generated.", timestamp: '09:00 AM' },
-      { id: 'm-5', sender: 'client', text: "Thank you! Just paid via credit card.", timestamp: '09:12 AM' }
-    ]
-  },
-  {
-    id: 'conv-3',
-    customerName: 'Marcus Vance',
-    customerPhone: '(804) 555-4920',
-    unreadCount: 0,
-    lastActive: 'Yesterday',
-    avatar: 'M',
-    messages: [
-      { id: 'm-6', sender: 'client', text: "Need a quote for commercial property soft wash.", timestamp: 'Yesterday' }
-    ]
-  }
-]
-
 export default function MessagesPage() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeConvId, setActiveConvId] = useState<string>('')
@@ -67,7 +28,7 @@ export default function MessagesPage() {
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false)
   const [customerDirectory, setCustomerDirectory] = useState<any[]>([])
 
-  // Load persistent conversations and sync with CRM customer list on mount
+  // Load persistent conversations and sync ONLY with active CRM customer list on mount
   useEffect(() => {
     try {
       let initialList: Conversation[] = []
@@ -75,9 +36,6 @@ export default function MessagesPage() {
       
       if (savedConvStr) {
         initialList = JSON.parse(savedConvStr)
-      } else {
-        initialList = defaultDemoConversations
-        localStorage.setItem('wizardwash_conversations', JSON.stringify(defaultDemoConversations))
       }
 
       // Load customer directory from localStorage
@@ -85,7 +43,11 @@ export default function MessagesPage() {
       let custs = savedCustStr ? JSON.parse(savedCustStr) : []
       setCustomerDirectory(custs)
 
-      // Auto-create threads for customers missing from conversations
+      // Only keep conversations for customers that actually exist in the customer directory
+      const activeCustomerNames = new Set(custs.map((c: any) => c.name.toLowerCase()))
+      initialList = initialList.filter((c) => activeCustomerNames.has(c.customerName.toLowerCase()))
+
+      // Auto-create threads for customers in directory missing from conversations
       custs.forEach((cust: any) => {
         const exists = initialList.some((c) => c.customerName.toLowerCase() === cust.name.toLowerCase())
         if (!exists) {
@@ -94,16 +56,17 @@ export default function MessagesPage() {
             customerName: cust.name,
             customerPhone: cust.phone || '(804) 555-0100',
             unreadCount: 0,
-            lastActive: 'Just added',
+            lastActive: 'Active thread',
             avatar: cust.name.charAt(0).toUpperCase(),
             messages: [
-              { id: `m-init-${Date.now()}`, sender: 'system', text: `SMS channel initialized for ${cust.name}`, timestamp: 'Just now' }
+              { id: `m-init-${Date.now()}`, sender: 'system', text: `SMS thread active for ${cust.name}`, timestamp: 'Just now' }
             ]
           })
         }
       })
 
       setConversations(initialList)
+      localStorage.setItem('wizardwash_conversations', JSON.stringify(initialList))
 
       // Handle URL query parameter targeting specific customer e.g. ?customer=John+Smith
       if (typeof window !== 'undefined') {
@@ -124,8 +87,7 @@ export default function MessagesPage() {
       }
     } catch (e) {
       console.error('Failed to load conversations:', e)
-      setConversations(defaultDemoConversations)
-      setActiveConvId(defaultDemoConversations[0].id)
+      setConversations([])
     }
   }, [])
 
