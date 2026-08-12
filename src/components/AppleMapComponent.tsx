@@ -261,13 +261,13 @@ const geocodeVirginiaAddress = (addressStr: string, cityZipStr: string, nameStr:
           if (customerList.length === 0) {
             rawPins = []
           } else {
-            const custMap = new Map(customerList.map((c: any) => [c.name.toLowerCase(), c]))
+            const custMap = new Map<string, any>(customerList.map((c: any) => [c.name.toLowerCase(), c]))
 
             // 1. Keep pins belonging to existing active customers AND FORCE SYNC GEOLOCATION & STATUS
             rawPins = rawPins
               .filter((p) => custMap.has(p.customer.toLowerCase()))
               .map((p) => {
-                const cust = custMap.get(p.customer.toLowerCase())!
+                const cust: any = custMap.get(p.customer.toLowerCase()) || {}
                 const coords = geocodeVirginiaAddress(cust.address, cust.cityZip, cust.name)
                 return {
                   ...p,

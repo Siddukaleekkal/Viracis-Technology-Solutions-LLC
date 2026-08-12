@@ -786,7 +786,7 @@ export default function CalendarPage() {
             </button>
             <button
               onClick={() => {
-                const updated = jobs.map((j) => (j.id === selectedJob.id ? { ...j, status: 'Completed' } : j))
+                const updated: JobEvent[] = jobs.map((j) => (j.id === selectedJob.id ? { ...j, status: 'Completed' } : j))
                 saveJobs(updated)
                 setSelectedJob({ ...selectedJob, status: 'Completed' })
               }}
