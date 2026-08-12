@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { getTenantConfig, getActiveTenantEmailFromCookie } from '@/lib/tenant'
 
 interface Invoice {
   id: string
@@ -17,6 +18,7 @@ interface Invoice {
 }
 
 export default function InvoicesPage() {
+  const [tenant, setTenant] = useState(() => getTenantConfig(getActiveTenantEmailFromCookie()))
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [filter, setFilter] = useState<string>('All')
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -36,29 +38,19 @@ export default function InvoicesPage() {
   // Load persistent invoices & customer directory on mount
   useEffect(() => {
     try {
-      const savedInvoicesStr = localStorage.getItem('wizardwash_invoices')
-      const savedCustStr = localStorage.getItem('wizardwash_customers')
+      const activeEmail = getActiveTenantEmailFromCookie()
+      const currentTenant = getTenantConfig(activeEmail)
+      setTenant(currentTenant)
+      const prefix = currentTenant.storagePrefix
+
+      const savedInvoicesStr = localStorage.getItem(`${prefix}invoices`)
+      const savedCustStr = localStorage.getItem(`${prefix}customers`)
       
       const custs = savedCustStr ? JSON.parse(savedCustStr) : []
       setCustomerDirectory(custs)
 
       if (savedInvoicesStr) {
         setInvoices(JSON.parse(savedInvoicesStr))
-      } else if (custs.length > 0) {
-        // Auto-create initial pending invoices for active customers if empty
-        const initialList: Invoice[] = custs.map((c: any, index: number) => ({
-          id: `INV-${1050 + index}`,
-          customer: c.name,
-          email: c.email !== 'n/a' ? c.email : 'billing@client.com',
-          address: c.address || 'Richmond, VA',
-          service: 'Exterior Surface Wash & Treatment',
-          issueDate: '2026-08-09',
-          dueDate: '2026-08-20',
-          amount: c.totalSpent !== '$0.00' ? c.totalSpent : '$350.00',
-          status: c.status === 'Completed' ? 'Paid' : 'Pending',
-        }))
-        setInvoices(initialList)
-        localStorage.setItem('wizardwash_invoices', JSON.stringify(initialList))
       }
     } catch (e) {
       console.error('Failed to load invoices:', e)
@@ -68,7 +60,9 @@ export default function InvoicesPage() {
   const saveInvoices = (updated: Invoice[]) => {
     setInvoices(updated)
     try {
-      localStorage.setItem('wizardwash_invoices', JSON.stringify(updated))
+      const activeEmail = getActiveTenantEmailFromCookie()
+      const currentTenant = getTenantConfig(activeEmail)
+      localStorage.setItem(`${currentTenant.storagePrefix}invoices`, JSON.stringify(updated))
     } catch (e) {
       console.error('Failed to save invoices:', e)
     }
@@ -218,8 +212,8 @@ export default function InvoicesPage() {
     .reduce((acc, inv) => acc + (parseFloat(inv.amount.replace(/[^0-9.]/g, '')) || 0), 0)
 
   return (
-    <div className="max-w-7xl mx-auto space-y-4 font-sans text-slate-900">
-      
+    <div className="h-[calc(100dvh-180px)] md:h-[calc(100vh-80px)] w-full max-w-7xl mx-auto flex flex-col font-sans text-slate-900 overflow-hidden relative">
+      <div className="flex-1 overflow-y-auto space-y-4 pr-1 pb-6">
       {/* Toast Notification for Email Sending Status */}
       {emailStatus && (
         <div className="fixed top-5 right-5 z-[99999] bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 text-xs font-bold animate-in fade-in slide-in-from-top-2 flex items-center gap-2">
@@ -231,7 +225,7 @@ export default function InvoicesPage() {
       {/* Header */}
       <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Billing & Invoices</h1>
+          <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">{tenant.invoicesTitle}</h1>
           <p className="mt-1 text-xs text-slate-500 font-medium">
             Curate PDF statements, dispatch automated client invoices to email, and manage payments.
           </p>
@@ -366,7 +360,7 @@ export default function InvoicesPage() {
                     className="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition-colors"
                     title="Send PDF statement to customer email on file"
                   >
-                    📧 Send Email
+                    Send Email
                   </button>
                   <button
                     onClick={() => setSelectedPdfInvoice(inv)}
@@ -515,13 +509,13 @@ export default function InvoicesPage() {
               <div className="flex items-start justify-between border-b border-slate-200 pb-6">
                 <div>
                   <img
-                    src="/CRM/Wizard Wash Logo.png"
-                    alt="Wizard Wash"
+                    src={tenant.logoUrl}
+                    alt={tenant.name}
                     className="h-12 w-auto object-contain"
                   />
-                  <p className="text-xs text-slate-500 font-semibold mt-2">Wizard Wash Exterior Cleaning</p>
-                  <p className="text-[11px] text-slate-400">Virginia Beach & Hampton Roads • VA</p>
-                  <p className="text-[11px] text-slate-400">omar@wizardwashva.com • (757) 555-0199</p>
+                  <p className="text-xs text-slate-500 font-semibold mt-2">{tenant.billingCompany}</p>
+                  <p className="text-[11px] text-slate-400">{tenant.billingAddress}</p>
+                  <p className="text-[11px] text-slate-400">{tenant.email} • {tenant.billingPhone}</p>
                 </div>
 
                 <div className="text-right">
@@ -602,25 +596,37 @@ export default function InvoicesPage() {
 
             {/* Bottom Actions Bar (Hidden on Print) */}
             <div className="flex items-center justify-between gap-3 pt-2 print:hidden flex-wrap">
-              <button
-                onClick={() => setSelectedPdfInvoice(null)}
-                className="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200 transition-colors"
-              >
-                Close Preview
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setSelectedPdfInvoice(null)}
+                  className="px-4 py-2.5 bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                >
+                  Close Preview
+                </button>
+                <button
+                  onClick={() => {
+                    const updated = invoices.filter((inv) => inv.id !== selectedPdfInvoice.id)
+                    saveInvoices(updated)
+                    setSelectedPdfInvoice(null)
+                  }}
+                  className="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-xs rounded-xl transition-all"
+                >
+                  Delete
+                </button>
+              </div>
 
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleSendEmailInvoice(selectedPdfInvoice)}
                   className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
                 >
-                  <span>📧</span> Email PDF to {selectedPdfInvoice.email}
+                  Email PDF to {selectedPdfInvoice.email}
                 </button>
                 <button
                   onClick={() => handleDownloadPdfFile(selectedPdfInvoice)}
                   className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
                 >
-                  <span>🖨️</span> Download / Print PDF
+                  Download / Print PDF
                 </button>
               </div>
             </div>
@@ -629,6 +635,7 @@ export default function InvoicesPage() {
         </div>
       )}
 
+      </div>
     </div>
   )
 }

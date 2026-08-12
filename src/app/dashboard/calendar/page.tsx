@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { getTenantConfig, getActiveTenantEmailFromCookie } from '@/lib/tenant'
 
 interface JobEvent {
   id: string
@@ -25,6 +26,7 @@ const monthsList = [
 ]
 
 export default function CalendarPage() {
+  const [tenant, setTenant] = useState(() => getTenantConfig(getActiveTenantEmailFromCookie()))
   const [jobs, setJobs] = useState<JobEvent[]>(initialJobs)
   const [viewMode, setViewMode] = useState<'Week' | 'Month' | 'Day' | 'Schedule'>('Week')
   const [selectedJob, setSelectedJob] = useState<JobEvent | null>(null)
@@ -79,7 +81,12 @@ export default function CalendarPage() {
   useEffect(() => {
     const loadJobs = () => {
       try {
-        const saved = localStorage.getItem('wizardwash_calendar_jobs')
+        const activeEmail = getActiveTenantEmailFromCookie()
+        const currentTenant = getTenantConfig(activeEmail)
+        setTenant(currentTenant)
+        const prefix = currentTenant.storagePrefix
+
+        const saved = localStorage.getItem(`${prefix}calendar_jobs`)
         if (saved) {
           const parsed = JSON.parse(saved)
           setJobs(parsed)
@@ -93,10 +100,12 @@ export default function CalendarPage() {
     loadJobs()
     window.addEventListener('storage', loadJobs)
     window.addEventListener('wizardwash_job_scheduled', loadJobs)
+    window.addEventListener('viracis_job_scheduled', loadJobs)
 
     return () => {
       window.removeEventListener('storage', loadJobs)
       window.removeEventListener('wizardwash_job_scheduled', loadJobs)
+      window.removeEventListener('viracis_job_scheduled', loadJobs)
     }
   }, [])
 
@@ -104,7 +113,9 @@ export default function CalendarPage() {
     setJobs(updated)
     setSyncedCount(updated.length)
     try {
-      localStorage.setItem('wizardwash_calendar_jobs', JSON.stringify(updated))
+      const activeEmail = getActiveTenantEmailFromCookie()
+      const currentTenant = getTenantConfig(activeEmail)
+      localStorage.setItem(`${currentTenant.storagePrefix}calendar_jobs`, JSON.stringify(updated))
     } catch (e) {
       console.error('Failed to save calendar jobs:', e)
     }
@@ -213,7 +224,7 @@ export default function CalendarPage() {
   })
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 font-sans text-slate-900">
+    <div className="h-[calc(100dvh-180px)] md:h-[calc(100vh-80px)] w-full max-w-7xl mx-auto flex flex-col font-sans text-slate-900 overflow-hidden relative space-y-6">
       
       {/* Enterprise Header Bar - Redesigned for mobile viewport fit */}
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3 font-sans">
@@ -280,7 +291,7 @@ export default function CalendarPage() {
       </div>
 
       {/* Main Grid: Sidebar + Interactive Dynamic Calendar Canvas */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 overflow-y-auto min-h-0 pr-1 pb-6">
         
         {/* Left Sidebar (Desktop Only) */}
         <div className="lg:col-span-3 space-y-4 hidden lg:block">
@@ -379,7 +390,7 @@ export default function CalendarPage() {
           <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs space-y-2">
             <p className="font-semibold text-slate-900">Google Calendar Status</p>
             <p className="text-slate-600 text-[11px] leading-relaxed">
-              Account: <span className="font-semibold text-slate-800">omar@wizardwashva.com</span><br/>
+              Account: <span className="font-semibold text-slate-800">{tenant.email}</span><br/>
               {syncedCount} dispatch jobs synchronized.
             </p>
           </div>
@@ -387,77 +398,73 @@ export default function CalendarPage() {
         </div>
 
         {/* Right Dynamic Interactive Calendar View Container */}
-        <div className="lg:col-span-9 bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-x-auto">
+        <div className="lg:col-span-9 bg-white rounded-xl border border-slate-200 p-4 md:p-6 shadow-sm overflow-x-hidden md:overflow-x-auto">
           
           {/* MODE 1: WEEK VIEW */}
           {viewMode === 'Week' && (
-            <div className="space-y-4 min-w-[700px]">
-              <div className="grid grid-cols-7 gap-2 border-b border-slate-200 pb-3 text-center">
+            <div className="space-y-4 md:space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-7 gap-4 md:gap-2">
                 {weekDays.map((wd) => {
                   const isSelected = selectedDayNum === wd.dateNum
-                  return (
-                    <button
-                      key={wd.day}
-                      onClick={() => {
-                        setSelectedDayNum(wd.dateNum)
-                        setViewMode('Day')
-                      }}
-                      className="flex flex-col items-center group cursor-pointer"
-                    >
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 group-hover:text-slate-900">{wd.day}</span>
-                      <span
-                        className={`mt-1 h-7 w-7 rounded-md flex items-center justify-center font-bold text-xs transition-colors ${
-                          isSelected ? 'bg-blue-600 text-white' : 'text-slate-800 hover:bg-slate-100'
-                        }`}
-                      >
-                        {wd.dateNum}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              <div className="grid grid-cols-7 gap-2 min-h-[480px]">
-                {weekDays.map((wd) => {
                   const dayJobs = filteredJobs.filter((j) => j.day === wd.day)
-                  return (
-                    <div key={wd.day} className="border-r border-slate-100 last:border-r-0 pr-1 space-y-3">
-                      {dayJobs.length === 0 ? (
-                        <div className="h-full min-h-[180px] flex items-center justify-center text-[10px] text-slate-300 font-medium">
-                          No events
-                        </div>
-                      ) : (
-                        dayJobs.map((job) => {
-                          const isSelected = selectedJob?.id === job.id
-                          const cardBg =
-                            job.status === 'Completed'
-                              ? 'bg-emerald-700 text-white'
-                              : job.status === 'Confirmed'
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-amber-600 text-white'
 
-                          return (
-                            <button
-                              key={job.id}
-                              onClick={() => setSelectedJob(job)}
-                              className={`w-full p-2.5 rounded-lg text-left transition-all shadow-sm ${cardBg} ${
-                                isSelected ? 'ring-2 ring-slate-900 ring-offset-2 font-semibold' : 'hover:opacity-90'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between text-[10px] opacity-90">
-                                <span>{job.time}</span>
-                                <span className="font-mono text-[9px]">iCal</span>
-                              </div>
-                              <p className="font-bold text-xs mt-1 truncate">{job.customer}</p>
-                              <p className="text-[10px] opacity-90 truncate mt-0.5">{job.service}</p>
-                              <div className="mt-2 pt-1 border-t border-white/20 flex items-center justify-between text-[10px] font-semibold">
-                                <span>{job.crew}</span>
-                                <span>{job.amount}</span>
-                              </div>
-                            </button>
-                          )
-                        })
-                      )}
+                  return (
+                    <div key={wd.day} className="flex flex-col border border-slate-200 md:border-none md:border-r md:border-slate-100 last:border-r-0 rounded-xl md:rounded-none overflow-hidden pb-2 md:pb-0">
+                      <button
+                        onClick={() => {
+                          setSelectedDayNum(wd.dateNum)
+                          setViewMode('Day')
+                        }}
+                        className="flex md:flex-col items-center justify-between md:justify-center p-3 md:p-0 md:pb-3 border-b md:border-b border-slate-200 group cursor-pointer bg-slate-50 md:bg-transparent md:border-transparent"
+                      >
+                        <span className="text-xs md:text-[10px] font-semibold uppercase tracking-wider text-slate-700 md:text-slate-400 group-hover:text-slate-900">{wd.day}</span>
+                        <span
+                          className={`mt-0 md:mt-1 h-7 w-7 rounded-md flex items-center justify-center font-bold text-xs transition-colors ${
+                            isSelected ? 'bg-blue-600 text-white' : 'text-slate-800 bg-white md:bg-transparent hover:bg-slate-100'
+                          }`}
+                        >
+                          {wd.dateNum}
+                        </span>
+                      </button>
+
+                      <div className="p-3 md:p-0 md:pr-1 pt-3 space-y-3 md:min-h-[480px]">
+                        {dayJobs.length === 0 ? (
+                          <div className="h-full min-h-[60px] md:min-h-[180px] flex items-center justify-center text-[10px] text-slate-400 font-medium italic">
+                            No events
+                          </div>
+                        ) : (
+                          dayJobs.map((job) => {
+                            const isSelectedJob = selectedJob?.id === job.id
+                            const cardBg =
+                              job.status === 'Completed'
+                                ? 'bg-emerald-700 text-white'
+                                : job.status === 'Confirmed'
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-amber-600 text-white'
+
+                            return (
+                              <button
+                                key={job.id}
+                                onClick={() => setSelectedJob(job)}
+                                className={`w-full p-2.5 rounded-lg text-left transition-all shadow-sm ${cardBg} ${
+                                  isSelectedJob ? 'ring-2 ring-slate-900 ring-offset-2 font-semibold' : 'hover:opacity-90'
+                                }`}
+                              >
+                                <div className="flex items-center justify-between text-[10px] opacity-90">
+                                  <span>{job.time}</span>
+                                  <span className="font-mono text-[9px]">iCal</span>
+                                </div>
+                                <p className="font-bold text-xs mt-1 truncate">{job.customer}</p>
+                                <p className="text-[10px] opacity-90 truncate mt-0.5">{job.service}</p>
+                                <div className="mt-2 pt-1 border-t border-white/20 flex items-center justify-between text-[10px] font-semibold">
+                                  <span>{job.crew}</span>
+                                  <span>{job.amount}</span>
+                                </div>
+                              </button>
+                            )
+                          })
+                        )}
+                      </div>
                     </div>
                   )
                 })}
@@ -763,18 +770,29 @@ export default function CalendarPage() {
               href={`https://maps.apple.com/?daddr=${encodeURIComponent(selectedJob.address)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg transition-colors"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg transition-colors hidden sm:block"
             >
-              View Location Map
+              Location
             </a>
             <button
               onClick={() => {
-                setJobs(jobs.map((j) => (j.id === selectedJob.id ? { ...j, status: 'Completed' } : j)))
+                const updated = jobs.filter((j) => j.id !== selectedJob.id)
+                saveJobs(updated)
+                setSelectedJob(null)
+              }}
+              className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-xs rounded-lg transition-all"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => {
+                const updated = jobs.map((j) => (j.id === selectedJob.id ? { ...j, status: 'Completed' } : j))
+                saveJobs(updated)
                 setSelectedJob({ ...selectedJob, status: 'Completed' })
               }}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg transition-all shadow-sm"
             >
-              Mark Completed
+              Complete
             </button>
           </div>
         </div>
@@ -803,7 +821,7 @@ export default function CalendarPage() {
               <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 flex items-center justify-between">
                 <div>
                   <p className="font-semibold">Google OAuth Account Active</p>
-                  <p className="text-[11px] opacity-80">omar@wizardwashva.com</p>
+                  <p className="text-[11px] opacity-80">{tenant.email}</p>
                 </div>
                 <span className="px-2 py-0.5 bg-emerald-600 text-white font-bold text-[10px] rounded">
                   CONNECTED

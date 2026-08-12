@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 interface SidebarNavProps {
   activeMessageCount?: number
@@ -9,6 +10,11 @@ interface SidebarNavProps {
 
 export function SidebarNav({ activeMessageCount = 0 }: SidebarNavProps) {
   const pathname = usePathname()
+  const [optimisticPath, setOptimisticPath] = useState<string | null>(null)
+
+  useEffect(() => {
+    setOptimisticPath(null)
+  }, [pathname])
 
   const links = [
     {
@@ -74,26 +80,28 @@ export function SidebarNav({ activeMessageCount = 0 }: SidebarNavProps) {
         <p className="text-[10px] font-bold tracking-widest text-slate-400 uppercase">CRM Menu</p>
       </div>
       {links.map((link) => {
-        const isActive = pathname === link.href || (link.href !== '/dashboard' && pathname.startsWith(link.href))
+        const currentPath = optimisticPath || pathname
+        const isActive = currentPath === link.href || (link.href !== '/dashboard' && currentPath.startsWith(link.href))
         return (
           <Link
             key={link.name}
             href={link.href}
+            onClick={() => setOptimisticPath(link.href)}
             className={`flex items-center justify-between px-3.5 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
               isActive
-                ? 'bg-slate-900 text-white shadow-sm font-bold'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                ? 'bg-slate-800 text-white shadow-sm font-bold border border-slate-700/50'
+                : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
             }`}
           >
             <div className="flex items-center gap-3">
-              <span className={isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-600'}>
+              <span className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-400'}>
                 {link.icon}
               </span>
               <span>{link.name}</span>
             </div>
             {link.badge !== null && link.badge !== undefined && (
               <span className={`px-2 py-0.5 text-[11px] font-bold rounded-full ${
-                isActive ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800'
+                isActive ? 'bg-slate-700 text-white' : 'bg-slate-900 text-slate-400 border border-slate-800'
               }`}>
                 {link.badge}
               </span>

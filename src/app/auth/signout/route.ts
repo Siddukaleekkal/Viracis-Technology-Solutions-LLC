@@ -6,6 +6,7 @@ import { cookies } from 'next/headers'
 export async function POST(req: Request) {
   const cookieStore = await cookies()
   cookieStore.delete('viracis_dev_auth')
+  cookieStore.delete('viracis_user_email')
 
   if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
     try {

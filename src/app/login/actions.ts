@@ -16,12 +16,22 @@ export async function login(formData: FormData) {
   if (
     validUsernames.includes(emailInput) && validPasswords.includes(passwordInput)
   ) {
+    const resolvedEmail = (emailInput === 'admin' || emailInput === 'admin@viracis.com')
+      ? 'admin@viracis.com'
+      : 'omar@wizardwashva.com'
+
     const cookieStore = await cookies()
     cookieStore.set('viracis_dev_auth', 'authenticated', {
       path: '/',
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 7 days
+    })
+    cookieStore.set('viracis_user_email', resolvedEmail, {
+      path: '/',
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 * 7,
     })
     revalidatePath('/dashboard', 'layout')
     redirect('/dashboard')

@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { getTenantConfig, getActiveTenantEmailFromCookie } from '@/lib/tenant'
 
 export default function DashboardPage() {
+  const [tenant, setTenant] = useState(() => getTenantConfig(getActiveTenantEmailFromCookie()))
   const [customerCount, setCustomerCount] = useState(0)
   const [completedRevenue, setCompletedRevenue] = useState(0)
   const [scheduledRevenue, setScheduledRevenue] = useState(0)
@@ -11,14 +13,23 @@ export default function DashboardPage() {
   const [messageCount, setMessageCount] = useState(0)
   const [jobCount, setJobCount] = useState(0)
 
+  useEffect(() => {
+    const activeEmail = getActiveTenantEmailFromCookie()
+    setTenant(getTenantConfig(activeEmail))
+  }, [])
+
   const loadMetrics = () => {
     try {
+      const activeEmail = getActiveTenantEmailFromCookie()
+      const currentTenant = getTenantConfig(activeEmail)
+      const prefix = currentTenant.storagePrefix
+
       // Map to hold unique customer/job records to prevent double-counting/stacking across LocalStorage collections
       // Key: normalized customer name (e.g. "robert taylor")
       const recordMap = new Map<string, { status: 'Completed' | 'Scheduled' | 'Quoted'; amount: number }>()
 
       // 1. Calendar Jobs (primary dispatch events)
-      const savedJobs = localStorage.getItem('wizardwash_calendar_jobs')
+      const savedJobs = localStorage.getItem(`${prefix}calendar_jobs`)
       let totalJobsCount = 0
       if (savedJobs) {
         const parsed = JSON.parse(savedJobs)
@@ -35,7 +46,7 @@ export default function DashboardPage() {
       }
 
       // 2. Customer Directory
-      const savedCust = localStorage.getItem('wizardwash_customers')
+      const savedCust = localStorage.getItem(`${prefix}customers`)
       let totalCustomerCount = 0
       if (savedCust) {
         const parsed = JSON.parse(savedCust)
@@ -61,7 +72,7 @@ export default function DashboardPage() {
       }
 
       // 3. Map View Pins
-      const savedPins = localStorage.getItem('wizardwash_mappins')
+      const savedPins = localStorage.getItem(`${prefix}mappins`)
       if (savedPins) {
         const parsed = JSON.parse(savedPins)
         parsed.forEach((p: any) => {
@@ -84,7 +95,7 @@ export default function DashboardPage() {
       }
 
       // 4. Invoices
-      const savedInv = localStorage.getItem('wizardwash_invoices')
+      const savedInv = localStorage.getItem(`${prefix}invoices`)
       if (savedInv) {
         const parsed = JSON.parse(savedInv)
         parsed.forEach((inv: any) => {
@@ -137,10 +148,12 @@ export default function DashboardPage() {
     const handleSync = () => loadMetrics()
     window.addEventListener('storage', handleSync)
     window.addEventListener('wizardwash_pin_added', handleSync)
+    window.addEventListener('viracis_pin_added', handleSync)
 
     return () => {
       window.removeEventListener('storage', handleSync)
       window.removeEventListener('wizardwash_pin_added', handleSync)
+      window.removeEventListener('viracis_pin_added', handleSync)
     }
   }, [])
 
@@ -176,35 +189,36 @@ export default function DashboardPage() {
   ]
 
   return (
-    <div className="max-w-7xl mx-auto space-y-4 font-sans text-slate-900">
+    <div className="h-[calc(100dvh-180px)] md:h-[calc(100vh-80px)] w-full max-w-7xl mx-auto flex flex-col font-sans text-slate-900 overflow-hidden relative">
+      <div className="flex-1 overflow-y-auto space-y-4 pr-1 pb-6">
       
       {/* Executive Header - Streamlined for Mobile */}
-      <div className="flex items-center justify-between gap-2 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-3.5">
           <img
-            src="/CRM/Wizard Wash Logo.png"
-            alt="Wizard Wash"
+            src={tenant.logoUrl}
+            alt={tenant.name}
             className="h-12 w-auto object-contain rounded-lg shrink-0"
           />
           <div>
-            <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Wizard Wash Operations Dashboard</h1>
+            <h1 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">{tenant.dashboardTitle}</h1>
             <p className="mt-1 text-[11px] sm:text-xs text-slate-500 font-medium">
-              System Account: <span className="font-semibold text-slate-800">omar@wizardwashva.com</span> • Real-time operational overview
+              System Account: <span className="font-semibold text-slate-800">{tenant.email}</span> • Real-time operational overview
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
           <Link
             href="/dashboard/customers"
-            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+            className="whitespace-nowrap shrink-0 px-4 py-2 sm:px-4 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
           >
-            + Client
+            <span>+</span> Client
           </Link>
           <Link
             href="/dashboard/invoices"
-            className="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+            className="whitespace-nowrap shrink-0 px-4 py-2 sm:px-4 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm flex items-center gap-1.5"
           >
-            + Invoice
+            <span>+</span> Invoice
           </Link>
         </div>
       </div>
@@ -340,6 +354,7 @@ export default function DashboardPage() {
 
       </div>
 
+      </div>
     </div>
   )
 }

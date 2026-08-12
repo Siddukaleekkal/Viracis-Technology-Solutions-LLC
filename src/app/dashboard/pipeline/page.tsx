@@ -181,7 +181,7 @@ export default function PipelinePage() {
                   {lead.channel && (
                     <div className="mt-3 flex items-center gap-1.5">
                       <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-gray-100 text-[10px] font-medium text-gray-600">
-                        {lead.channel === 'email' ? '📧 Email Queue' : '📬 Direct Mail Queue'}
+                        {lead.channel === 'email' ? 'Email Queue' : 'Direct Mail Queue'}
                       </span>
                     </div>
                   )}

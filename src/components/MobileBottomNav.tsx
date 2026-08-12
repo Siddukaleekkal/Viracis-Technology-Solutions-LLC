@@ -2,9 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 export function MobileBottomNav() {
   const pathname = usePathname()
+  const [optimisticPath, setOptimisticPath] = useState<string | null>(null)
+
+  useEffect(() => {
+    setOptimisticPath(null)
+  }, [pathname])
 
   const links = [
     {
@@ -66,11 +72,13 @@ export function MobileBottomNav() {
   return (
     <nav className="fixed bottom-0 inset-x-0 z-[9999] bg-[#0F172A]/95 backdrop-blur-xl border-t border-slate-800/80 text-white flex items-center justify-around pt-2 pb-[calc(0.6rem+env(safe-area-inset-bottom))] px-1 md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
       {links.map((link) => {
-        const isActive = pathname === link.href || (link.href !== '/dashboard' && pathname.startsWith(link.href))
+        const currentPath = optimisticPath || pathname
+        const isActive = currentPath === link.href || (link.href !== '/dashboard' && currentPath.startsWith(link.href))
         return (
           <Link
             key={link.name}
             href={link.href}
+            onClick={() => setOptimisticPath(link.href)}
             className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${
               isActive ? 'text-blue-400 font-bold scale-105' : 'text-slate-400 hover:text-slate-200'
             }`}

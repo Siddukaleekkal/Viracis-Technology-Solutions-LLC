@@ -17,8 +17,7 @@ const AppleMapComponent = dynamic(() => import('@/components/AppleMapComponent')
 
 export default function MapViewPage() {
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      
+    <div className="h-[calc(100dvh-180px)] md:h-[calc(100vh-80px)] w-full max-w-7xl mx-auto flex flex-col font-sans text-slate-900 overflow-hidden relative space-y-4 md:space-y-6 pb-2 sm:pb-6">
       {/* Header */}
       <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -32,7 +31,9 @@ export default function MapViewPage() {
       </div>
 
       {/* Interactive Apple Map */}
-      <AppleMapComponent />
+      <div className="flex-1 min-h-0 w-full overflow-hidden flex flex-col relative">
+        <AppleMapComponent />
+      </div>
 
     </div>
   )
