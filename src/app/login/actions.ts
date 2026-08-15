@@ -33,8 +33,9 @@ export async function login(formData: FormData) {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7,
     })
+    const crmUrl = process.env.NEXT_PUBLIC_CRM_URL || (process.env.NODE_ENV === 'production' ? 'https://app.viracis.com/dashboard' : 'http://localhost:3001/dashboard')
     revalidatePath('/dashboard', 'layout')
-    redirect('/dashboard')
+    redirect(crmUrl)
   }
 
   // Supabase auth check if URL is configured
@@ -44,8 +45,9 @@ export async function login(formData: FormData) {
       const { error } = await supabase.auth.signInWithPassword({ email: emailInput, password: passwordInput })
 
       if (!error) {
+        const crmUrl = process.env.NEXT_PUBLIC_CRM_URL || (process.env.NODE_ENV === 'production' ? 'https://app.viracis.com/dashboard' : 'http://localhost:3001/dashboard')
         revalidatePath('/dashboard', 'layout')
-        redirect('/dashboard')
+        redirect(crmUrl)
       }
     } catch (e) {
       console.error('Supabase auth error:', e)

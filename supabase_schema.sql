@@ -1,88 +1,128 @@
--- Supabase Schema for Lead Engine SaaS
+-- Supabase Database Schema for Enterprise CRM & Field Dispatch Engine
 
--- 1. Enable pgcrypto for UUIDs
+-- 1. Enable Required PostgreSQL Extensions
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "postgis";
 
--- 2. Create Tenants table
+-- 2. Custom Data Enums
+CREATE TYPE client_stage AS ENUM ('Quoted', 'Scheduled', 'Completed');
+CREATE TYPE job_status AS ENUM ('Pending', 'Confirmed', 'Completed');
+CREATE TYPE invoice_status AS ENUM ('Pending', 'Paid', 'Overdue');
+CREATE TYPE crew_unit AS ENUM ('Truck 1', 'Truck 2', 'Crew Alpha', 'Crew Bravo');
+
+-- 3. Tenants Table (Multi-Tenant Isolation)
 CREATE TABLE public.tenants (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
-  slug TEXT UNIQUE,
+  slug TEXT UNIQUE NOT NULL,
   logo_url TEXT,
-  reply_email TEXT,
-  phone TEXT,
-  website TEXT,
-  stripe_customer_id TEXT,
-  subscription_status TEXT DEFAULT 'trial',
+  email TEXT NOT NULL,
+  billing_company TEXT,
+  storage_prefix TEXT UNIQUE NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. Create Users table (links to Auth users)
+-- 4. Users Table (Maps to Supabase Auth Users)
 CREATE TABLE public.users (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
+  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
   email TEXT NOT NULL,
   full_name TEXT,
   role TEXT DEFAULT 'owner',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. Enable Row Level Security (RLS) on users and tenants
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.tenants ENABLE ROW LEVEL SECURITY;
-
--- Tenants RLS: users can only view their own tenant
-CREATE POLICY "Users can view their own tenant"
-ON public.tenants FOR SELECT
-USING (id IN (SELECT tenant_id FROM public.users WHERE id = auth.uid()));
-
--- Users RLS: users can view other users in their tenant
-CREATE POLICY "Users can view members of their tenant"
-ON public.users FOR SELECT
-USING (tenant_id IN (SELECT tenant_id FROM public.users WHERE id = auth.uid()));
-
--- 5. Create core data tables
-CREATE TABLE public.leads (
+-- 5. Clients Directory Table
+CREATE TABLE public.clients (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
-  property_address TEXT NOT NULL,
-  property_city TEXT,
-  property_state TEXT,
-  property_zip TEXT,
-  property_sqft INTEGER,
-  property_type TEXT,
-  owner_name TEXT,
-  owner_email TEXT,
-  owner_mailing_address TEXT,
-  lead_score INTEGER DEFAULT 0,
-  status TEXT DEFAULT 'discovered',
+  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  email TEXT,
+  phone TEXT,
+  address TEXT NOT NULL,
+  city_zip TEXT DEFAULT 'Richmond, VA 23220',
+  status client_stage DEFAULT 'Quoted',
+  total_spent NUMERIC(10,2) DEFAULT 0.00,
+  last_service TEXT,
+  notes TEXT,
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Tenant isolation for leads" ON public.leads
-USING (tenant_id IN (SELECT tenant_id FROM public.users WHERE id = auth.uid()));
+-- 6. Map Pins Table (GIS Navigation & Map Markers)
+CREATE TABLE public.map_pins (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+  client_id UUID REFERENCES public.clients(id) ON DELETE SET NULL,
+  address TEXT NOT NULL,
+  zip TEXT,
+  service TEXT NOT NULL,
+  value NUMERIC(10,2) DEFAULT 0.00,
+  status client_stage DEFAULT 'Quoted',
+  lat DOUBLE PRECISION NOT NULL,
+  lng DOUBLE PRECISION NOT NULL,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
 
--- Additional tables for Phase 2+ can be added later (pricing_rules, service_areas, messages).
+-- 7. Dispatch Jobs / Calendar Events Table
+CREATE TABLE public.dispatch_jobs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+  client_id UUID REFERENCES public.clients(id) ON DELETE CASCADE,
+  property_id UUID REFERENCES public.map_pins(id) ON DELETE SET NULL,
+  scheduled_at TIMESTAMPTZ NOT NULL,
+  duration_hours NUMERIC(3,1) DEFAULT 2.0,
+  service TEXT NOT NULL,
+  crew crew_unit DEFAULT 'Truck 1',
+  status job_status DEFAULT 'Confirmed',
+  amount NUMERIC(10,2) DEFAULT 0.00,
+  address TEXT NOT NULL,
+  google_synced BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
 
--- Function to handle new user signup and tenant creation via RPC
-CREATE OR REPLACE FUNCTION create_tenant_and_user(
-  company_name TEXT,
-  user_id UUID,
-  user_email TEXT,
-  user_full_name TEXT
-) RETURNS JSON AS $$
-DECLARE
-  new_tenant_id UUID;
-BEGIN
-  -- Insert tenant
-  INSERT INTO public.tenants (name) VALUES (company_name) RETURNING id INTO new_tenant_id;
-  
-  -- Insert user mapping
-  INSERT INTO public.users (id, tenant_id, email, full_name, role) 
-  VALUES (user_id, new_tenant_id, user_email, user_full_name, 'owner');
-  
-  RETURN json_build_object('tenant_id', new_tenant_id);
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- 8. Invoices Table
+CREATE TABLE public.invoices (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+  client_id UUID REFERENCES public.clients(id) ON DELETE CASCADE,
+  invoice_number TEXT NOT NULL,
+  amount NUMERIC(10,2) NOT NULL,
+  status invoice_status DEFAULT 'Pending',
+  service_description TEXT NOT NULL,
+  issue_date DATE DEFAULT CURRENT_DATE,
+  due_date DATE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 9. SMS Messages Table
+CREATE TABLE public.sms_messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+  client_id UUID REFERENCES public.clients(id) ON DELETE CASCADE,
+  sender_type TEXT CHECK (sender_type IN ('system', 'client', 'user')),
+  body TEXT NOT NULL,
+  read_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 10. Enable Row Level Security (RLS) & Multi-Tenant Isolation
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tenants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.clients ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.map_pins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.dispatch_jobs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.sms_messages ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Tenant isolation for clients" ON public.clients
+  USING (tenant_id IN (SELECT tenant_id FROM public.users WHERE id = auth.uid()));
+
+CREATE POLICY "Tenant isolation for map_pins" ON public.map_pins
+  USING (tenant_id IN (SELECT tenant_id FROM public.users WHERE id = auth.uid()));
+
+CREATE POLICY "Tenant isolation for dispatch_jobs" ON public.dispatch_jobs
+  USING (tenant_id IN (SELECT tenant_id FROM public.users WHERE id = auth.uid()));

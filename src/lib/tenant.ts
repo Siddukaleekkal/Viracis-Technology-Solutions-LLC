@@ -3,7 +3,7 @@ export interface TenantConfig {
   name: string
   crmTitle: string
   dashboardTitle: string
-  customerDirectoryTitle: string
+  clientDirectoryTitle: string
   messagingTitle: string
   invoicesTitle: string
   billingCompany: string
@@ -20,7 +20,7 @@ export const TENANTS: Record<string, TenantConfig> = {
     name: 'Wizard Wash',
     crmTitle: 'Wizard Wash CRM',
     dashboardTitle: 'Wizard Wash Operations Dashboard',
-    customerDirectoryTitle: 'Wizard Wash Customer Directory',
+    clientDirectoryTitle: 'Wizard Wash Client Directory',
     messagingTitle: 'Wizard Wash Messaging Center',
     invoicesTitle: 'Wizard Wash Billing & Invoices',
     billingCompany: 'Wizard Wash Exterior Cleaning',
@@ -35,7 +35,7 @@ export const TENANTS: Record<string, TenantConfig> = {
     name: 'Viracis Enterprise',
     crmTitle: 'Viracis Enterprise CRM',
     dashboardTitle: 'Viracis Operations Dashboard',
-    customerDirectoryTitle: 'Viracis Account Directory',
+    clientDirectoryTitle: 'Viracis Client Directory',
     messagingTitle: 'Viracis Client Messaging Center',
     invoicesTitle: 'Viracis Billing & Invoices',
     billingCompany: 'Viracis Enterprise Technology Consulting',

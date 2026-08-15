@@ -2,28 +2,46 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const q = searchParams.get('q')
+  const rawQ = searchParams.get('q')
 
-  if (!q) {
+  if (!rawQ) {
     return NextResponse.json({ error: 'Query parameter "q" is required' }, { status: 400 })
   }
 
-  try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=us&limit=1`, {
-      headers: {
-        'User-Agent': 'ViracisWizardWashCRM/1.0 (contact@viracis.com)',
-        'Accept-Language': 'en',
-      },
-    })
+  const cleanQuery = (str: string) => {
+    let s = str.trim()
+    // Strip unit/suite/apt/# designations
+    s = s.replace(/,\s*(suite|ste|apt|apartment|unit|building|bldg|slot|#)\s*[\w-]+/gi, '')
+    s = s.replace(/\s+(suite|ste|apt|apartment|unit|building|bldg|slot|#)\s*[\w-]+/gi, '')
+    return s
+  }
 
-    if (!res.ok) {
-      return NextResponse.json({ error: 'Geocoding service unavailable' }, { status: res.status })
+  const queryCandidates = [
+    rawQ,
+    cleanQuery(rawQ),
+  ].filter((q, i, self) => q && self.indexOf(q) === i)
+
+  try {
+    for (const query of queryCandidates) {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us&addressdetails=1&limit=3`, {
+        headers: {
+          'User-Agent': 'ViracisWizardWashCRM/1.0 (contact@viracis.com)',
+          'Accept-Language': 'en',
+        },
+      })
+
+      if (res.ok) {
+        const data = await res.json()
+        if (data && data.length > 0) {
+          return NextResponse.json(data)
+        }
+      }
     }
 
-    const data = await res.json()
-    return NextResponse.json(data)
+    return NextResponse.json([])
   } catch (error) {
     console.error('Geocoding error:', error)
     return NextResponse.json({ error: 'Internal server error during geocoding' }, { status: 500 })
   }
 }
+
