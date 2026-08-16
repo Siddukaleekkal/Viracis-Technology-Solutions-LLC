@@ -67,12 +67,12 @@ export default function LandingNavbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/login"
+            <a
+              href="https://app.viracis.com/login"
               className="inline-flex items-center px-4 py-3 text-[11px] tracking-[0.2em] uppercase font-bold text-viracis-navy border-2 border-viracis-navy hover:bg-viracis-navy hover:text-white transition-all duration-300"
             >
               Client Login
-            </Link>
+            </a>
             <Link
               href="/contact"
               className="inline-flex items-center px-6 py-3 text-[11px] tracking-[0.2em] uppercase font-bold bg-viracis-navy text-white border-2 border-viracis-navy hover:bg-[#122F54] hover:border-[#122F54] transition-all duration-300"
@@ -147,8 +147,8 @@ export default function LandingNavbar() {
             transition={{ duration: 0.4, delay: navLinks.length * 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="pt-6 border-t border-white/10"
           >
-            <Link
-              href="/login"
+            <a
+              href="https://app.viracis.com/login"
               onClick={() => setMobileOpen(false)}
               className="group block mb-6"
             >
@@ -158,7 +158,7 @@ export default function LandingNavbar() {
                 </h2>
                 <span className="text-2xl text-viracis-cyan group-hover:text-white transition-colors">→</span>
               </div>
-            </Link>
+            </a>
             
             <Link
               href="/contact"
