@@ -50,55 +50,6 @@ export default function AboutPage() {
         subtitle="We have offices in Richmond, Virginia and Dallas, TX and we exist to help businesses without a technical team implement the right systems to save time, convert more leads, and grow."
       />
 
-      {/* Founder Story */}
-      <section className="py-16 bg-gray-50 border-b border-gray-200">
-        <div className="max-w-[1000px] mx-auto px-8">
-          <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-center md:items-start">
-            {/* Image */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, ease }}
-              className="w-2/3 sm:w-1/2 md:w-1/3 max-w-[260px] aspect-square relative rounded-full overflow-hidden bg-gray-200 shadow-md shrink-0"
-            >
-              <img
-                src="/siddu-ceo.jpeg"
-                alt="Siddu Kaleekkal - CEO & Founder"
-                className="w-full h-full object-cover object-[center_15%]"
-              />
-            </motion.div>
-
-            {/* Text */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, delay: 0.2, ease }}
-              className="w-full md:w-2/3"
-            >
-              <p className="text-[10px] tracking-[0.25em] uppercase text-gray-400 font-medium mb-3">
-                A Note from the Founder
-              </p>
-              <h2 className="text-2xl lg:text-3xl font-normal tracking-[-0.02em] text-viracis-navy leading-[1.2] mb-5">
-                Driven by a passion to solve real problems.
-              </h2>
-              <div className="space-y-4 text-sm lg:text-base text-gray-600 leading-relaxed">
-                <p>
-                  Viracis was born from a deep rooted entrepreneurial spirit and a genuine love for solving complex problems. Inspired early on by my father's unwavering dedication and work ethic, I learned that true business value isn't just about building things, it's about helping people and doing the job right.
-                </p>
-                <p>
-                  I have always loved finding ways to make systems run smoother, faster, and better. Our goal at Viracis isn't just to write code or deploy servers; it is to partner with ambitious business owners and eliminate the operational bottlenecks holding them back. We exist to provide the enterprise grade technical leverage that companies need to scale efficiently.
-                </p>
-                <div className="pt-4 border-t border-gray-200 mt-6">
-                  <p className="font-semibold text-viracis-navy text-base tracking-tight">Siddu Kaleekkal</p>
-                  <p className="text-xs text-gray-500 font-medium">Founder & CEO</p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
 
       {/* Who we are */}
       <section className="py-24 bg-white border-b border-gray-200">

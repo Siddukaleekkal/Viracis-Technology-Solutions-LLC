@@ -1,4 +1,4 @@
--- Supabase Database Schema for Enterprise CRM & Field Dispatch Engine
+-- Supabase Database Schema for my project Viracis
 
 -- 1. Enable Required PostgreSQL Extensions
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -8,7 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "postgis";
 CREATE TYPE client_stage AS ENUM ('Quoted', 'Scheduled', 'Completed');
 CREATE TYPE job_status AS ENUM ('Pending', 'Confirmed', 'Completed');
 CREATE TYPE invoice_status AS ENUM ('Pending', 'Paid', 'Overdue');
-CREATE TYPE crew_unit AS ENUM ('Truck 1', 'Truck 2', 'Crew Alpha', 'Crew Bravo');
+CREATE TYPE crew_unit AS ENUM ('Truck 1', 'Truck 2');
 
 -- 3. Tenants Table (Multi-Tenant Isolation)
 CREATE TABLE public.tenants (
@@ -41,7 +41,7 @@ CREATE TABLE public.clients (
   phone TEXT,
   address TEXT NOT NULL,
   city_zip TEXT DEFAULT 'Richmond, VA 23220',
-  status client_stage DEFAULT 'Quoted',
+  status client_stage DEFAULT 'Interested',
   total_spent NUMERIC(10,2) DEFAULT 0.00,
   last_service TEXT,
   notes TEXT,
@@ -60,7 +60,7 @@ CREATE TABLE public.map_pins (
   zip TEXT,
   service TEXT NOT NULL,
   value NUMERIC(10,2) DEFAULT 0.00,
-  status client_stage DEFAULT 'Quoted',
+  status client_stage DEFAULT 'Interested',
   lat DOUBLE PRECISION NOT NULL,
   lng DOUBLE PRECISION NOT NULL,
   notes TEXT,
