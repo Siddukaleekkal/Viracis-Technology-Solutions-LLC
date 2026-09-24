@@ -203,7 +203,7 @@ export default function ArticleTemplate({
                     href="/contact"
                     className="block text-center py-3 px-5 bg-white text-viracis-navy text-sm font-semibold hover:bg-gray-100 transition-colors duration-200 rounded-lg"
                   >
-                    Get in touch
+                    Book Demo
                   </Link>
                 </div>
 

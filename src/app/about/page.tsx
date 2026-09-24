@@ -171,7 +171,7 @@ export default function AboutPage() {
                 href="/contact"
                 className="px-8 py-4 bg-viracis-navy text-white text-sm font-semibold tracking-wide hover:bg-[#122F54] transition-colors duration-200"
               >
-                Get in touch
+                Book Demo
               </a>
             </div>
           </motion.div>

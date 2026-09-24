@@ -71,13 +71,13 @@ export default function LandingNavbar() {
               href="https://app.viracis.com/login"
               className="inline-flex items-center px-4 py-3 text-[11px] tracking-[0.2em] uppercase font-bold text-viracis-navy border-2 border-viracis-navy hover:bg-viracis-navy hover:text-white transition-all duration-300"
             >
-              Client Login
+              Login
             </a>
             <Link
               href="/contact"
               className="inline-flex items-center px-6 py-3 text-[11px] tracking-[0.2em] uppercase font-bold bg-viracis-navy text-white border-2 border-viracis-navy hover:bg-[#122F54] hover:border-[#122F54] transition-all duration-300"
             >
-              Get in Touch
+              Book Demo
             </Link>
           </div>
         </nav>
@@ -154,7 +154,7 @@ export default function LandingNavbar() {
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-4xl font-bold tracking-tight text-viracis-cyan group-hover:text-white transition-colors">
-                  Client Login
+                  Login
                 </h2>
                 <span className="text-2xl text-viracis-cyan group-hover:text-white transition-colors">→</span>
               </div>
@@ -167,7 +167,7 @@ export default function LandingNavbar() {
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-4xl font-bold tracking-tight text-white group-hover:text-viracis-cyan transition-colors">
-                  Get Started
+                  Book Demo
                 </h2>
                 <span className="text-2xl text-white group-hover:text-viracis-cyan transition-colors">→</span>
               </div>

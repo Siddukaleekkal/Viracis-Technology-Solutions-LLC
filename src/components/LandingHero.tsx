@@ -53,16 +53,16 @@ export default function LandingHero() {
             {...fadeUp(0.22)}
             className="text-[clamp(2.8rem,5.5vw,5.5rem)] leading-[1.05] tracking-[-0.03em] text-white font-normal mb-10"
           >
-            Enterprise digital transformation
+            The complete command platform
             <br />
-            architected for
+            built to power your
             <br />
             <Typewriter
               text={[
-                "Scale.",
-                "Resilience.",
-                "Performance.",
-                "Innovation.",
+                "field.",
+                "pipeline.",
+                "team.",
+                "mission.",
               ]}
               speed={70}
               className="text-white/80"
