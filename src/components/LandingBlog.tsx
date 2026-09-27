@@ -7,6 +7,14 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "Inside Viracis CRM: The All in One Engine for Door to Door Sales, Map Visualization, and Fleet Scheduling",
+    slug: "inside-viracis-crm-field-operations",
+    date: "September 26, 2026",
+    excerpt: "Discover how Viracis CRM unifies SalesRabbit style map visualization, two way SMS, automated invoicing, multi truck color coded scheduling, and a single command dashboard, plus an upcoming edition for political campaigns.",
+    category: "Product",
+    image: "/images/blog/viracis-crm-map-operations.png"
+  },
+  {
     title: "Optimizing Remote Teams with AI Collaboration Tools",
     slug: "optimizing-remote-teams-ai-tools",
     date: "July 20, 2026",
@@ -95,10 +103,10 @@ const posts = [
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=2400"
   },
   {
-    title: "Custom Software vs. Off-the-Shelf: What's Right for Your Small Business?",
+    title: "Custom Software vs. Off-the-Shelf: What's Right for Your Business?",
     slug: "custom-vs-off-the-shelf-software",
     date: "May 07, 2026",
-    excerpt: "As your small business grows, you eventually hit a wall where spreadsheets and basic tools no longer cut it. Explore when off-the-shelf software makes sense, and when it's time to build custom.",
+    excerpt: "As your business grows, you eventually hit a wall where spreadsheets and basic tools no longer cut it. Explore when off-the-shelf software makes sense, and when it's time to build custom.",
     category: "Engineering",
     image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=2400"
   },
@@ -119,15 +127,15 @@ const posts = [
     image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&q=80&w=2400"
   },
   {
-    title: "5 Ways AI Can Save Your Small Business 10+ Hours a Week",
+    title: "5 Ways AI Can Save Your Business 10+ Hours a Week",
     slug: "ai-for-small-business-operations",
     date: "April 22, 2026",
-    excerpt: "Practical ways small business owners are using AI right now to handle customer responses, follow-ups, content, and scheduling.",
-    category: "Small Business",
+    excerpt: "Practical ways business owners are using AI right now to handle customer responses, follow-ups, content, and scheduling.",
+    category: "Business",
     image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=2400"
   },
   {
-    title: "Why Every Local Business Needs a CRM (Even If You Only Have 50 Customers)",
+    title: "Why Every Business Needs a CRM (Even If You Only Have 50 Customers)",
     slug: "data-growth-for-local-business",
     date: "April 15, 2026",
     excerpt: "How a simple customer management system can stop leads from slipping through the cracks and turn one-time buyers into repeat clients.",
@@ -188,7 +196,7 @@ const LandingBlog = ({ isFeaturedOnly = false }: LandingBlogProps) => {
                 <img
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div className="flex items-center gap-4 mb-4">

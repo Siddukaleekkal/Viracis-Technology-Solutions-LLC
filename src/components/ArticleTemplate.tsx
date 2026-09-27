@@ -34,6 +34,7 @@ interface ArticleTemplateProps {
   backLink: string;
   backText: string;
   imageClassName?: string;
+  imageContainerClassName?: string;
 }
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -49,6 +50,7 @@ export default function ArticleTemplate({
   backLink,
   backText,
   imageClassName = "object-center",
+  imageContainerClassName,
 }: ArticleTemplateProps) {
   const [scrollProgress, setScrollProgress] = React.useState(0);
 
@@ -73,7 +75,7 @@ export default function ArticleTemplate({
         />
       </div>
 
-      <div className="pt-24 pb-16 md:pb-24">
+      <div className="pt-28 md:pt-32 pb-16 md:pb-24">
         <div className="max-w-[1200px] mx-auto px-4 md:px-8">
 
           {/* Back link */}
@@ -114,12 +116,16 @@ export default function ArticleTemplate({
 
           {/* Hero image */}
           <motion.div
-            className="mb-10 md:mb-16 aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] w-full overflow-hidden rounded-xl border border-gray-200"
+            className={imageContainerClassName || "mb-10 md:mb-16 aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] w-full overflow-hidden rounded-xl border border-gray-200 shadow-sm"}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease }}
           >
-            <img src={mainImage} alt={title} className={`w-full h-full object-cover ${imageClassName}`} />
+            <img 
+              src={mainImage} 
+              alt={title} 
+              className={imageContainerClassName ? `w-full h-auto block ${imageClassName}` : `w-full h-full object-cover ${imageClassName}`} 
+            />
           </motion.div>
 
           {/* Body + sidebar */}
@@ -150,7 +156,7 @@ export default function ArticleTemplate({
                           <img
                             src={post.image}
                             alt={post.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full object-cover"
                           />
                         </div>
                         <p className="text-xs text-gray-400 mb-1.5">{post.date}</p>

@@ -5,7 +5,7 @@ import ArticleTemplate from "@/components/ArticleTemplate";
 export default function DataGrowthLocalPage() {
   const post = {
     category: "Strategy",
-    title: "Why Every Local Business Needs a CRM (Even If You Only Have 50 Customers)",
+    title: "Why Every Business Needs a CRM (Even If You Only Have 50 Customers)",
     author: {
       name: "Viracis Team",
       avatar: "/favicon.png",
@@ -21,7 +21,7 @@ export default function DataGrowthLocalPage() {
     ],
     content: `
       <h2 id="spreadsheet">The Spreadsheet Is Not Working</h2>
-      <p>Most small business owners track their customers one of three ways: a spreadsheet, a notebook, or their memory. All three have the same problem. When you get busy, things fall through the cracks. You forget to follow up with the lead from last Tuesday. You cannot remember if Mrs. Johnson's last service was in March or May. You know you should be reaching out to past clients during your slow season, but you have no easy way to pull up that list.</p>
+      <p>Most business owners track their customers one of three ways: a spreadsheet, a notebook, or their memory. All three have the same problem. When you get busy, things fall through the cracks. You forget to follow up with the lead from last Tuesday. You cannot remember if Mrs. Johnson's last service was in March or May. You know you should be reaching out to past clients during your slow season, but you have no easy way to pull up that list.</p>
       <p>If any of that sounds familiar, you do not need to hire an assistant. You need a CRM.</p>
 
       <h2 id="what-is-crm">What a CRM Actually Does</h2>
@@ -33,13 +33,13 @@ export default function DataGrowthLocalPage() {
         <li><strong>History at your fingertips:</strong> When a customer calls, you can pull up their entire history in seconds. What services they have used, what they paid, any notes from previous visits. That level of professionalism builds trust and wins repeat business.</li>
       </ul>
 
-      <h2 id="real-examples">How Local Businesses Are Using This</h2>
+      <h2 id="real-examples">How Businesses Are Using This</h2>
       <p><strong>A power washing company</strong> was tracking everything in text messages. Every quote, every appointment, every follow-up was buried in a group chat or a thread they had to scroll through to find. After implementing a CRM, they saw a 28% increase in repeat bookings because automated follow-up emails were going out to past clients. They did not have to remember to send them. The system handled it.</p>
       <p><strong>A residential cleaning service</strong> was losing leads because they could not respond fast enough during their busiest hours. By connecting a CRM to a simple web form, every inquiry was automatically logged as a lead with the customer's name, address, and requested service. No more sticky notes getting lost. No more "I thought I texted them back." Every lead was accounted for.</p>
       <p><strong>A mobile mechanic</strong> wanted to grow into fleet maintenance contracts. By tagging every customer in his CRM by type (individual vs. business), he was able to pull a list of his commercial clients and send a targeted offer for monthly maintenance plans. Three new contracts signed within the first month.</p>
 
       <blockquote>
-        "I used to think CRMs were for big companies with sales teams. Turns out it is the small businesses that benefit the most because we are the ones who cannot afford to let a single lead slip."
+        "I used to think CRMs were for big companies with sales teams. Turns out it is businesses that benefit the most because we are the ones who cannot afford to let a single lead slip."
       </blockquote>
 
       <h2 id="getting-started">Getting Started Is Simpler Than You Think</h2>
@@ -52,7 +52,7 @@ export default function DataGrowthLocalPage() {
       </ol>
 
       <p>A CRM does not make you a "tech company." It makes you an organized business that does not lose customers to forgetfulness. If you are growing and things are starting to slip through the cracks, this is the first system to put in place.</p>
-      <p>Not sure where to start? That is what we do at Viracis. We help small businesses pick the right tools, set them up properly, and make sure they actually work for your specific workflow.</p>
+      <p>Not sure where to start? That is what we do at Viracis. We help businesses pick the right tools, set them up properly, and make sure they actually work for your specific workflow.</p>
     `,
     recentPosts: [
       {

@@ -68,7 +68,7 @@ export default function ServicesPage() {
       <LandingNavbar />
       <SubPageHero
         category="What We Do"
-        title="Solutions built for small business growth."
+        title="Solutions built for business growth."
         subtitle="From a simple website to full cloud infrastructure, we handle the technology so you can focus on running your business."
       />
 
@@ -148,7 +148,7 @@ export default function ServicesPage() {
                 </p>
               </div>
               <p className="text-base text-white/60 leading-relaxed max-w-lg">
-                The Starter Pack bundles everything a small business needs to establish a professional digital presence, packaged and ready to launch.
+                The Starter Pack bundles everything a business needs to establish a professional digital presence, packaged and ready to launch.
               </p>
             </div>
 

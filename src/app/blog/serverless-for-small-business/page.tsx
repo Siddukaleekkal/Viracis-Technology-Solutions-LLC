@@ -21,8 +21,8 @@ export default function ServerlessSMBPage() {
       { id: "cost", title: "What This Actually Costs" }
     ],
     content: `
-      <h2 id="brochure">The Problem With Most Small Business Websites</h2>
-      <p>Most small business websites are digital brochures. They have your phone number, a list of services, and maybe an "About Us" page with a stock photo. And then they just sit there. They do not generate leads. They do not book appointments. They do not follow up with visitors who left without calling. They exist, but they do not work.</p>
+      <h2 id="brochure">The Problem With Most Business Websites</h2>
+      <p>Most business websites are digital brochures. They have your phone number, a list of services, and maybe an "About Us" page with a stock photo. And then they just sit there. They do not generate leads. They do not book appointments. They do not follow up with visitors who left without calling. They exist, but they do not work.</p>
       <p>If your website is not actively bringing in new business every month, it is not doing its job. A website should be your hardest-working employee, available 24 hours a day, 7 days a week, converting visitors into customers even when you are asleep.</p>
 
       <h2 id="lead-machine">Turning Your Website Into a Lead Machine</h2>
@@ -34,7 +34,7 @@ export default function ServerlessSMBPage() {
       </ul>
 
       <h2 id="booking">Let Customers Book Directly</h2>
-      <p>One of the highest-impact features you can add to a small business website is an online booking system. Instead of the customer calling, leaving a voicemail, waiting for a callback, and then going back and forth on timing, they simply pick a date and time that works for them and confirm. Done.</p>
+      <p>One of the highest-impact features you can add to a business website is an online booking system. Instead of the customer calling, leaving a voicemail, waiting for a callback, and then going back and forth on timing, they simply pick a date and time that works for them and confirm. Done.</p>
       <p>This is not complicated or expensive technology. Tools like Calendly, Zoho Bookings, and Square Appointments can be embedded directly on your website. The customer books, gets an automatic confirmation, and you get a notification with all the details.</p>
       <p><strong>The impact is real.</strong> Businesses that add online booking typically see a 25 to 40% increase in appointments because you have removed the biggest barrier: the phone call. Many customers, especially younger ones, would rather book online than make a call. If you do not offer that option, they will find a competitor who does.</p>
 
@@ -49,7 +49,7 @@ export default function ServerlessSMBPage() {
         <li><strong>Real photos of your work:</strong> Not stock images. Actual before-and-after photos, project shots, or team pictures. People want to see what they are paying for.</li>
         <li><strong>Google reviews displayed on your site:</strong> If you have good reviews, show them. Embed your Google reviews directly on your homepage. Social proof is the most powerful sales tool you have.</li>
         <li><strong>Fast load times:</strong> If your website takes more than three seconds to load, over half of mobile visitors will leave before it finishes. Speed is not just a tech metric. It is a revenue metric.</li>
-        <li><strong>Mobile-first design:</strong> Over 70% of local business searches happen on a phone. If your site is hard to navigate on mobile, you are invisible to the majority of your potential customers.</li>
+        <li><strong>Mobile-first design:</strong> Over 70% of business searches happen on a phone. If your site is hard to navigate on mobile, you are invisible to the majority of your potential customers.</li>
       </ul>
 
       <h2 id="cost">What This Actually Costs</h2>
@@ -66,7 +66,7 @@ export default function ServerlessSMBPage() {
         slug: "/blog/ai-for-small-business-operations"
       },
       {
-        title: "Why Every Local Business Needs a CRM",
+        title: "Why Every Business Needs a CRM",
         date: "April 15, 2026",
         image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800",
         slug: "/blog/data-growth-for-local-business"

@@ -73,7 +73,7 @@ export default function AboutPage() {
                   Most businesses reach a point where manual processes start holding them back. Spreadsheets get messy. Leads fall through the cracks. Time gets wasted on work that should be running itself.
                 </p>
                 <p>
-                  The problem is not a lack of ambition. It is a lack of access. Most small businesses do not have an in-house technical team, and hiring one is expensive. That is the gap Viracis was built to close.
+                  The problem is not a lack of ambition. It is a lack of access. Most businesses do not have an in-house technical team, and hiring one is expensive. That is the gap Viracis was built to close.
                 </p>
                 <p>
                   We work with business owners to implement the right technology: websites, software, cloud tools, AI automation, in a way that is straightforward, affordable, and built around how their business actually works.

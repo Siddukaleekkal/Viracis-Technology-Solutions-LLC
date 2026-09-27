@@ -43,7 +43,7 @@ const services: Service[] = [
     id: "starter",
     title: "Starter Pack",
     description:
-      "Everything a small business needs to establish a professional digital presence, packaged and ready to launch.",
+      "Everything a business needs to establish a professional digital presence, packaged and ready to launch.",
     features: [
       "Professional domain & business email",
       "Custom website",

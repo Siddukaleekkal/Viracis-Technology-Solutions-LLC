@@ -40,7 +40,7 @@ const LandingPartners = () => {
                   style={{ transform: `scale(${partner.scale})`, maxHeight: '3.5rem', maxWidth: '8rem' }}
                 />
               </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-viracis-navy text-center">
+              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-viracis-navy text-center leading-snug">
                 {partner.keyword}
               </p>
             </div>

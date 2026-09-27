@@ -41,18 +41,33 @@ export default function LandingNavbar() {
       {/* Desktop Header */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b hidden md:block ${isScrolled
-          ? "bg-white/80 backdrop-blur-md border-gray-200 py-3 shadow-sm"
-          : "bg-white border-transparent py-4"
+          ? "bg-white/95 backdrop-blur-md border-gray-200 shadow-sm"
+          : "bg-white border-transparent"
           }`}
       >
-        <nav className="w-full px-8 flex items-center justify-between">
+        {/* Top Announcement Bar */}
+        <div className="bg-viracis-navy text-white border-b border-white/10 py-2.5 px-6">
+          <div className="max-w-[1240px] mx-auto flex items-center justify-center gap-3 sm:gap-4 text-center">
+            <p className="text-xs sm:text-sm text-gray-200 font-light tracking-wide">
+              Introducing Viracis CRM with built in territory mapping, multi fleet dispatch, and automated billing.
+            </p>
+            <Link
+              href="/blog/inside-viracis-crm-field-operations"
+              className="text-xs text-white hover:text-viracis-cyan underline underline-offset-4 transition-colors shrink-0"
+            >
+              Read release &rarr;
+            </Link>
+          </div>
+        </div>
+
+        <nav className={`w-full px-8 flex items-center justify-between transition-all duration-300 ${isScrolled ? "py-2.5" : "py-3.5"}`}>
           <Link href="/" className="relative flex items-center shrink-0" title="Viracis Home">
             <Image
               src="/viracis-logo.png"
               alt="Viracis Technology Solutions"
               width={180}
               height={60}
-              className={`transition-all duration-300 ${isScrolled ? "h-10" : "h-12"} w-auto object-contain`}
+              className={`transition-all duration-300 ${isScrolled ? "h-9" : "h-11"} w-auto object-contain`}
               priority
             />
           </Link>
@@ -84,47 +99,89 @@ export default function LandingNavbar() {
       </header>
 
       {/* Mobile Top Logo Header (Matching Web View) */}
-      <header className={`md:hidden fixed top-0 left-0 right-0 z-[70] border-b transition-colors duration-300 px-6 py-4 flex items-center justify-between ${mobileOpen ? 'bg-viracis-navy border-white/10' : 'bg-white border-gray-100'}`}>
-        <Link href="/" className="block" title="Viracis Home" onClick={() => setMobileOpen(false)}>
-          <Image
-            src="/viracis-logo.png"
-            alt="Viracis Technology Solutions"
-            width={100}
-            height={32}
-            className={`h-8 w-auto object-contain transition-all duration-300 ${mobileOpen ? 'brightness-0 invert' : ''}`}
-          />
-        </Link>
-
-        {/* Hamburger */}
-        <button
-          onClick={() => setMobileOpen((v) => !v)}
-          className="w-10 h-10 flex items-center justify-center"
-          aria-label="Menu"
-        >
-          <div className="w-6 flex flex-col gap-[5px]">
-            <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white rotate-45 translate-y-[7px]" : "bg-viracis-navy"}`} />
-            <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "opacity-0" : "bg-viracis-navy"}`} />
-            <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white -rotate-45 -translate-y-[7px]" : "bg-viracis-navy"}`} />
+      <header className={`md:hidden fixed top-0 left-0 right-0 z-[70] border-b transition-colors duration-300 ${mobileOpen ? 'bg-viracis-navy border-white/10' : 'bg-white border-gray-100'}`}>
+        {!mobileOpen && (
+          <div className="bg-viracis-navy text-white text-[11px] py-2 px-4 border-b border-white/10 flex items-center justify-center gap-2.5 text-center">
+            <span className="text-gray-200 font-light truncate">
+              Viracis CRM is now live
+            </span>
+            <Link
+              href="/blog/inside-viracis-crm-field-operations"
+              className="shrink-0 text-white hover:text-viracis-cyan underline underline-offset-2 transition-colors font-light"
+            >
+              Read release &rarr;
+            </Link>
           </div>
-        </button>
+        )}
+
+        <div className="px-5 sm:px-6 py-3 flex items-center justify-between">
+          <Link href="/" className="block" title="Viracis Home" onClick={() => setMobileOpen(false)}>
+            <Image
+              src="/viracis-logo.png"
+              alt="Viracis Technology Solutions"
+              width={100}
+              height={32}
+              className={`h-8 w-auto object-contain transition-all duration-300 ${mobileOpen ? 'brightness-0 invert' : ''}`}
+            />
+          </Link>
+
+          {/* Actions: Book Demo & Hamburger */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              className={`inline-flex items-center px-3.5 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 ${
+                mobileOpen
+                  ? "bg-white text-viracis-navy border border-white hover:bg-gray-100"
+                  : "bg-viracis-navy text-white border border-viracis-navy hover:bg-[#122F54]"
+              }`}
+            >
+              Book Demo
+            </Link>
+
+            {/* Hamburger button */}
+            <button
+              onClick={() => setMobileOpen((v) => !v)}
+              className="w-10 h-10 flex items-center justify-center shrink-0 -mr-2"
+              aria-label="Menu"
+            >
+              <div className="w-6 flex flex-col gap-[5px]">
+                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white rotate-45 translate-y-[7px]" : "bg-viracis-navy"}`} />
+                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "opacity-0" : "bg-viracis-navy"}`} />
+                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white -rotate-45 -translate-y-[7px]" : "bg-viracis-navy"}`} />
+              </div>
+            </button>
+          </div>
+        </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Backdrop */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: mobileOpen ? 1 : 0, y: mobileOpen ? 0 : -20 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: mobileOpen ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+        className={`md:hidden fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm ${
+          mobileOpen ? "pointer-events-auto" : "pointer-events-none"
+        }`}
+        onClick={() => setMobileOpen(false)}
+      />
+
+      {/* Mobile Menu Drawer */}
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: mobileOpen ? "0%" : "100%" }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className={`md:hidden fixed inset-0 z-[55] bg-viracis-navy text-white flex flex-col pt-32 px-8 ${
+        className={`md:hidden fixed top-0 right-0 bottom-0 w-[80%] max-w-[320px] z-[60] bg-viracis-navy border-l border-white/10 flex flex-col pt-28 px-6 shadow-2xl ${
           mobileOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
       >
-        <div className="space-y-8">
+        <div className="space-y-6">
           {navLinks.map((link, i) => (
             <motion.div
               key={link.label}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: mobileOpen ? 1 : 0, x: mobileOpen ? 0 : -20 }}
-              transition={{ duration: 0.4, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: mobileOpen ? 1 : 0, x: mobileOpen ? 0 : 20 }}
+              transition={{ duration: 0.3, delay: i * 0.05 + 0.1 }}
             >
               <Link
                 href={link.href}
@@ -132,59 +189,46 @@ export default function LandingNavbar() {
                 className="group block"
               >
                 <div className="flex items-center justify-between">
-                  <h2 className="text-4xl font-bold tracking-tight group-hover:text-viracis-cyan transition-colors">
+                  <h2 className="text-2xl font-semibold tracking-tight text-white group-hover:text-viracis-cyan transition-colors">
                     {link.label}
                   </h2>
-                  <span className="text-2xl text-white/20 group-hover:text-viracis-cyan transition-colors">→</span>
+                  <span className="text-xl text-white/20 group-hover:text-viracis-cyan transition-colors">→</span>
                 </div>
               </Link>
             </motion.div>
           ))}
           
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: mobileOpen ? 1 : 0, x: mobileOpen ? 0 : -20 }}
-            transition={{ duration: 0.4, delay: navLinks.length * 0.1, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: mobileOpen ? 1 : 0, x: mobileOpen ? 0 : 20 }}
+            transition={{ duration: 0.3, delay: navLinks.length * 0.05 + 0.1 }}
             className="pt-6 border-t border-white/10"
           >
             <a
               href="https://app.viracis.com/login"
               onClick={() => setMobileOpen(false)}
-              className="group block mb-6"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-4xl font-bold tracking-tight text-viracis-cyan group-hover:text-white transition-colors">
-                  Login
-                </h2>
-                <span className="text-2xl text-viracis-cyan group-hover:text-white transition-colors">→</span>
-              </div>
-            </a>
-            
-            <Link
-              href="/contact"
-              onClick={() => setMobileOpen(false)}
               className="group block"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-4xl font-bold tracking-tight text-white group-hover:text-viracis-cyan transition-colors">
-                  Book Demo
+                <h2 className="text-2xl font-semibold tracking-tight text-viracis-cyan group-hover:text-white transition-colors">
+                  Login
                 </h2>
-                <span className="text-2xl text-white group-hover:text-viracis-cyan transition-colors">→</span>
+                <span className="text-xl text-viracis-cyan group-hover:text-white transition-colors">→</span>
               </div>
-            </Link>
+            </a>
           </motion.div>
         </div>
 
         <motion.div 
-          className="mt-auto pb-32 pt-10 border-t border-white/5"
+          className="mt-auto pb-8 pt-8 border-t border-white/5"
           initial={{ opacity: 0 }}
           animate={{ opacity: mobileOpen ? 1 : 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <div className="grid grid-cols-1 gap-10 text-[10px] tracking-widest uppercase font-bold text-white/30">
+          <div className="grid grid-cols-1 gap-6 text-[10px] tracking-widest uppercase font-bold text-white/30">
             <div>
-              <p className="mb-4 text-viracis-cyan/60">Connect</p>
-              <div className="flex flex-wrap gap-8">
+              <p className="mb-3 text-viracis-cyan/60">Connect</p>
+              <div className="flex flex-wrap gap-6">
                 <a href="mailto:siddu@viracis.com" className="hover:text-white transition-colors">Email</a>
                 <a href="tel:+18045033954" className="hover:text-white transition-colors">Phone</a>
                 <a href="https://www.linkedin.com/company/viracis" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>

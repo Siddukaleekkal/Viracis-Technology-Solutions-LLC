@@ -69,7 +69,7 @@ export default function LandingContact() {
   }
 
   return (
-    <section className="min-h-screen bg-[#FAF9F6] pt-24 md:pt-32 pb-24 px-4 lg:px-8">
+    <section className="min-h-screen bg-[#FAF9F6] pt-32 md:pt-48 pb-24 px-4 lg:px-8">
       <div className="max-w-[1200px] mx-auto">
         {/* Header */}
         <motion.div
@@ -78,7 +78,7 @@ export default function LandingContact() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium mb-4">
+          <p className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium mt-4">
             Get in Touch
           </p>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-viracis-navy tracking-[-0.02em] leading-[1.1]">

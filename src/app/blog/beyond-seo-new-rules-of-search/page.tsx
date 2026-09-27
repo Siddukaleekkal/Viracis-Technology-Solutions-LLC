@@ -56,13 +56,13 @@ export default function BeyondSEOPage() {
     `,
     recentPosts: [
       {
-        title: "5 Ways AI Can Save Your Small Business 10+ Hours a Week",
+        title: "5 Ways AI Can Save Your Business 10+ Hours a Week",
         date: "April 22, 2026",
         image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=800",
         slug: "/blog/ai-for-small-business-operations"
       },
       {
-        title: "Why Every Local Business Needs a CRM",
+        title: "Why Every Business Needs a CRM",
         date: "April 15, 2026",
         image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800",
         slug: "/blog/data-growth-for-local-business"

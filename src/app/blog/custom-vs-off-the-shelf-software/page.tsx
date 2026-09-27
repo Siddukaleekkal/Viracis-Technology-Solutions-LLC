@@ -5,7 +5,7 @@ import ArticleTemplate from "@/components/ArticleTemplate";
 export default function CustomVsOffTheShelfPage() {
   const post = {
     category: "Engineering",
-    title: "Custom Software vs. Off-the-Shelf: What's Right for Your Small Business?",
+    title: "Custom Software vs. Off-the-Shelf: What's Right for Your Business?",
     author: {
       name: "Viracis Engineering",
       avatar: "/favicon.png",
@@ -21,7 +21,7 @@ export default function CustomVsOffTheShelfPage() {
     ],
     content: `
       <h2 id="the-dilemma">The Software Dilemma</h2>
-      <p>As your small business grows, you eventually hit a wall where spreadsheets and basic tools no longer cut it. You realize you need software to manage your operations, but you are faced with a crucial decision: do you buy an off-the-shelf solution, or do you invest in custom software built specifically for your business?</p>
+      <p>As your business grows, you eventually hit a wall where spreadsheets and basic tools no longer cut it. You realize you need software to manage your operations, but you are faced with a crucial decision: do you buy an off-the-shelf solution, or do you invest in custom software built specifically for your business?</p>
       <p>This is a dilemma every scaling business faces, and choosing the wrong path can lead to wasted money, frustrated employees, and stifled growth.</p>
 
       <h2 id="when-off-the-shelf-works">When Off-the-Shelf Works</h2>
