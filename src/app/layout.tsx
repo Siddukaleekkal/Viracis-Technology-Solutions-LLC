@@ -62,6 +62,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://app.viracis.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://app.viracis.com" />
+      </head>
       <body className={ibmPlexSans.variable}>
         {children}
         <Analytics />

@@ -15,12 +15,20 @@ const navLinks = [
 export default function LandingNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Lock body scroll when mobile menu is open
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  // Lock body scroll when mobile menu is open & prewarm CRM connection
   useEffect(() => {
     if (mobileOpen) {
       document.body.style.overflow = "hidden";
+      // Prewarm CRM connection when mobile menu is opened
+      const prefetchLink = document.createElement("link");
+      prefetchLink.rel = "prefetch";
+      prefetchLink.href = "https://app.viracis.com/login";
+      document.head.appendChild(prefetchLink);
     } else {
       document.body.style.overflow = "unset";
+      setIsLoggingIn(false);
     }
     return () => {
       document.body.style.overflow = "unset";
@@ -84,7 +92,13 @@ export default function LandingNavbar() {
             ))}
             <a
               href="https://app.viracis.com/login"
-              className="inline-flex items-center px-4 py-3 text-[11px] tracking-[0.2em] uppercase font-bold text-viracis-navy border-2 border-viracis-navy hover:bg-viracis-navy hover:text-white transition-all duration-300"
+              onMouseEnter={() => {
+                const prefetchLink = document.createElement("link");
+                prefetchLink.rel = "prefetch";
+                prefetchLink.href = "https://app.viracis.com/login";
+                document.head.appendChild(prefetchLink);
+              }}
+              className="inline-flex items-center px-4 py-3 text-[11px] tracking-[0.2em] uppercase font-bold text-viracis-navy border-2 border-viracis-navy hover:bg-viracis-navy hover:text-white transition-all duration-300 touch-manipulation"
             >
               Login
             </a>
@@ -130,7 +144,7 @@ export default function LandingNavbar() {
             <Link
               href="/contact"
               onClick={() => setMobileOpen(false)}
-              className={`inline-flex items-center px-3.5 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 ${
+              className={`inline-flex items-center px-3.5 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 touch-manipulation ${
                 mobileOpen
                   ? "bg-white text-viracis-navy border border-white hover:bg-gray-100"
                   : "bg-viracis-navy text-white border border-viracis-navy hover:bg-[#122F54]"
@@ -142,7 +156,7 @@ export default function LandingNavbar() {
             {/* Hamburger button */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="w-10 h-10 flex items-center justify-center shrink-0 -mr-2"
+              className="w-10 h-10 flex items-center justify-center shrink-0 -mr-2 touch-manipulation"
               aria-label="Menu"
             >
               <div className="w-6 flex flex-col gap-[5px]">
@@ -206,14 +220,21 @@ export default function LandingNavbar() {
           >
             <a
               href="https://app.viracis.com/login"
-              onClick={() => setMobileOpen(false)}
-              className="group block"
+              onClick={() => {
+                setIsLoggingIn(true);
+              }}
+              className="group block touch-manipulation"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold tracking-tight text-viracis-cyan group-hover:text-white transition-colors">
-                  Login
+                <h2 className="text-2xl font-semibold tracking-tight text-viracis-cyan group-hover:text-white transition-colors flex items-center gap-3">
+                  <span>{isLoggingIn ? "Opening CRM..." : "Login"}</span>
+                  {isLoggingIn && (
+                    <span className="inline-block w-4 h-4 border-2 border-viracis-cyan border-t-transparent rounded-full animate-spin" />
+                  )}
                 </h2>
-                <span className="text-xl text-viracis-cyan group-hover:text-white transition-colors">→</span>
+                <span className="text-xl text-viracis-cyan group-hover:text-white transition-colors">
+                  {isLoggingIn ? "" : "→"}
+                </span>
               </div>
             </a>
           </motion.div>

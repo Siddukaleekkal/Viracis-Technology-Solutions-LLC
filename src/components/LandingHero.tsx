@@ -34,9 +34,12 @@ export default function LandingHero() {
         loop
         muted
         playsInline
-        preload="auto"
+        poster="/hero-poster.jpg"
+        preload="metadata"
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
       >
+        <source src="/hero-mobile.mp4" type="video/mp4" media="(max-width: 768px)" />
+        <source src="/hero-desktop.mp4" type="video/mp4" />
         <source src="/Updated Hero Section.mp4" type="video/mp4" />
       </video>
 
