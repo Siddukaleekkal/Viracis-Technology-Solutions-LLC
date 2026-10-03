@@ -40,8 +40,15 @@ export default function LandingNavbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
+    const handlePageShow = () => {
+      setIsLoggingIn(false);
+    };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("pageshow", handlePageShow);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
   }, []);
 
   return (
@@ -139,12 +146,40 @@ export default function LandingNavbar() {
             />
           </Link>
 
-          {/* Actions: Book Demo & Hamburger */}
-          <div className="flex items-center gap-3">
+          {/* Actions: Login, Book Demo & Hamburger */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <a
+              href="https://app.viracis.com/login"
+              onClick={() => setIsLoggingIn(true)}
+              onTouchStart={() => {
+                const prefetchLink = document.createElement("link");
+                prefetchLink.rel = "prefetch";
+                prefetchLink.href = "https://app.viracis.com/login";
+                document.head.appendChild(prefetchLink);
+              }}
+              onMouseEnter={() => {
+                const prefetchLink = document.createElement("link");
+                prefetchLink.rel = "prefetch";
+                prefetchLink.href = "https://app.viracis.com/login";
+                document.head.appendChild(prefetchLink);
+              }}
+              className={`inline-flex items-center justify-center min-w-[54px] px-2.5 sm:px-3 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 touch-manipulation ${
+                mobileOpen
+                  ? "text-white border border-white/60 hover:bg-white/10"
+                  : "text-viracis-navy border border-viracis-navy hover:bg-viracis-navy hover:text-white"
+              }`}
+            >
+              {isLoggingIn ? (
+                <span className="inline-block w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              ) : (
+                "Login"
+              )}
+            </a>
+
             <Link
               href="/contact"
               onClick={() => setMobileOpen(false)}
-              className={`inline-flex items-center px-3.5 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 touch-manipulation ${
+              className={`inline-flex items-center px-3 sm:px-3.5 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 touch-manipulation shrink-0 ${
                 mobileOpen
                   ? "bg-white text-viracis-navy border border-white hover:bg-gray-100"
                   : "bg-viracis-navy text-white border border-viracis-navy hover:bg-[#122F54]"
@@ -156,10 +191,10 @@ export default function LandingNavbar() {
             {/* Hamburger button */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="w-10 h-10 flex items-center justify-center shrink-0 -mr-2 touch-manipulation"
+              className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center shrink-0 -mr-1.5 sm:-mr-2 touch-manipulation"
               aria-label="Menu"
             >
-              <div className="w-6 flex flex-col gap-[5px]">
+              <div className="w-5 sm:w-6 flex flex-col gap-[5px]">
                 <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white rotate-45 translate-y-[7px]" : "bg-viracis-navy"}`} />
                 <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "opacity-0" : "bg-viracis-navy"}`} />
                 <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white -rotate-45 -translate-y-[7px]" : "bg-viracis-navy"}`} />
@@ -211,33 +246,6 @@ export default function LandingNavbar() {
               </Link>
             </motion.div>
           ))}
-          
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: mobileOpen ? 1 : 0, x: mobileOpen ? 0 : 20 }}
-            transition={{ duration: 0.3, delay: navLinks.length * 0.05 + 0.1 }}
-            className="pt-6 border-t border-white/10"
-          >
-            <a
-              href="https://app.viracis.com/login"
-              onClick={() => {
-                setIsLoggingIn(true);
-              }}
-              className="group block touch-manipulation"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold tracking-tight text-viracis-cyan group-hover:text-white transition-colors flex items-center gap-3">
-                  <span>{isLoggingIn ? "Opening CRM..." : "Login"}</span>
-                  {isLoggingIn && (
-                    <span className="inline-block w-4 h-4 border-2 border-viracis-cyan border-t-transparent rounded-full animate-spin" />
-                  )}
-                </h2>
-                <span className="text-xl text-viracis-cyan group-hover:text-white transition-colors">
-                  {isLoggingIn ? "" : "→"}
-                </span>
-              </div>
-            </a>
-          </motion.div>
         </div>
 
         <motion.div 
