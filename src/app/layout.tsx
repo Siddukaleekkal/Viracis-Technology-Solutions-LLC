@@ -1,7 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans } from "next/font/google";
+import { Lexend_Deca, IBM_Plex_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
+
+const lexendDeca = Lexend_Deca({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-lexend-deca",
+  display: "swap",
+});
 
 const ibmPlexSans = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -66,7 +73,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://app.viracis.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://app.viracis.com" />
       </head>
-      <body className={ibmPlexSans.variable}>
+      <body className={`${lexendDeca.variable} ${ibmPlexSans.variable} font-sans`}>
         {children}
         <Analytics />
         <script

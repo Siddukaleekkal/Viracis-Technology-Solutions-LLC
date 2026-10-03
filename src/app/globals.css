@@ -12,15 +12,16 @@ html, body {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   touch-action: manipulation;
   width: 100%;
 }
 
+
 body {
   background: #ffffff;
-  color: #0A2540;
-  font-family: var(--font-ibm-plex-sans), system-ui, sans-serif;
+  color: #000000;
+  font-family: var(--font-lexend-deca), var(--font-ibm-plex-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

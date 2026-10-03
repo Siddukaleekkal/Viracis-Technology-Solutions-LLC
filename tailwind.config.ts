@@ -25,7 +25,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-ibm-plex-sans)", "system-ui", "sans-serif"],
+        sans: ["var(--font-lexend-deca)", "var(--font-ibm-plex-sans)", "system-ui", "sans-serif"],
+        heading: ["var(--font-lexend-deca)", "var(--font-ibm-plex-sans)", "system-ui", "sans-serif"],
       },
     },
   },

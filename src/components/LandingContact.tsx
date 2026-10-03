@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 type Status = "idle" | "loading" | "success" | "error";
 
 const services = [
+  "Field Operations OS",
   "Software Engineering",
   "Cloud Services",
   "AI & Automation",
@@ -25,6 +26,28 @@ export default function LandingContact() {
   });
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Pre-fill form from URL query params (e.g. from the bottom CTA banner)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get("name");
+      const company = params.get("company");
+      const email = params.get("email");
+      const phone = params.get("phone");
+      const service = params.get("service");
+      if (name || company || email || phone || service) {
+        setForm((prev) => ({
+          ...prev,
+          name: name || prev.name,
+          company: company || prev.company,
+          email: email || prev.email,
+          phone: phone || prev.phone,
+          service: service || prev.service,
+        }));
+      }
+    }
+  }, []);
 
   const set =
     (field: keyof typeof form) =>
@@ -69,7 +92,7 @@ export default function LandingContact() {
   }
 
   return (
-    <section className="min-h-screen bg-[#FAF9F6] pt-32 md:pt-48 pb-24 px-4 lg:px-8">
+    <section className="min-h-screen bg-[#FAF9F6] pt-12 md:pt-20 pb-24 px-4 lg:px-8">
       <div className="max-w-[1200px] mx-auto">
         {/* Header */}
         <motion.div

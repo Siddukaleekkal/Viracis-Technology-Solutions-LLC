@@ -3,13 +3,12 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { label: "About", href: "/about" },
-  { label: "Services", href: "/services" },
+  { label: "Platform", href: "/platform" },
   { label: "Blog", href: "/blog" },
-  { label: "Case Studies", href: "/case-studies" },
 ];
 
 export default function LandingNavbar() {
@@ -34,19 +33,12 @@ export default function LandingNavbar() {
       document.body.style.overflow = "unset";
     };
   }, [mobileOpen]);
-  const [isScrolled, setIsScrolled] = useState(false);
-
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
     const handlePageShow = () => {
       setIsLoggingIn(false);
     };
-    window.addEventListener("scroll", handleScroll);
     window.addEventListener("pageshow", handlePageShow);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("pageshow", handlePageShow);
     };
   }, []);
@@ -54,49 +46,37 @@ export default function LandingNavbar() {
   return (
     <>
       {/* Desktop Header */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b hidden md:block ${isScrolled
-          ? "bg-white/95 backdrop-blur-md border-gray-200 shadow-sm"
-          : "bg-white border-transparent"
-          }`}
-      >
-        {/* Top Announcement Bar */}
-        <div className="bg-viracis-navy text-white border-b border-white/10 py-2.5 px-6">
-          <div className="max-w-[1240px] mx-auto flex items-center justify-center gap-3 sm:gap-4 text-center">
-            <p className="text-xs sm:text-sm text-gray-200 font-light tracking-wide">
-              Introducing Viracis CRM with built in territory mapping, multi fleet dispatch, and automated billing.
-            </p>
-            <Link
-              href="/blog/inside-viracis-crm-field-operations"
-              className="text-xs text-white hover:text-viracis-cyan underline underline-offset-4 transition-colors shrink-0"
-            >
-              Read release &rarr;
+      <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm hidden md:block">
+        <nav className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center py-3.5">
+          {/* Left: Brand Logo */}
+          <div className="flex-1 flex items-center justify-start">
+            <Link href="/" className="relative flex items-center shrink-0" title="Viracis Home">
+              <Image
+                src="/viracis-logo.png"
+                alt="Viracis Technology Solutions"
+                width={180}
+                height={60}
+                className="h-11 w-auto object-contain"
+                priority
+              />
             </Link>
           </div>
-        </div>
 
-        <nav className={`w-full px-8 flex items-center justify-between transition-all duration-300 ${isScrolled ? "py-2.5" : "py-3.5"}`}>
-          <Link href="/" className="relative flex items-center shrink-0" title="Viracis Home">
-            <Image
-              src="/viracis-logo.png"
-              alt="Viracis Technology Solutions"
-              width={180}
-              height={60}
-              className={`transition-all duration-300 ${isScrolled ? "h-9" : "h-11"} w-auto object-contain`}
-              priority
-            />
-          </Link>
-
-          <div className="flex items-center gap-4 lg:gap-8">
+          {/* Center: Navigation Links */}
+          <div className="flex items-center justify-center gap-6 lg:gap-8 shrink-0">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-[11px] tracking-[0.2em] uppercase font-bold text-gray-400 hover:text-viracis-navy transition-colors px-2 py-1"
+                className="font-sans text-[12px] tracking-[0.16em] uppercase font-medium text-black hover:text-viracis-navy transition-colors px-2 py-1"
               >
                 {link.label}
               </Link>
             ))}
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex-1 flex items-center justify-end gap-3 shrink-0">
             <a
               href="https://app.viracis.com/login"
               onMouseEnter={() => {
@@ -105,13 +85,13 @@ export default function LandingNavbar() {
                 prefetchLink.href = "https://app.viracis.com/login";
                 document.head.appendChild(prefetchLink);
               }}
-              className="inline-flex items-center px-4 py-3 text-[11px] tracking-[0.2em] uppercase font-bold text-viracis-navy border-2 border-viracis-navy hover:bg-viracis-navy hover:text-white transition-all duration-300 touch-manipulation"
+              className="font-sans inline-flex items-center px-4 py-3 text-[11px] tracking-[0.2em] uppercase font-bold text-black border-2 border-black hover:bg-black hover:text-white transition-all duration-300 touch-manipulation"
             >
               Login
             </a>
             <Link
               href="/contact"
-              className="inline-flex items-center px-6 py-3 text-[11px] tracking-[0.2em] uppercase font-bold bg-viracis-navy text-white border-2 border-viracis-navy hover:bg-[#122F54] hover:border-[#122F54] transition-all duration-300"
+              className="font-sans inline-flex items-center px-6 py-3 text-[11px] tracking-[0.2em] uppercase font-bold bg-viracis-navy text-white border-2 border-viracis-navy hover:bg-[#122F54] hover:border-[#122F54] transition-all duration-300"
             >
               Book Demo
             </Link>
@@ -120,22 +100,8 @@ export default function LandingNavbar() {
       </header>
 
       {/* Mobile Top Logo Header (Matching Web View) */}
-      <header className={`md:hidden fixed top-0 left-0 right-0 z-[70] border-b transition-colors duration-300 ${mobileOpen ? 'bg-viracis-navy border-white/10' : 'bg-white border-gray-100'}`}>
-        {!mobileOpen && (
-          <div className="bg-viracis-navy text-white text-[11px] py-2 px-4 border-b border-white/10 flex items-center justify-center gap-2.5 text-center">
-            <span className="text-gray-200 font-light truncate">
-              Viracis CRM is now live
-            </span>
-            <Link
-              href="/blog/inside-viracis-crm-field-operations"
-              className="shrink-0 text-white hover:text-viracis-cyan underline underline-offset-2 transition-colors font-light"
-            >
-              Read release &rarr;
-            </Link>
-          </div>
-        )}
-
-        <div className="px-5 sm:px-6 py-3 flex items-center justify-between">
+      <header className={`md:hidden sticky top-0 z-[70] w-full border-b transition-colors duration-300 ${mobileOpen ? 'bg-viracis-navy border-white/10' : 'bg-white border-gray-100 shadow-sm'}`}>
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 py-3 flex items-center justify-between">
           <Link href="/" className="block" title="Viracis Home" onClick={() => setMobileOpen(false)}>
             <Image
               src="/viracis-logo.png"
@@ -163,10 +129,10 @@ export default function LandingNavbar() {
                 prefetchLink.href = "https://app.viracis.com/login";
                 document.head.appendChild(prefetchLink);
               }}
-              className={`inline-flex items-center justify-center min-w-[54px] px-2.5 sm:px-3 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 touch-manipulation ${
+              className={`font-sans inline-flex items-center justify-center min-w-[54px] px-2.5 sm:px-3 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 touch-manipulation ${
                 mobileOpen
                   ? "text-white border border-white/60 hover:bg-white/10"
-                  : "text-viracis-navy border border-viracis-navy hover:bg-viracis-navy hover:text-white"
+                  : "text-black border border-black hover:bg-black hover:text-white"
               }`}
             >
               {isLoggingIn ? (
@@ -179,7 +145,7 @@ export default function LandingNavbar() {
             <Link
               href="/contact"
               onClick={() => setMobileOpen(false)}
-              className={`inline-flex items-center px-3 sm:px-3.5 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 touch-manipulation shrink-0 ${
+              className={`font-sans inline-flex items-center px-3 sm:px-3.5 py-1.5 text-[10px] tracking-[0.18em] uppercase font-bold transition-all duration-300 touch-manipulation shrink-0 ${
                 mobileOpen
                   ? "bg-white text-viracis-navy border border-white hover:bg-gray-100"
                   : "bg-viracis-navy text-white border border-viracis-navy hover:bg-[#122F54]"
@@ -195,77 +161,67 @@ export default function LandingNavbar() {
               aria-label="Menu"
             >
               <div className="w-5 sm:w-6 flex flex-col gap-[5px]">
-                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white rotate-45 translate-y-[7px]" : "bg-viracis-navy"}`} />
-                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "opacity-0" : "bg-viracis-navy"}`} />
-                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white -rotate-45 -translate-y-[7px]" : "bg-viracis-navy"}`} />
+                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white rotate-45 translate-y-[7px]" : "bg-black"}`} />
+                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "opacity-0" : "bg-black"}`} />
+                <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white -rotate-45 -translate-y-[7px]" : "bg-black"}`} />
               </div>
             </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu (Drops down from the top) */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden border-t border-white/10 bg-viracis-navy shadow-2xl"
+            >
+              <div className="px-6 pt-5 pb-7 space-y-4">
+                {navLinks.map((link, i) => (
+                  <motion.div
+                    key={link.label}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25, delay: i * 0.05 }}
+                  >
+                    <Link
+                      href={link.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="group flex items-center justify-between py-2 border-b border-white/5"
+                    >
+                      <span className="text-xl font-semibold tracking-tight text-white group-hover:text-viracis-cyan transition-colors">
+                        {link.label}
+                      </span>
+                      <span className="text-lg text-white/30 group-hover:text-viracis-cyan transition-colors">
+                        →
+                      </span>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Mobile Menu Backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: mobileOpen ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-        className={`md:hidden fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm ${
-          mobileOpen ? "pointer-events-auto" : "pointer-events-none"
-        }`}
-        onClick={() => setMobileOpen(false)}
-      />
-
-      {/* Mobile Menu Drawer */}
-      <motion.div
-        initial={{ x: "100%" }}
-        animate={{ x: mobileOpen ? "0%" : "100%" }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className={`md:hidden fixed top-0 right-0 bottom-0 w-[80%] max-w-[320px] z-[60] bg-viracis-navy border-l border-white/10 flex flex-col pt-28 px-6 shadow-2xl ${
-          mobileOpen ? "pointer-events-auto" : "pointer-events-none"
-        }`}
-      >
-        <div className="space-y-6">
-          {navLinks.map((link, i) => (
-            <motion.div
-              key={link.label}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: mobileOpen ? 1 : 0, x: mobileOpen ? 0 : 20 }}
-              transition={{ duration: 0.3, delay: i * 0.05 + 0.1 }}
-            >
-              <Link
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="group block"
-              >
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-semibold tracking-tight text-white group-hover:text-viracis-cyan transition-colors">
-                    {link.label}
-                  </h2>
-                  <span className="text-xl text-white/20 group-hover:text-viracis-cyan transition-colors">→</span>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div 
-          className="mt-auto pb-8 pt-8 border-t border-white/5"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: mobileOpen ? 1 : 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-        >
-          <div className="grid grid-cols-1 gap-6 text-[10px] tracking-widest uppercase font-bold text-white/30">
-            <div>
-              <p className="mb-3 text-viracis-cyan/60">Connect</p>
-              <div className="flex flex-wrap gap-6">
-                <a href="mailto:siddu@viracis.com" className="hover:text-white transition-colors">Email</a>
-                <a href="tel:+18045033954" className="hover:text-white transition-colors">Phone</a>
-                <a href="https://www.linkedin.com/company/viracis" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="md:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
+

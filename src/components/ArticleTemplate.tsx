@@ -75,7 +75,7 @@ export default function ArticleTemplate({
         />
       </div>
 
-      <div className="pt-28 md:pt-32 pb-16 md:pb-24">
+      <div className="pt-10 md:pt-14 pb-16 md:pb-24">
         <div className="max-w-[1200px] mx-auto px-4 md:px-8">
 
           {/* Back link */}

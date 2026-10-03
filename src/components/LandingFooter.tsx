@@ -22,7 +22,7 @@ const LandingFooter = () => {
           {/* Nav */}
           <nav className="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-5 text-sm text-gray-400">
             <Link href="/about" className="hover:text-white transition-colors duration-200">About</Link>
-            <Link href="/services" className="hover:text-white transition-colors duration-200">Services</Link>
+            <Link href="/platform" className="hover:text-white transition-colors duration-200">Platform</Link>
             <Link href="/blog" className="hover:text-white transition-colors duration-200">Blog</Link>
             <Link href="/case-studies" className="hover:text-white transition-colors duration-200">Case Studies</Link>
             <Link href="/contact" className="hover:text-white transition-colors duration-200">Contact</Link>
