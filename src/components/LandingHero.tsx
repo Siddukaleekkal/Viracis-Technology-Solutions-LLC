@@ -46,10 +46,10 @@ export default function LandingHero() {
         {/* Headline in Lexend Deca */}
         <motion.h1
           {...fadeUp(0.1)}
-          className="font-sans text-[26px] sm:text-[36px] md:text-[44px] lg:text-[52px] xl:text-[58px] font-semibold text-black leading-[1.15] tracking-[-0.015em] mb-6 max-w-5xl mx-auto"
+          className="font-sans text-[22px] min-[380px]:text-[24px] sm:text-[34px] md:text-[42px] lg:text-[48px] xl:text-[54px] font-semibold text-black leading-[1.18] tracking-[-0.015em] mb-6 max-w-5xl mx-auto"
         >
-          <span className="block sm:whitespace-nowrap">The All in One Door to Door</span>
-          <span className="block">Operating System</span>
+          <span className="block sm:whitespace-nowrap">No Need for Multiple Softwares.</span>
+          <span className="block sm:whitespace-nowrap">Everything You Need, All in One.</span>
         </motion.h1>
 
         {/* Subtitle in Lexend Deca */}
