@@ -62,7 +62,7 @@ const faqs: FAQItem[] = [
     id: "security-standards",
     question: "How is our customer and payment data secured?",
     answer:
-      "All data is encrypted in transit using TLS 1.3 and at rest with AES-256 encryption. Integrated digital payment processing complies with strict PCI-DSS Level 1 standards, ensuring financial transactions, customer details, and business records are protected with bank-grade security.",
+      "All data is encrypted in transit using TLS 1.3 and at rest with AES-256 encryption. We process all customer payments securely through Stripe, the global standard in financial infrastructure. Integrated payments comply with strict PCI-DSS Level 1 certification, tokenized card vaulting, and SOC 2 security protocols, ensuring credit cards, customer details, and company records are safeguarded with bank-grade protection.",
   },
   {
     id: "corporate-locations",
