@@ -183,7 +183,7 @@ export default function LandingContact() {
                       industry: "",
                     });
                   }}
-                  className="px-6 py-2.5 rounded-full bg-viracis-navy text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#122F54] transition-colors cursor-pointer"
+                  className="font-sans px-6 py-2.5 bg-viracis-navy text-white text-xs font-semibold uppercase tracking-wider border border-viracis-navy hover:bg-[#122F54] transition-colors cursor-pointer"
                 >
                   Submit Another Request
                 </button>
@@ -339,7 +339,7 @@ export default function LandingContact() {
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="bg-viracis-navy hover:bg-[#122F54] text-white px-9 sm:px-10 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 cursor-pointer"
+                    className="font-sans bg-viracis-navy hover:bg-[#122F54] text-white px-9 sm:px-10 py-2.5 sm:py-3 font-bold text-xs sm:text-sm tracking-wide border border-viracis-navy shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 cursor-pointer"
                   >
                     {status === "loading" ? "Submitting..." : "Submit"}
                   </button>

@@ -124,7 +124,7 @@ export default function LandingFeaturesShowcase() {
                   <div className="flex flex-col items-start">
                     <Link
                       href="/contact"
-                      className="font-sans inline-flex items-center justify-center px-7 py-3 rounded-full bg-viracis-navy text-white text-[13px] font-medium tracking-wide border border-viracis-navy shadow-sm"
+                      className="font-sans inline-flex items-center justify-center px-7 py-3 bg-viracis-navy hover:bg-[#122F54] text-white text-[13px] font-medium tracking-wide border border-viracis-navy shadow-sm transition-colors duration-200"
                     >
                       Request a Demo
                     </Link>

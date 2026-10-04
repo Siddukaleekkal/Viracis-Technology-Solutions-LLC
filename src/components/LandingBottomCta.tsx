@@ -287,7 +287,7 @@ export default function LandingBottomCta() {
                       <button
                         type="submit"
                         disabled={status === "loading"}
-                        className="bg-viracis-navy hover:bg-viracis-cyan text-white px-8 py-2.5 rounded-full font-bold text-xs tracking-wider uppercase shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+                        className="font-sans bg-viracis-navy hover:bg-[#122F54] text-white px-8 py-2.5 font-bold text-xs tracking-wider uppercase border border-viracis-navy shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 cursor-pointer"
                       >
                         {status === "loading" ? "Submitting..." : "Submit"}
                       </button>

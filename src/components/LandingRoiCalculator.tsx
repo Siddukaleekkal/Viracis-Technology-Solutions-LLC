@@ -114,7 +114,7 @@ export default function LandingRoiCalculator() {
           <div className="mt-6 flex justify-center">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-8 sm:px-9 py-3.5 sm:py-4 bg-viracis-navy hover:bg-[#122F54] text-white font-medium text-xs sm:text-sm tracking-wide rounded-md shadow-md hover:shadow-lg transition-all duration-200"
+              className="font-sans inline-flex items-center justify-center px-8 sm:px-9 py-3.5 sm:py-4 bg-viracis-navy hover:bg-[#122F54] text-white font-medium text-xs sm:text-sm tracking-wide border border-viracis-navy shadow-md hover:shadow-lg transition-all duration-200"
             >
               Request a Demo
             </Link>

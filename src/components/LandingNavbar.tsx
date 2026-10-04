@@ -126,8 +126,8 @@ export default function LandingNavbar({ logoOnly = false }: LandingNavbarProps) 
         </nav>
       </header>
 
-      {/* Mobile Top Logo Header (Matching Web View) */}
-      <header className={`md:hidden sticky top-0 z-[70] w-full border-b transition-colors duration-300 ${mobileOpen ? 'bg-viracis-navy border-white/10' : 'bg-white border-gray-100 shadow-sm'}`}>
+      {/* Mobile Top Logo Header (Fixed so it stays visible and expandable at any scroll position) */}
+      <header className={`md:hidden fixed top-0 left-0 right-0 z-[70] border-b transition-colors duration-300 ${mobileOpen ? 'bg-viracis-navy border-white/10' : 'bg-white border-gray-100 shadow-sm'}`}>
         <div className="max-w-6xl mx-auto px-5 sm:px-6 py-3 flex items-center justify-between">
           <Link href="/" className="block" title="Viracis Home" onClick={() => setMobileOpen(false)}>
             <Image
@@ -189,10 +189,10 @@ export default function LandingNavbar({ logoOnly = false }: LandingNavbarProps) 
             {/* Hamburger button */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center shrink-0 -mr-1.5 sm:-mr-2 touch-manipulation"
+              className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center shrink-0 -mr-1.5 sm:-mr-2 touch-manipulation cursor-pointer"
               aria-label="Menu"
             >
-              <div className="w-5 sm:w-6 flex flex-col gap-[5px]">
+              <div className="w-5 sm:w-6 flex flex-col gap-[5px] pointer-events-none">
                 <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white rotate-45 translate-y-[7px]" : "bg-black"}`} />
                 <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "opacity-0" : "bg-black"}`} />
                 <span className={`h-[2px] w-full transition-all duration-300 ${mobileOpen ? "bg-white -rotate-45 -translate-y-[7px]" : "bg-black"}`} />
@@ -209,7 +209,7 @@ export default function LandingNavbar({ logoOnly = false }: LandingNavbarProps) 
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden border-t border-white/10 bg-viracis-navy shadow-2xl"
+              className="overflow-y-auto max-h-[calc(100dvh-60px)] border-t border-white/10 bg-viracis-navy shadow-2xl"
             >
               <div className="px-6 pt-5 pb-7 space-y-4">
                 {navLinks.map((link, i) => (
@@ -239,6 +239,9 @@ export default function LandingNavbar({ logoOnly = false }: LandingNavbarProps) 
           )}
         </AnimatePresence>
       </header>
+
+      {/* Mobile Spacer (matches the 56px fixed header so page content doesn't shift) */}
+      <div className="h-[56px] md:hidden" aria-hidden="true" />
 
       {/* Mobile Menu Backdrop */}
       <AnimatePresence>
