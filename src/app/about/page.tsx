@@ -1,43 +1,72 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import LandingNavbar from "@/components/LandingNavbar";
 import SubPageHero from "@/components/SubPageHero";
+import LandingBottomCta from "@/components/LandingBottomCta";
 import LandingFooter from "@/components/LandingFooter";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-const outcomes = [
+const organizationalFacts = [
   {
-    title: "No Multiple Subscriptions",
-    body: "Stop paying for 4 or 5 disconnected tools. Territory mapping, fleet scheduling, CRM, SMS, and invoicing all live under one roof.",
+    label: "Leadership",
+    value: "Siddu Kaleekkal",
+    subtext: "Founder & Chief Executive Officer",
   },
   {
-    title: "Cut Bloat & Save Money",
-    body: "No overpaying for complex enterprise CRMs with hundreds of features you will never use. Only the high-impact tools your business actually needs.",
+    label: "Corporate Offices",
+    value: "Dallas, TX & Richmond, VA",
+    subtext: "US-Based Operations & Engineering",
   },
   {
-    title: "Convert More Leads",
-    body: "Empower your reps at the door to capture details instantly, follow up within seconds, and turn more knocks into closed revenue.",
+    label: "Core Architecture",
+    value: "All-in-One Field OS",
+    subtext: "Maps • Fleet • CRM • SMS • Invoicing",
+  },
+  {
+    label: "Operating Mandate",
+    value: "Zero Software Stacks",
+    subtext: "Save Time, Cut Overhead, Convert More Leads",
   },
 ];
 
-const process = [
+const principles = [
   {
-    step: "01",
-    title: "Built for Door-to-Door",
-    body: "Engineered specifically around how field reps knock, qualify, and close—fast, lightweight, and zero friction.",
+    number: "01",
+    tag: "Architectural Consolidation",
+    title: "Zero Multi-Tool Fragmentation",
+    description:
+      "Door-to-door businesses frequently bleed margin juggling separate tools for territory pin maps, dispatch schedules, CRM data, SMS gateways, and invoicing. Viracis consolidates all five into a single native schema with zero API latency and zero third-party sync failures.",
   },
   {
-    step: "02",
-    title: "All Built in One",
-    body: "Maps, calendar, pipeline, 2-way SMS messaging, and invoices connect seamlessly without buggy third-party bridges.",
+    number: "02",
+    tag: "Capital Efficiency",
+    title: "Eliminating the Software Tax",
+    description:
+      "Legacy enterprise CRMs charge exorbitant per-seat rates for bloated feature suites that field sales teams never touch. We stripped away the unnecessary complexity to deliver only the high-leverage tools that directly drive knocked doors into collected revenue.",
   },
   {
-    step: "03",
-    title: "Time & Money Saved",
-    body: "Eliminate wasted operational hours, lower software overhead, and reinvest those savings into growing your sales force.",
+    number: "03",
+    tag: "Field-First Execution",
+    title: "Engineered for Rep Velocity",
+    description:
+      "Every millisecond matters when a rep is on a route. From dropping disposition pins to sending instant two-way SMS follow-ups and generating field invoices, every workflow in Viracis is optimized for low-latency field speed and higher conversion rates.",
+  },
+];
+
+const institutionalCommitments = [
+  {
+    title: "Dedicated US Implementation",
+    body: "Every deployment is paired with dedicated onboarding engineers from our Dallas and Richmond teams. We assist with territory boundary setup, CRM list migration, and dispatcher training.",
+  },
+  {
+    title: "Direct Engineering Feedback Loop",
+    body: "Our leadership and product engineers work directly with field operators. Product roadmap priorities are dictated by real knocking teams, not disconnected enterprise committees.",
+  },
+  {
+    title: "Single Predictable Commercial Model",
+    body: "No punitive seat tiers, no hidden addon fees for basic SMS or dispatch features, and no surprise charges. Transparent pricing that preserves operating margins as your fleet expands.",
   },
 ];
 
@@ -45,228 +74,232 @@ export default function AboutPage() {
   return (
     <main className="bg-white">
       <LandingNavbar />
+      
+      {/* SubPage Hero */}
       <SubPageHero
-        category="Our Story"
-        title="The all-in-one operating system built for door-to-door businesses."
-        subtitle="Viracis was founded to eliminate software fragmentation, cut wasteful overhead, and give door-to-door teams everything they need to run their entire business in one place."
+        category="Company & Origin"
+        title="The unified operating system for door-to-door businesses."
+        subtitle="Viracis was founded to eliminate software fragmentation, replace legacy CRM bloat, and provide door-to-door sales teams with everything they need in one seamless platform."
       />
 
-      {/* Founder & CEO Origin Story */}
-      <section className="py-20 lg:py-28 bg-white border-b border-gray-100 relative overflow-hidden">
-        {/* Subtle background ambient light */}
-        <div className="absolute top-1/2 left-0 w-96 h-96 bg-viracis-cyan/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
-
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            
-            {/* Left: Founder Card / Image */}
-            <motion.div
-              initial={{ opacity: 0, x: -24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.7, ease }}
-              className="lg:col-span-5"
-            >
-              <div className="relative mx-auto max-w-[420px] lg:max-w-none">
-                {/* Glow backdrop */}
-                <div className="absolute -inset-2 bg-gradient-to-tr from-viracis-navy/10 via-viracis-cyan/20 to-transparent rounded-3xl blur-md -z-10" />
-                
-                <div className="overflow-hidden rounded-2xl border border-gray-200/80 bg-gray-50 shadow-xl">
-                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
-                    <Image
-                      src="/siddu-ceo.jpeg"
-                      alt="Siddu Kaleekkal - Founder & CEO of Viracis"
-                      fill
-                      className="object-cover object-top hover:scale-[1.02] transition-transform duration-500"
-                      sizes="(max-width: 768px) 100vw, 450px"
-                      priority
-                    />
-                  </div>
-                  
-                  {/* Founder Title Bar */}
-                  <div className="p-6 bg-white border-t border-gray-100">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <h3 className="text-xl font-semibold text-viracis-navy tracking-tight">
-                          Siddu Kaleekkal
-                        </h3>
-                        <p className="text-sm font-semibold text-viracis-cyan mt-0.5">
-                          Founder & CEO, Viracis
-                        </p>
-                      </div>
-                      <div className="px-3 py-1.5 rounded-full bg-viracis-navy/5 text-[11px] font-semibold tracking-wider text-viracis-navy uppercase">
-                        Leadership
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-400 mt-3 border-t border-gray-100 pt-3">
-                      Dallas, TX • Richmond, VA
-                    </p>
-                  </div>
+      {/* Institutional Metadata Ribbon */}
+      <section className="border-b border-gray-200 bg-gray-50/70">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {organizationalFacts.map((fact) => (
+              <div key={fact.label} className="border-l-2 border-viracis-navy/20 pl-4">
+                <div className="text-[11px] uppercase tracking-wider font-semibold text-gray-500">
+                  {fact.label}
+                </div>
+                <div className="text-base sm:text-lg font-semibold text-viracis-navy mt-1 tracking-tight">
+                  {fact.value}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  {fact.subtext}
                 </div>
               </div>
-            </motion.div>
-
-            {/* Right: The Origin Story / Founder's Message */}
-            <motion.div
-              initial={{ opacity: 0, x: 24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.7, ease }}
-              className="lg:col-span-7 flex flex-col justify-center"
-            >
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-viracis-navy/5 border border-viracis-navy/10 text-xs font-semibold uppercase tracking-[0.2em] text-viracis-navy mb-6 w-fit">
-                Founder&apos;s Story
-              </div>
-
-              <h2 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-normal tracking-[-0.02em] text-viracis-navy leading-[1.15] mb-6">
-                Why I built Viracis for door-to-door businesses.
-              </h2>
-
-              <div className="space-y-5 text-base sm:text-lg text-gray-600 leading-relaxed font-normal">
-                <p>
-                  Viracis was formed because I noticed how a lot of door-to-door businesses were caught in a frustrating trap: they were either paying for multiple different products just to fit their day-to-day business needs, or overpaying for enterprise CRMs simply because they needed one specific feature.
-                </p>
-                <p>
-                  And worse, they were paying for products loaded with so many features they didn&apos;t need and never used. Teams were forced to juggle separate subscriptions for pin mapping, route calendars, customer tracking, SMS messaging, and invoicing.
-                </p>
-                <p className="text-viracis-navy font-semibold bg-gray-50 border-l-4 border-viracis-cyan p-4 rounded-r-xl">
-                  Viracis is perfect for every door-to-door business without needing to have multiple products at once. It is all built in one.
-                </p>
-                <p>
-                  We wanted to solve this issue for all businesses so they could save their money and time, while converting more leads and driving more revenue.
-                </p>
-              </div>
-
-              {/* Founder Signoff */}
-              <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <p className="text-base font-semibold text-viracis-navy">
-                    Siddu Kaleekkal
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Founder & CEO, Viracis Technology Solutions
-                  </p>
-                </div>
-                <div className="text-xs font-medium text-viracis-navy/60 italic">
-                  &ldquo;Built in one. Built for the field.&rdquo;
-                </div>
-              </div>
-            </motion.div>
-
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Why We Exist / Outcomes */}
+      {/* Executive Founder Statement */}
+      <section className="py-20 lg:py-28 bg-white border-b border-gray-200">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+            
+            {/* Left Column: Metadata & Positioning */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, ease }}
+              className="lg:col-span-4 lg:sticky lg:top-28"
+            >
+              <div className="border border-gray-200 bg-gray-50/80 rounded-2xl p-6 sm:p-8">
+                <div className="inline-block text-[11px] tracking-[0.25em] uppercase font-bold text-viracis-navy/60 mb-4">
+                  Executive Briefing
+                </div>
+                <h3 className="text-xl font-semibold text-viracis-navy tracking-tight leading-snug mb-4">
+                  A statement on why Viracis was founded.
+                </h3>
+                <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                  Observations from field operations that led to building the all-in-one operating system for door-to-door sales organizations.
+                </p>
+
+                <div className="pt-6 border-t border-gray-200 space-y-4">
+                  <div>
+                    <div className="text-[11px] uppercase tracking-wider text-gray-400 font-medium">Author</div>
+                    <div className="text-base font-semibold text-viracis-navy mt-0.5">Siddu Kaleekkal</div>
+                    <div className="text-xs text-gray-500 font-medium">Founder & CEO, Viracis</div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] uppercase tracking-wider text-gray-400 font-medium">Company</div>
+                    <div className="text-sm font-medium text-viracis-navy mt-0.5">Viracis Technology Solutions LLC</div>
+                  </div>
+                  <div>
+                    <div className="text-[11px] uppercase tracking-wider text-gray-400 font-medium">Headquarters</div>
+                    <div className="text-sm font-medium text-gray-600 mt-0.5">Dallas, TX • Richmond, VA</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right Column: Founder's Letter */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.65, delay: 0.1, ease }}
+              className="lg:col-span-8 flex flex-col"
+            >
+              <div className="space-y-6 text-gray-700 leading-relaxed text-base sm:text-[17px]">
+                
+                <p className="text-xl sm:text-2xl font-normal text-viracis-navy leading-snug tracking-[-0.01em]">
+                  Viracis was formed because I noticed how a lot of door-to-door businesses were caught in an unnecessary and expensive operational bind.
+                </p>
+
+                <p>
+                  Across the direct-sales and field service industries, operators were consistently facing one of two frustrating choices:
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
+                  <div className="border border-gray-200 bg-white rounded-xl p-5 shadow-sm">
+                    <div className="text-xs font-bold tracking-wider text-red-600 uppercase mb-2">Trap 01: Fragmentation</div>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Paying for multiple disconnected software tools to satisfy basic operational needs—territory pin mapping, rep dispatch, CRM logging, 2-way SMS, and invoicing—wasting hours keeping data in sync.
+                    </p>
+                  </div>
+
+                  <div className="border border-gray-200 bg-white rounded-xl p-5 shadow-sm">
+                    <div className="text-xs font-bold tracking-wider text-red-600 uppercase mb-2">Trap 02: Software Bloat</div>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Significantly overpaying for legacy enterprise CRMs just because they needed one specific feature, while paying for dozens of complex modules their knocking reps never touched or needed.
+                    </p>
+                  </div>
+                </div>
+
+                <p>
+                  They were paying for software that had endless features they didn&apos;t need, while still lacking the direct, fast field workflows their reps actually required at the door.
+                </p>
+
+                <div className="border-l-2 border-viracis-navy pl-6 py-2 my-6 bg-gray-50/50 rounded-r-xl">
+                  <p className="text-lg font-medium text-viracis-navy leading-relaxed">
+                    Viracis is perfect for every door-to-door business without needing to have multiple products at once. It is all built in one.
+                  </p>
+                </div>
+
+                <p>
+                  We wanted to solve this issue for all door-to-door businesses so they could save both their money and their time. By eliminating redundant subscriptions and replacing complex bloat with high-velocity tools, Viracis empowers sales teams to focus on what actually moves the needle: knocking routes effectively, converting more leads, and growing their bottom-line revenue.
+                </p>
+
+                <div className="pt-8 mt-4 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="font-semibold text-viracis-navy text-lg">Siddu Kaleekkal</div>
+                    <div className="text-sm text-gray-500">Founder & CEO, Viracis</div>
+                  </div>
+                  <div className="text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Viracis Technology Solutions LLC
+                  </div>
+                </div>
+
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Operating Architecture Principles */}
       <section className="py-24 bg-gray-50/50 border-b border-gray-200">
-        <div className="max-w-[1200px] mx-auto px-8">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
           <div className="max-w-3xl mb-16">
-            <p className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium mb-4">
-              The Viracis Advantage
+            <p className="text-xs tracking-[0.25em] uppercase text-gray-400 font-semibold mb-4">
+              Architecture & Strategy
             </p>
             <h2 className="text-3xl lg:text-4xl font-normal tracking-[-0.02em] text-viracis-navy leading-[1.1]">
-              Solve the software headache once and for all.
+              Engineered around three non-negotiable operational principles.
             </h2>
+            <p className="mt-4 text-base text-gray-600 leading-relaxed">
+              How our unified platform design directly translates to higher rep conversion rates and lower software overhead.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {outcomes.map((item, i) => (
+            {principles.map((item, i) => (
               <motion.div
                 key={item.title}
-                className="bg-white border border-gray-200/80 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300"
+                className="bg-white border border-gray-200/90 rounded-2xl p-8 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.1, ease }}
               >
-                <div className="w-10 h-10 rounded-xl bg-viracis-navy/5 flex items-center justify-center text-viracis-navy font-bold text-sm mb-6">
-                  0{i + 1}
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="text-xs font-bold tracking-widest text-viracis-navy/40 uppercase">
+                      {item.number}
+                    </span>
+                    <span className="text-[10px] uppercase font-semibold tracking-wider px-2.5 py-1 rounded bg-viracis-navy/5 text-viracis-navy">
+                      {item.tag}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-viracis-navy tracking-tight mb-3">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
-                <h3 className="text-lg font-semibold text-viracis-navy tracking-tight mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {item.body}
-                </p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* How we work */}
-      <section className="py-24 bg-viracis-navy">
-        <div className="max-w-[1200px] mx-auto px-8">
+      {/* Institutional Commitments */}
+      <section className="py-24 bg-viracis-navy text-white">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, ease }}
-            className="mb-14"
+            className="mb-14 max-w-2xl"
           >
-            <p className="text-xs tracking-[0.25em] uppercase text-white/40 font-medium mb-5">
-              How We Work
+            <p className="text-xs tracking-[0.25em] uppercase text-white/40 font-semibold mb-4">
+              Institutional Delivery
             </p>
             <h2 className="text-3xl lg:text-4xl font-normal tracking-[-0.02em] text-white leading-[1.1]">
-              Simple, transparent, and built around your team.
+              How we partner with door-to-door organizations.
             </h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {process.map((item, i) => (
+            {institutionalCommitments.map((item, i) => (
               <motion.div
-                key={item.step}
+                key={item.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.12, ease }}
+                className="border border-white/10 rounded-2xl p-7 bg-white/[0.02]"
               >
-                <span className="text-xs tracking-[0.2em] uppercase font-medium text-white/30">
-                  {item.step}
-                </span>
-                <h3 className="mt-3 text-lg font-semibold text-white tracking-tight">
+                <h3 className="text-lg font-semibold text-white tracking-tight mb-3">
                   {item.title}
                 </h3>
-                <p className="mt-2.5 text-base text-white/60 leading-relaxed">
+                <p className="text-sm text-white/60 leading-relaxed">
                   {item.body}
                 </p>
               </motion.div>
             ))}
           </div>
-
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 bg-gray-50 border-t border-gray-200">
-        <div className="max-w-[1200px] mx-auto px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease }}
-          >
-            <p className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium mb-5">
-              Work With Us
-            </p>
-            <h2 className="text-4xl lg:text-5xl font-normal tracking-[-0.02em] text-viracis-navy leading-[1.1] max-w-2xl mx-auto">
-              Ready to stop juggling multiple softwares?
-            </h2>
-            <p className="mt-6 text-lg text-gray-600 leading-relaxed max-w-xl mx-auto">
-              See how Viracis brings your maps, schedule, CRM, SMS, and invoicing into one unified platform.
-            </p>
-            <div className="mt-10">
-              <a
-                href="/contact"
-                className="inline-block px-8 py-4 bg-viracis-navy text-white text-sm font-semibold tracking-wide hover:bg-[#122F54] transition-colors duration-200"
-              >
-                Request Your 1:1 Demo
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      {/* Enterprise Bottom CTA matching Home and Platform pages */}
+      <LandingBottomCta />
 
+      {/* Footer */}
       <LandingFooter />
     </main>
   );
