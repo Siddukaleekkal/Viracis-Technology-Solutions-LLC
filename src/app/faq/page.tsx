@@ -10,227 +10,254 @@ import LandingFooter from "@/components/LandingFooter";
 const ease = [0.16, 1, 0.3, 1] as const;
 
 interface FAQItem {
-  category: "all" | "origin" | "platform" | "pricing" | "deployment";
+  id: string;
   question: string;
   answer: string;
 }
 
-const faqData: FAQItem[] = [
-  // Origin & Company
-  {
-    category: "origin",
-    question: "Who founded Viracis, and what is the story behind it?",
-    answer:
-      "Viracis was founded by Founder & CEO Siddu Kaleekkal. Viracis was formed because he noticed how a lot of door-to-door businesses were caught in a frustrating trap: they were either paying for multiple different products just to fit their day-to-day business needs, or overpaying for enterprise CRMs simply because they needed one specific feature. On top of that, they were paying for products that had dozens of complex features they never touched or needed. Viracis is perfect for every door-to-door business without needing to have multiple products at once. It is all built in one. We wanted to solve this issue for all businesses to save them money and time, while helping convert more leads and drive more revenue.",
-  },
-  {
-    category: "origin",
-    question: "Where is Viracis headquartered?",
-    answer:
-      "Viracis maintains corporate operations in Dallas, TX and Richmond, VA. Our engineering, product development, and customer implementation teams are 100% US-based, serving door-to-door sales teams and field organizations nationwide.",
-  },
+interface FAQSection {
+  number: string;
+  title: string;
+  tag: string;
+  description: string;
+  items: FAQItem[];
+}
 
-  // Platform & Architecture
+const faqSections: FAQSection[] = [
   {
-    category: "platform",
-    question: "What core capabilities are built into the Viracis platform?",
-    answer:
-      "Viracis brings five mission-critical field operations into one seamless dashboard: (1) Live Territory Mapping with GPS pins and density overlays, (2) Multi-Fleet Dispatch and route scheduling, (3) Client Relationship Management (Field CRM) purpose-built for canvassers, (4) Two-Way SMS Gateway with automated follow-ups, and (5) Instant Digital Invoicing with on-site payment collection.",
+    number: "01",
+    tag: "Corporate & Origins",
+    title: "Company & Mission",
+    description:
+      "Our founding purpose, leadership mandate, and the operational inefficiencies in direct sales that Viracis was built to eliminate.",
+    items: [
+      {
+        id: "who-founded",
+        question: "Who founded Viracis, and what is the story behind it?",
+        answer:
+          "Viracis was founded by Founder & CEO Siddu Kaleekkal. Viracis was formed because he noticed how a lot of door-to-door businesses were caught in a frustrating trap: they were either paying for multiple different products just to fit their day-to-day business needs, or overpaying for enterprise CRMs simply because they needed one specific feature. On top of that, they were paying for products that had dozens of complex features they never touched or needed. Viracis is perfect for every door-to-door business without needing to have multiple products at once. It is all built in one. We wanted to solve this issue for all businesses that could save their money and time to help convert them more leads and money.",
+      },
+      {
+        id: "corporate-locations",
+        question: "Where are your corporate offices located?",
+        answer:
+          "Viracis maintains dual operations in Dallas, TX and Richmond, VA. All systems engineering, platform development, and executive onboarding teams are 100% US-based, serving field sales organizations across the nation.",
+      },
+      {
+        id: "target-industries",
+        question: "What industries are built for the Viracis operating system?",
+        answer:
+          "Viracis is engineered specifically for door-to-door canvassing, direct sales, and mobile field service companies—including roofing and exterior restoration, residential solar and clean energy, pest control, turf management, residential HVAC and plumbing, and security/home automation.",
+      },
+    ],
   },
   {
-    category: "platform",
-    question: "Why is an all-in-one platform better than using multiple specialized software tools?",
-    answer:
-      "Using separate apps for territory pins, fleet scheduling, CRM, and invoicing creates data silos, delayed lead handoffs, and multiple monthly software bills. Reps in the field shouldn't have to switch between three different apps just to qualify a lead and book an estimate. In Viracis, every action is natively synchronized in real time—saving hours of administrative overhead and preventing hot leads from falling through the cracks.",
+    number: "02",
+    tag: "Unified Systems",
+    title: "Platform Architecture",
+    description:
+      "How our unified single-database schema eliminates third-party sync lag, Zapier fragility, and multi-app confusion in the field.",
+    items: [
+      {
+        id: "core-engines",
+        question: "What core operational engines are built into Viracis?",
+        answer:
+          "Viracis combines five mission-critical systems into one cohesive platform: (1) Live Territory Mapping with GPS pins and density overlays, (2) Multi-Fleet Dispatch and route scheduling, (3) Client Relationship Management (Field CRM) tailored for canvassers, (4) Two-Way SMS Gateway with automated follow-ups, and (5) Instant Digital Invoicing with on-site payment collection.",
+      },
+      {
+        id: "why-all-in-one",
+        question: "Why is an all-in-one platform superior to multiple specialized apps?",
+        answer:
+          "Operating separate point solutions creates data silos, delayed lead handoffs, and multiple software bills. When a rep updates a door disposition in Viracis, the change instantly reflects across dispatch calendars, triggers real-time homeowner SMS alerts, and updates client records without middleware or Zapier bridges.",
+      },
+      {
+        id: "legacy-replacement",
+        question: "Does Viracis replace tools like Spotio, SalesRabbit, Jobber, and HubSpot?",
+        answer:
+          "Yes. Viracis is architected to fully replace the fragmented stack of standalone canvassing trackers, calendar apps, third-party SMS providers, and bloated desktop CRMs into a single operational interface. Consolidating into Viracis lowers SaaS expenditure and eliminates data synchronization errors.",
+      },
+      {
+        id: "offline-capabilities",
+        question: "How does the platform handle low or intermittent cellular reception?",
+        answer:
+          "The Viracis field client uses local caching and offline-first data handling. Reps can drop territory pins, record dispositions, and add prospect notes without an active network connection. All data automatically synchronizes with the server once connectivity is restored.",
+      },
+    ],
   },
   {
-    category: "platform",
-    question: "Does Viracis replace tools like Spotio, SalesRabbit, Jobber, and HubSpot?",
-    answer:
-      "Yes. Most Viracis clients completely replace their existing patchwork of standalone canvassing apps, calendar tools, third-party SMS services, and generic enterprise CRMs. Consolidating into Viracis eliminates multiple monthly subscriptions and removes the need for fragile Zapier or webhook integrations.",
+    number: "03",
+    tag: "Value & Commercials",
+    title: "Commercials & Pricing",
+    description:
+      "Transparent commercial terms, predictable pricing models, and how consolidating software delivers immediate margin expansion.",
+    items: [
+      {
+        id: "hidden-fees",
+        question: "Are there hidden fees, per-feature charges, or surprise add-ons?",
+        answer:
+          "No. We operate under total commercial transparency. Unlike legacy enterprise CRMs that lock essential territory or dispatch tools behind premium tiers, Viracis includes all core engines under a single predictable commercial agreement. You never pay for features you don't need.",
+      },
+      {
+        id: "measurable-roi",
+        question: "What measurable return on investment (ROI) do operators experience?",
+        answer:
+          "Operators typically achieve two direct financial benefits: First, eliminating 3 to 5 separate software subscriptions saves thousands annually in SaaS overhead. Second, automating dispatch and follow-up workflows returns an average of 12+ administrative hours per manager weekly while accelerating rep lead conversion.",
+      },
+    ],
   },
   {
-    category: "platform",
-    question: "Can field reps use Viracis when mobile cellular coverage is weak?",
-    answer:
-      "Yes. The Viracis mobile client is engineered with local caching and offline-first data handling. Field reps can drop pins, update lead disposition statuses, and log homeowner notes even in low-signal neighborhoods. The moment network connectivity is re-established, all pending records automatically synchronize with the central system.",
-  },
-
-  // Pricing & Commercials
-  {
-    category: "pricing",
-    question: "Are there hidden fees, per-feature charges, or surprise add-ons?",
-    answer:
-      "No. We believe in total commercial transparency. Unlike legacy enterprise CRMs that lock essential field tools behind expensive enterprise tiers or charge extra for basic SMS routing, Viracis provides all core engines under a single predictable plan. You never pay for features you don't need.",
-  },
-  {
-    category: "pricing",
-    question: "How does Viracis save our business money and time?",
-    answer:
-      "Businesses save in two primary ways: First, by eliminating 3 to 5 separate software subscriptions in favor of one unified platform. Second, by automating repetitive administrative tasks like route scheduling, appointment dispatch, and lead follow-ups—saving operators an average of 12+ administrative hours every week while boosting rep lead conversion.",
-  },
-
-  // Deployment, Security & Permissions
-  {
-    category: "deployment",
-    question: "How fast can our field team be onboarded?",
-    answer:
-      "Most teams are fully operational within 48 to 72 hours. Our dedicated US-based onboarding specialists assist with territory boundary imports, customer list migrations, and dispatcher training so your field team experiences zero downtime.",
-  },
-  {
-    category: "deployment",
-    question: "How are sales territories and rep permissions managed?",
-    answer:
-      "Viracis includes granular role-based access control (RBAC). Sales leaders can draw custom geographic boundaries, assign specific streets or neighborhoods to individual reps or squads, and ensure knockers only see the data relevant to their active turf. Managers and dispatchers retain full visibility across entire regional fleets.",
-  },
-  {
-    category: "deployment",
-    question: "How is our customer and transaction data protected?",
-    answer:
-      "All data is encrypted in transit using TLS 1.3 and at rest with AES-256 encryption. Payment processing adheres to strict PCI-DSS Level 1 compliance, ensuring that digital invoices and card transactions are processed with bank-grade security.",
+    number: "04",
+    tag: "Scale & Compliance",
+    title: "Deployment & Security",
+    description:
+      "Rapid team onboarding, role-based boundary enforcement, and bank-grade data security protocols.",
+    items: [
+      {
+        id: "deployment-timeline",
+        question: "What is the typical deployment and onboarding timeline?",
+        answer:
+          "Most field organizations are fully operational within 48 to 72 hours. Our dedicated US-based onboarding team handles territory polygon imports, customer database migrations, and dispatcher training with zero operational interruption.",
+      },
+      {
+        id: "role-based-permissions",
+        question: "How are territory boundaries and rep permissions managed?",
+        answer:
+          "Viracis features granular role-based access control (RBAC). Leadership can draw custom geographic boundaries, assign specific streets or neighborhoods to designated reps or squads, and restrict data visibility to ensure reps only access their active turf while managers retain regional oversight.",
+      },
+      {
+        id: "security-standards",
+        question: "How is customer and payment data secured?",
+        answer:
+          "All data is encrypted in transit via TLS 1.3 and at rest using AES-256 encryption. Integrated digital payment processing complies with strict PCI-DSS Level 1 standards, ensuring financial transactions and customer records adhere to institutional security protocols.",
+      },
+    ],
   },
 ];
 
-const categories = [
-  { id: "all", label: "All Questions" },
-  { id: "origin", label: "Company & Origin" },
-  { id: "platform", label: "Platform Architecture" },
-  { id: "pricing", label: "Pricing & Savings" },
-  { id: "deployment", label: "Deployment & Security" },
-] as const;
-
 export default function FAQPage() {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({
+    "who-founded": true,
+  });
 
-  const filteredFaqs =
-    activeCategory === "all"
-      ? faqData
-      : faqData.filter((item) => item.category === activeCategory);
-
-  const toggleFaq = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+  const toggleItem = (id: string) => {
+    setOpenItems((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   return (
     <main className="bg-white">
       <LandingNavbar />
 
-      {/* SubPage Hero matching navy theme */}
+      {/* Hero */}
       <SubPageHero
-        category="Knowledge & Answers"
+        category="Knowledge Base"
         title="Frequently Asked Questions"
-        subtitle="Everything you need to know about Viracis—our origin story, all-in-one architecture, territory canvassing, pricing, and rapid field deployment."
+        subtitle="Detailed operational answers regarding our unified door-to-door operating system, architecture, commercials, and field deployment."
       />
 
-      {/* FAQ Section */}
+      {/* Enterprise Multi-Section FAQ */}
       <section className="py-20 lg:py-28 bg-white border-b border-gray-200">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8">
-          
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mb-14">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => {
-                    setActiveCategory(cat.id);
-                    setOpenIndex(null);
-                  }}
-                  className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide transition-all duration-200 ${
-                    isActive
-                      ? "bg-viracis-navy text-white shadow-sm"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-black"
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              );
-            })}
-          </div>
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 space-y-24">
+          {faqSections.map((section) => (
+            <div
+              key={section.number}
+              className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start pt-12 first:pt-0 border-t first:border-t-0 border-gray-200"
+            >
+              {/* Left Column: Section Title & Narrative */}
+              <div className="lg:col-span-4 lg:sticky lg:top-28">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="font-mono text-xs font-semibold tracking-wider text-viracis-navy/50">
+                    {section.number}
+                  </span>
+                  <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded bg-viracis-navy/5 text-viracis-navy">
+                    {section.tag}
+                  </span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-normal tracking-[-0.02em] text-viracis-navy leading-tight mb-4">
+                  {section.title}
+                </h2>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {section.description}
+                </p>
+              </div>
 
-          {/* FAQ Accordion List */}
-          <div className="space-y-4">
-            {filteredFaqs.map((faq, index) => {
-              const isOpen = openIndex === index;
-              return (
-                <motion.div
-                  key={faq.question}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.04, ease }}
-                  className={`border rounded-2xl overflow-hidden transition-all duration-300 ${
-                    isOpen
-                      ? "border-viracis-navy/30 bg-gray-50/60 shadow-sm"
-                      : "border-gray-200 bg-white hover:border-gray-300"
-                  }`}
-                >
-                  <button
-                    onClick={() => toggleFaq(index)}
-                    className="w-full text-left p-6 sm:p-7 flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
-                    aria-expanded={isOpen}
-                  >
-                    <span className="text-base sm:text-lg font-semibold text-viracis-navy tracking-tight leading-snug">
-                      {faq.question}
-                    </span>
-                    <span
-                      className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center border text-sm font-medium transition-all duration-300 ${
-                        isOpen
-                          ? "bg-viracis-navy text-white border-viracis-navy rotate-45"
-                          : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
-                      }`}
-                    >
-                      +
-                    </span>
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease }}
-                        className="overflow-hidden"
+              {/* Right Column: Accordion Table */}
+              <div className="lg:col-span-8 divide-y divide-gray-200 border-t border-b border-gray-200">
+                {section.items.map((item) => {
+                  const isOpen = !!openItems[item.id];
+                  return (
+                    <div key={item.id} className="py-6 first:pt-6 last:pb-6">
+                      <button
+                        onClick={() => toggleItem(item.id)}
+                        className="w-full flex items-start justify-between text-left gap-6 group cursor-pointer"
+                        aria-expanded={isOpen}
                       >
-                        <div className="px-6 sm:px-7 pb-6 sm:pb-7 text-sm sm:text-base text-gray-600 leading-relaxed border-t border-gray-100/80 pt-4">
-                          {faq.answer}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
-          </div>
+                        <span className="text-base sm:text-lg font-medium text-viracis-navy group-hover:text-viracis-cyan transition-colors leading-snug">
+                          {item.question}
+                        </span>
+                        <span
+                          className={`shrink-0 w-7 h-7 rounded-full border flex items-center justify-center text-xs font-semibold transition-all duration-300 mt-0.5 ${
+                            isOpen
+                              ? "bg-viracis-navy text-white border-viracis-navy rotate-45"
+                              : "border-gray-300 text-gray-500 group-hover:border-viracis-navy group-hover:text-viracis-navy"
+                          }`}
+                        >
+                          +
+                        </span>
+                      </button>
 
-          {/* Quick Contact Box */}
-          <div className="mt-16 p-8 rounded-2xl bg-gray-50 border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3, ease }}
+                            className="overflow-hidden"
+                          >
+                            <p className="pt-4 text-sm sm:text-base text-gray-600 leading-relaxed font-normal">
+                              {item.answer}
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          {/* Institutional Support Bar */}
+          <div className="border border-gray-200 bg-gray-50/70 rounded-2xl p-8 sm:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
-              <h3 className="text-lg font-semibold text-viracis-navy">
-                Have a question not listed here?
+              <span className="text-[11px] font-bold uppercase tracking-widest text-viracis-navy/60 block mb-1">
+                Executive Scoping & Support
+              </span>
+              <h3 className="text-xl font-semibold text-viracis-navy tracking-tight">
+                Need enterprise technical specifications or custom fleet scoping?
               </h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Our executive field team is available to assist you directly.
+              <p className="text-sm text-gray-600 mt-1 max-w-xl">
+                Speak directly with an enterprise field consultant or reach out to our executive leadership team.
               </p>
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
               <a
                 href="mailto:siddu@viracis.com"
                 className="px-5 py-2.5 rounded-full border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:text-black hover:border-black transition-colors"
               >
-                Email Founder
+                Email Leadership
               </a>
               <a
                 href="/contact"
-                className="px-5 py-2.5 rounded-full bg-viracis-navy text-white text-xs font-semibold hover:bg-[#122F54] transition-colors"
+                className="px-6 py-2.5 rounded-full bg-viracis-navy text-white text-xs font-semibold tracking-wide hover:bg-[#122F54] transition-colors"
               >
-                Schedule 1:1 Call
+                Request 1:1 Consultation
               </a>
             </div>
           </div>
-
         </div>
       </section>
 
