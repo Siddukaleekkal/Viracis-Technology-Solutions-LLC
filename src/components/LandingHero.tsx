@@ -70,7 +70,7 @@ export default function LandingHero() {
             href="/contact"
             className="font-sans inline-flex items-center justify-center px-8 sm:px-9 py-3.5 sm:py-4 bg-viracis-navy hover:bg-[#122F54] text-white font-medium text-[14px] sm:text-[15px] md:text-[16px] tracking-wide border border-viracis-navy shadow-[0_10px_25px_rgba(10,37,64,0.18)] transition-colors duration-200"
           >
-            Request Your 1:1 Demo
+            Request a Demo
           </Link>
         </motion.div>
 

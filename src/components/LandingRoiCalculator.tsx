@@ -116,7 +116,7 @@ export default function LandingRoiCalculator() {
               href="/contact"
               className="inline-flex items-center justify-center px-8 sm:px-9 py-3.5 sm:py-4 bg-viracis-navy hover:bg-[#122F54] text-white font-medium text-xs sm:text-sm tracking-wide rounded-md shadow-md hover:shadow-lg transition-all duration-200"
             >
-              Request Your 1:1 Demo
+              Request a Demo
             </Link>
           </div>
         </motion.div>
