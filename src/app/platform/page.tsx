@@ -50,8 +50,12 @@ export default function PlatformPage() {
     <main className="bg-white text-gray-900 selection:bg-viracis-cyan selection:text-white min-h-screen">
       <LandingNavbar />
 
-      {/* HERO SECTION: WHITE BACKGROUND, INFO ON LEFT, IPAD DASHBOARD ON RIGHT */}
-      <section className="relative bg-white text-black pt-12 sm:pt-16 md:pt-20 lg:pt-24 pb-16 sm:pb-20 lg:pb-24 overflow-hidden">
+      {/* HERO SECTION: NAVY BLUE BACKGROUND, INFO ON LEFT, IPAD DASHBOARD ON RIGHT */}
+      <section className="relative bg-viracis-navy text-white pt-12 sm:pt-16 md:pt-20 lg:pt-24 pb-16 sm:pb-20 lg:pb-24 overflow-hidden">
+        {/* Subtle Ambient Cyan Glows */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-viracis-cyan/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 right-1/4 w-96 h-96 bg-viracis-cyan/10 rounded-full blur-3xl pointer-events-none" />
+
         <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 xl:gap-14 items-center">
             {/* Left Column: Info */}
@@ -62,13 +66,13 @@ export default function PlatformPage() {
               className="lg:col-span-6 flex flex-col items-start text-left"
             >
               {/* Main Headline */}
-              <h1 className="font-sans text-[20px] min-[380px]:text-[22px] sm:text-[28px] md:text-[32px] lg:text-[30px] xl:text-[35px] 2xl:text-[38px] font-semibold text-black leading-[1.2] tracking-[-0.015em] mb-6 max-w-2xl">
+              <h1 className="font-sans text-[20px] min-[380px]:text-[22px] sm:text-[28px] md:text-[32px] lg:text-[30px] xl:text-[35px] 2xl:text-[38px] font-semibold text-white leading-[1.2] tracking-[-0.015em] mb-6 max-w-2xl">
                 <span className="block whitespace-nowrap">No Need for Multiple Softwares.</span>
-                <span className="block whitespace-nowrap">Everything You Need, All in One.</span>
+                <span className="block whitespace-nowrap text-white">Everything You Need, All in One.</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="font-sans text-[14px] sm:text-[16px] lg:text-[16.5px] leading-[1.6] text-black/75 font-normal max-w-xl mb-8">
+              <p className="font-sans text-[14px] sm:text-[16px] lg:text-[16.5px] leading-[1.6] text-white/80 font-normal max-w-xl mb-8">
                 Stop paying for disconnected tools and juggling separate logins. From live turf mapping and fleet dispatch to client CRM, two-way SMS, and instant invoicing.
               </p>
 
@@ -76,7 +80,7 @@ export default function PlatformPage() {
               <div>
                 <Link
                   href="/contact"
-                  className="font-sans inline-flex items-center justify-center px-8 py-3.5 sm:py-4 bg-viracis-navy hover:bg-[#122F54] text-white font-medium text-[14px] sm:text-[15px] tracking-wide border border-viracis-navy shadow-[0_10px_25px_rgba(10,37,64,0.18)] transition-all duration-200"
+                  className="font-sans inline-flex items-center justify-center px-8 py-3.5 sm:py-4 bg-white hover:bg-gray-100 text-viracis-navy font-semibold text-[14px] sm:text-[15px] tracking-wide shadow-md transition-all duration-200"
                 >
                   Request a Demo
                 </Link>
@@ -90,7 +94,7 @@ export default function PlatformPage() {
               transition={{ duration: 0.8, delay: 0.15, ease }}
               className="lg:col-span-6 flex flex-col items-center lg:items-end justify-center w-full"
             >
-              <div className="relative w-full max-w-[700px] lg:max-w-none filter drop-shadow-[0_20px_45px_rgba(10,37,64,0.13)] transition-transform duration-500 hover:scale-[1.01]">
+              <div className="relative w-full max-w-[700px] lg:max-w-none filter drop-shadow-[0_25px_50px_rgba(0,0,0,0.45)] transition-transform duration-500 hover:scale-[1.01]">
                 <Image
                   src="/images/Device Images/Ipad/Dashboard.png"
                   alt="Viracis Operations Dashboard on iPad"
