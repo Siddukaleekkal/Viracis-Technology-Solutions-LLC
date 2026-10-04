@@ -13,19 +13,12 @@ interface SubPageHeroProps {
 
 const SubPageHero = ({ category, title, subtitle, accentColor = "white" }: SubPageHeroProps) => {
   return (
-    <section className="relative w-full h-[500px] lg:h-[600px] flex flex-col justify-center bg-viracis-navy overflow-hidden">
-      {/* Background Decorative Element */}
-      <div className="absolute inset-0 z-0 opacity-10 grayscale brightness-100 mix-blend-overlay">
-        <img
-          src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1600"
-          alt="Brand Background"
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-viracis-navy to-transparent pointer-events-none z-[1]" />
-      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none z-[1]" />
+    <section className="relative w-full h-[500px] lg:h-[600px] flex flex-col justify-center bg-viracis-navy text-white overflow-hidden">
+      {/* Subtle Ambient Cyan Glows matching Platform page */}
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-viracis-cyan/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 right-1/4 w-96 h-96 bg-viracis-cyan/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full px-4 relative z-10 pt-20">
+      <div className="w-full px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto relative z-10 pt-16">
         <div className="max-w-4xl">
           <motion.span
             initial={{ opacity: 0, y: 10 }}
