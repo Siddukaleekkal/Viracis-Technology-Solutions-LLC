@@ -73,9 +73,8 @@ export default function LandingBottomCta() {
   };
 
   return (
-    <section className="relative bg-white pt-16 sm:pt-24 overflow-hidden">
-      {/* Container floating into footer */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 -mb-28 sm:-mb-36">
+    <section className="relative bg-white py-16 sm:py-20 lg:py-24 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="relative rounded-3xl sm:rounded-[32px] overflow-hidden shadow-2xl bg-gradient-to-br from-[#071b2f] via-[#0A2540] to-[#0e355c] border border-cyan-500/20 text-white">
           {/* Subtle Ambient Cyan Glows */}
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-viracis-cyan/15 rounded-full blur-3xl pointer-events-none" />
@@ -306,9 +305,6 @@ export default function LandingBottomCta() {
           </div>
         </div>
       </div>
-
-      {/* Navy Transition Block matching LandingFooter background */}
-      <div className="h-28 sm:h-36 bg-viracis-navy relative z-10" />
     </section>
   );
 }
