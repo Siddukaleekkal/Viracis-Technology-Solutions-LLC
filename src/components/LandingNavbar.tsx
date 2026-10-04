@@ -11,13 +11,17 @@ const navLinks = [
   { label: "FAQ", href: "/faq" },
 ];
 
-export default function LandingNavbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+interface LandingNavbarProps {
+  logoOnly?: boolean;
+}
 
+export default function LandingNavbar({ logoOnly = false }: LandingNavbarProps) {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Lock body scroll when mobile menu is open & prewarm CRM connection
   useEffect(() => {
+    if (logoOnly) return;
     if (mobileOpen) {
       document.body.style.overflow = "hidden";
       // Prewarm CRM connection when mobile menu is opened
@@ -32,8 +36,10 @@ export default function LandingNavbar() {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [mobileOpen]);
+  }, [mobileOpen, logoOnly]);
+
   useEffect(() => {
+    if (logoOnly) return;
     const handlePageShow = () => {
       setIsLoggingIn(false);
     };
@@ -41,7 +47,26 @@ export default function LandingNavbar() {
     return () => {
       window.removeEventListener("pageshow", handlePageShow);
     };
-  }, []);
+  }, [logoOnly]);
+
+  if (logoOnly) {
+    return (
+      <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow-xs">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between py-3.5 sm:py-4">
+          <Link href="/" className="relative flex items-center shrink-0" title="Viracis Home">
+            <Image
+              src="/viracis-logo.png"
+              alt="Viracis Technology Solutions"
+              width={180}
+              height={60}
+              className="h-9 sm:h-11 w-auto object-contain"
+              priority
+            />
+          </Link>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <>
