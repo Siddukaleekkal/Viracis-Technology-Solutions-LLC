@@ -46,10 +46,10 @@ export default function LandingHero() {
         {/* Headline in Lexend Deca */}
         <motion.h1
           {...fadeUp(0.1)}
-          className="font-sans text-[22px] min-[380px]:text-[24px] sm:text-[34px] md:text-[42px] lg:text-[48px] xl:text-[54px] font-semibold text-black leading-[1.18] tracking-[-0.015em] mb-6 max-w-5xl mx-auto"
+          className="font-sans text-[26px] sm:text-[36px] md:text-[44px] lg:text-[52px] xl:text-[58px] font-semibold text-black leading-[1.15] tracking-[-0.015em] mb-6 max-w-5xl mx-auto"
         >
-          <span className="block sm:whitespace-nowrap">No Need for Multiple Softwares.</span>
-          <span className="block sm:whitespace-nowrap">Everything You Need, All in One.</span>
+          <span className="block sm:whitespace-nowrap">The All in One Door to Door</span>
+          <span className="block">Operating System</span>
         </motion.h1>
 
         {/* Subtitle in Lexend Deca */}
@@ -70,7 +70,7 @@ export default function LandingHero() {
             href="/contact"
             className="font-sans inline-flex items-center justify-center px-8 sm:px-9 py-3.5 sm:py-4 bg-viracis-navy hover:bg-[#122F54] text-white font-medium text-[14px] sm:text-[15px] md:text-[16px] tracking-wide border border-viracis-navy shadow-[0_10px_25px_rgba(10,37,64,0.18)] transition-colors duration-200"
           >
-            Request Your 1:1 Demo & Consultation
+            Request Your 1:1 Demo
           </Link>
         </motion.div>
 
