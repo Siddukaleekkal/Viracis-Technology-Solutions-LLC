@@ -135,9 +135,7 @@ const faqSections: FAQSection[] = [
 ];
 
 export default function FAQPage() {
-  const [openItems, setOpenItems] = useState<Record<string, boolean>>({
-    "who-founded": true,
-  });
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
 
   const toggleItem = (id: string) => {
     setOpenItems((prev) => ({
