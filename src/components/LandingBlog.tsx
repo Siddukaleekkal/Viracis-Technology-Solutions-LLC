@@ -154,29 +154,32 @@ const posts = [
 
 interface LandingBlogProps {
   isFeaturedOnly?: boolean;
+  hideHeader?: boolean;
 }
 
-const LandingBlog = ({ isFeaturedOnly = false }: LandingBlogProps) => {
+const LandingBlog = ({ isFeaturedOnly = false, hideHeader = false }: LandingBlogProps) => {
   return (
-    <section id="blog" className="py-24 bg-gray-50 border-t border-gray-200">
-      <div className="w-full px-4">
-        <motion.div
-          className="mb-12"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease }}
-        >
-          <div className="flex items-center gap-5 mb-5">
-            <span className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium whitespace-nowrap">
-              Insights
-            </span>
-            <div className="flex-1 h-px bg-gray-200" />
-          </div>
-          <h2 className="text-4xl lg:text-5xl leading-[1.1] font-normal tracking-[-0.02em] text-viracis-navy">
-            Thoughts on the future of technology delivery.
-          </h2>
-        </motion.div>
+    <section id="blog" className="py-20 lg:py-24 bg-white border-t border-gray-100">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+        {!hideHeader && (
+          <motion.div
+            className="mb-12"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease }}
+          >
+            <div className="flex items-center gap-5 mb-5">
+              <span className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium whitespace-nowrap">
+                Insights
+              </span>
+              <div className="flex-1 h-px bg-gray-200" />
+            </div>
+            <h2 className="text-4xl lg:text-5xl leading-[1.1] font-normal tracking-[-0.02em] text-viracis-navy">
+              Thoughts on the future of technology delivery.
+            </h2>
+          </motion.div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-8">
           {(isFeaturedOnly ? posts.slice(0, 3) : posts).map((post, i) => (
