@@ -7,6 +7,22 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const posts = [
   {
+    title: "Coming Soon to iOS: The Native Viracis Mobile App on the Apple App Store",
+    slug: "viracis-mobile-app-apple-app-store",
+    date: "October 04, 2026",
+    excerpt: "Experience offline territory mapping, instant doorstep quoting, one tap route navigation, and native push notifications right on your iPhone and iPad from the Apple App Store.",
+    category: "Product",
+    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
+    title: "Introducing Viracis AI: The Built In Intelligent Assistant That Powers Every Field Operation",
+    slug: "introducing-viracis-ai-assistant",
+    date: "October 04, 2026",
+    excerpt: "Meet Viracis AI, your 24/7 intelligent field assistant. Ask anything in plain English, generate doorstep objection handling counter pitches, automate customer SMS, and optimize fleet routes.",
+    category: "Product",
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=2400"
+  },
+  {
     title: "Inside Viracis CRM: The All in One Engine for Door to Door Sales, Map Visualization, and Fleet Scheduling",
     slug: "inside-viracis-crm-field-operations",
     date: "September 26, 2026",

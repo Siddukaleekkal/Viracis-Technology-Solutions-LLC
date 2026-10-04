@@ -56,7 +56,7 @@ const features: FeatureItem[] = [
     badge: "AUTOMATED BILLING",
     title: "Collect Invoices on the Spot, Say Goodbye to Delays",
     description:
-      "Generate branded invoices, capture digital signatures, and collect payments on the spot. Accelerate your cash flow and eliminate 30-day billing delays permanently.",
+      "Generate branded invoices, capture digital signatures, and collect payments on the spot with real-time QuickBooks sync. Keep your company books accurate and eliminate 30-day billing delays permanently.",
     imageSrc: "/images/Device Images/feature-ipad-invoicing.png",
     imageAlt: "Viracis CRM Invoicing & Payment Processing on iPad",
     imageType: "tablet",
@@ -85,7 +85,7 @@ export default function LandingFeaturesShowcase() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1, ease }}
-            className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-normal text-black leading-[1.15] max-w-3xl mx-auto"
+            className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-[46px] xl:text-[50px] font-normal text-black leading-[1.15] max-w-5xl mx-auto md:whitespace-nowrap"
           >
             Purpose-Built for Door-to-Door & Field Teams
           </motion.h2>

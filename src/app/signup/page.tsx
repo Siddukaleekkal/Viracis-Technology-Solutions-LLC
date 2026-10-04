@@ -128,7 +128,7 @@ export default async function SignupPage(props: { searchParams: Promise<{ error?
         <div className="mt-6 text-center">
           <p className="text-[14px] text-gray-500">
             Already have an account?{' '}
-            <a href="https://app.viracis.com/login" className="font-medium text-gray-900 hover:text-gray-700 transition-colors touch-manipulation">
+            <a href="https://app.viracis.com/login" target="_blank" rel="noopener noreferrer" className="font-medium text-gray-900 hover:text-gray-700 transition-colors touch-manipulation">
               Sign in
             </a>
           </p>

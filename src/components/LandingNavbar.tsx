@@ -79,6 +79,8 @@ export default function LandingNavbar() {
           <div className="flex-1 flex items-center justify-end gap-3 shrink-0">
             <a
               href="https://app.viracis.com/login"
+              target="_blank"
+              rel="noopener noreferrer"
               onMouseEnter={() => {
                 const prefetchLink = document.createElement("link");
                 prefetchLink.rel = "prefetch";
@@ -116,7 +118,12 @@ export default function LandingNavbar() {
           <div className="flex items-center gap-2 sm:gap-3">
             <a
               href="https://app.viracis.com/login"
-              onClick={() => setIsLoggingIn(true)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                setIsLoggingIn(true);
+                setTimeout(() => setIsLoggingIn(false), 2000);
+              }}
               onTouchStart={() => {
                 const prefetchLink = document.createElement("link");
                 prefetchLink.rel = "prefetch";

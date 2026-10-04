@@ -1,322 +1,355 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
-
-type Status = "idle" | "loading" | "success" | "error";
-
-const services = [
-  "Field Operations OS",
-  "Software Engineering",
-  "Cloud Services",
-  "AI & Automation",
-  "Starter Pack",
-  "Not sure yet",
-];
 
 export default function LandingContact() {
   const [form, setForm] = useState({
-    name: "",
-    company: "",
+    firstName: "",
+    lastName: "",
     email: "",
+    jobTitle: "",
     phone: "",
-    service: "",
-    message: "",
-    smsOptIn: false,
+    company: "",
+    industry: "",
   });
-  const [status, setStatus] = useState<Status>("idle");
+
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Pre-fill form from URL query params (e.g. from the bottom CTA banner)
+  // Pre-fill from query params if coming from another CTA
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const name = params.get("name");
-      const company = params.get("company");
-      const email = params.get("email");
-      const phone = params.get("phone");
-      const service = params.get("service");
-      if (name || company || email || phone || service) {
-        setForm((prev) => ({
-          ...prev,
-          name: name || prev.name,
-          company: company || prev.company,
-          email: email || prev.email,
-          phone: phone || prev.phone,
-          service: service || prev.service,
-        }));
+      const name = params.get("name") || "";
+      const email = params.get("email") || "";
+      const phone = params.get("phone") || "";
+      const company = params.get("company") || "";
+      const industry = params.get("industry") || params.get("service") || "";
+
+      let firstName = "";
+      let lastName = "";
+      if (name) {
+        const parts = name.split(" ");
+        firstName = parts[0] || "";
+        lastName = parts.slice(1).join(" ") || "";
       }
+
+      setForm((prev) => ({
+        firstName: firstName || prev.firstName,
+        lastName: lastName || prev.lastName,
+        email: email || prev.email,
+        phone: phone || prev.phone,
+        company: company || prev.company,
+        jobTitle: prev.jobTitle,
+        industry: industry || prev.industry,
+      }));
     }
   }, []);
 
-  const set =
-    (field: keyof typeof form) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
     setErrorMessage("");
-    
-    try {
-      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
-      if (!accessKey) {
-        throw new Error("Web3Forms Access Key is not configured. Please add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY to your environment variables.");
-      }
 
-      const res = await fetch("https://api.web3forms.com/submit", {
+    try {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          access_key: accessKey,
-          subject: `New Inquiry from ${form.name} via Viracis`,
-          from_name: "Viracis Website",
-          ...form,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone,
+          company: form.company,
+          jobTitle: form.jobTitle,
+          industry: form.industry,
+          source: "Book a Demo Page (/contact)",
         }),
       });
-      
-      const data = await res.json();
-      
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Failed to send message");
-      }
 
-      setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", service: "", message: "", smsOptIn: false });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setStatus("success");
+      } else {
+        throw new Error(data.error || "Failed to submit demo request.");
+      }
     } catch (err: any) {
-      console.error("Form submission error:", err);
-      setErrorMessage(err.message || "Something went wrong.");
+      console.error("Submission error:", err);
+      setErrorMessage(err.message || "Something went wrong. Please try again.");
       setStatus("error");
     }
-  }
+  };
 
   return (
-    <section className="min-h-screen bg-[#FAF9F6] pt-12 md:pt-20 pb-24 px-4 lg:px-8">
-      <div className="max-w-[1200px] mx-auto">
-        {/* Header */}
-        <motion.div
-          className="mb-20"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p className="text-xs tracking-[0.25em] uppercase text-gray-400 font-medium mt-4">
-            Get in Touch
-          </p>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-viracis-navy tracking-[-0.02em] leading-[1.1]">
-            Let&apos;s talk about your business.
-          </h1>
-        </motion.div>
+    <div className="w-full flex-1 flex flex-col bg-[#0e131d]">
+      {/* Main Split Screen */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12">
+        
+        {/* Left Column: Dark Value Showcase matching Noteefy */}
+        <div className="lg:col-span-6 bg-[#0e131d] text-white p-6 sm:p-8 lg:p-12 xl:p-14 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/10">
+          <div>
+            <span className="font-mono text-viracis-cyan font-bold text-xs tracking-[0.25em] uppercase mb-4 inline-block">
+              LET&apos;S TALK
+            </span>
 
-        {/* Two-column: Left info + Right form */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-24">
-          {/* Left Side — Steps + Contact Info (Hidden on Mobile) */}
-          <motion.div
-            className="lg:col-span-4 lg:order-1 hidden lg:block"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="lg:sticky lg:top-32 space-y-10">
-              {/* Step 01 */}
-              <div>
-                <span className="text-[10px] tracking-[0.2em] font-bold text-gray-300 block mb-3">01</span>
-                <h3 className="text-sm font-bold text-viracis-navy mb-2">We review your message</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">You&apos;ll hear back within one business day.</p>
-              </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-normal text-white leading-[1.12] tracking-tight mb-4">
+              See What Viracis Can Do For Your Business
+            </h1>
 
-              {/* Step 02 */}
-              <div>
-                <span className="text-[10px] tracking-[0.2em] font-bold text-gray-300 block mb-3">02</span>
-                <h3 className="text-sm font-bold text-viracis-navy mb-2">We schedule a free call</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">A 30-minute conversation to understand your needs.</p>
-              </div>
+            <p className="text-white/70 text-sm sm:text-base leading-relaxed max-w-xl mb-6 sm:mb-8">
+              We&apos;ll connect and show you the platform built for the door to door operator to maximize revenue while enhancing the customer experience.
+            </p>
 
-              {/* Step 03 */}
-              <div>
-                <span className="text-[10px] tracking-[0.2em] font-bold text-gray-300 block mb-3">03</span>
-                <h3 className="text-sm font-bold text-viracis-navy mb-2">We put together a plan</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">Only what makes sense for your business and budget.</p>
-              </div>
+            {/* Media Showcase Card using Potential Hero Section & cropped Schedule.png */}
+            <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-[#080b11] aspect-[16/10] sm:aspect-[16/10.5] w-full">
+              {/* Background Suburban Aerial Turf Image */}
+              <Image
+                src="/Potential Hero Section.avif"
+                alt="Neighborhood Aerial Field Turf"
+                fill
+                className="object-cover opacity-50 select-none"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0e131d] via-[#0e131d]/30 to-transparent" />
 
-              {/* Locations */}
-              <div className="pt-8 border-t border-gray-100">
-                <span className="text-[10px] tracking-[0.2em] uppercase font-bold text-gray-300 block mb-3">Locations</span>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                  Dallas, TX<br />
-                  Richmond, VA
-                </p>
+              {/* Overlaid Cropped iPad Schedule */}
+              <div className="relative z-10 w-full h-full flex items-center justify-center p-3 sm:p-5">
+                <Image
+                  src="/images/Device Images/Ipad/Schedule.png"
+                  alt="Viracis Schedule & Dispatch Calendar on iPad"
+                  width={1852}
+                  height={1418}
+                  className="max-h-[92%] w-auto object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)]"
+                  priority
+                />
               </div>
             </div>
-          </motion.div>
 
-          {/* Right Side — Form */}
-          <motion.div
-            className="lg:col-span-8 order-1 lg:order-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          >
+            {/* Caption / Impact Highlight */}
+            <div className="mt-6 space-y-2 max-w-xl">
+              <h4 className="text-white text-base sm:text-lg font-semibold tracking-tight leading-snug">
+                At High-Demand Field Operations, Crews Close More and Dispatch Faster
+              </h4>
+              <p className="text-white/60 text-xs sm:text-sm leading-relaxed">
+                Experience how live neighborhood GPS pins, multi-truck route coordination, 2-way homeowner SMS, and instant digital invoicing work together in one unified operating system.
+              </p>
+            </div>
+          </div>
+
+          {/* Footer note in left column */}
+          <div className="pt-10 mt-10 border-t border-white/10 text-xs text-white/40 flex items-center justify-between">
+            <span>© {new Date().getFullYear()} Viracis LLC. All rights reserved.</span>
+            <span>Dallas, TX • Richmond, VA</span>
+          </div>
+        </div>
+
+        {/* Right Column: Clean White Form matching Noteefy */}
+        <div className="lg:col-span-6 bg-white p-6 sm:p-8 lg:p-12 xl:p-14 flex flex-col justify-start">
+          <div className="max-w-xl mx-auto w-full pt-2 sm:pt-4 lg:pt-7 xl:pt-8">
             {status === "success" ? (
-              <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
-                <div className="w-16 h-16 rounded-full bg-viracis-cyan/10 flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-8 h-8 text-viracis-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="py-16 text-center"
+              >
+                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-5 text-3xl font-bold">
+                  ✓
                 </div>
-                <h2 className="text-2xl font-bold text-viracis-navy mb-3">
-                  Message received.
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+                  Demo Request Received!
                 </h2>
-                <p className="text-gray-500 mb-8 max-w-sm mx-auto">
-                  Thanks for reaching out. We&apos;ll be in touch within one business day.
+                <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto mb-8 leading-relaxed">
+                  Thank you, <strong className="text-black">{form.firstName}</strong>. A Viracis field operations specialist will reach out shortly to tailor your 1:1 walkthrough.
                 </p>
                 <button
-                  onClick={() => setStatus("idle")}
-                  className="text-sm font-bold text-viracis-cyan hover:text-viracis-cyan-hover transition-colors"
+                  onClick={() => {
+                    setStatus("idle");
+                    setForm({
+                      firstName: "",
+                      lastName: "",
+                      email: "",
+                      jobTitle: "",
+                      phone: "",
+                      company: "",
+                      industry: "",
+                    });
+                  }}
+                  className="px-6 py-2.5 rounded-full bg-viracis-navy text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#122F54] transition-colors cursor-pointer"
                 >
-                  Send another message →
+                  Submit Another Request
                 </button>
-              </div>
+              </motion.div>
             ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="bg-white rounded-2xl border border-gray-100 p-8 md:p-12 space-y-8"
-              >
-                {/* Row 1: Name + Business */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="space-y-4.5 sm:space-y-5">
+                {/* Error Banner */}
+                {status === "error" && (
+                  <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-medium">
+                    {errorMessage || "Submission failed. Please check your details and try again."}
+                  </div>
+                )}
+
+                {/* First Name & Last Name */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs tracking-[0.12em] uppercase text-gray-600 font-bold mb-2">
-                       Name <span className="text-viracis-cyan">*</span>
-                     </label>
+                    <label className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-gray-700 mb-1.5 block">
+                      FIRST NAME<span className="text-viracis-navy font-bold">*</span>
+                    </label>
                     <input
                       type="text"
+                      name="firstName"
                       required
-                      value={form.name}
-                      onChange={set("name")}
-                      placeholder="Jane Smith"
-                      className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-base text-viracis-navy outline-none placeholder:text-gray-400 focus:border-viracis-navy transition-colors font-medium"
+                      placeholder="Jane"
+                      value={form.firstName}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg text-black placeholder:text-gray-400 focus:outline-none focus:border-viracis-navy focus:ring-1 focus:ring-viracis-navy transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs tracking-[0.12em] uppercase text-gray-600 font-bold mb-2">
-                       Business Name <span className="text-viracis-cyan">*</span>
-                     </label>
+                    <label className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-gray-700 mb-1.5 block">
+                      LAST NAME<span className="text-viracis-navy font-bold">*</span>
+                    </label>
                     <input
                       type="text"
-                      value={form.company}
-                      onChange={set("company")}
-                      placeholder="Acme Co."
-                      className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-base text-viracis-navy outline-none placeholder:text-gray-400 focus:border-viracis-navy transition-colors font-medium"
-                    />
-                  </div>
-                </div>
-
-                {/* Row 2: Email + Phone */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs tracking-[0.12em] uppercase text-gray-600 font-bold mb-2">
-                       Email <span className="text-viracis-cyan">*</span>
-                     </label>
-                    <input
-                      type="email"
+                      name="lastName"
                       required
-                      value={form.email}
-                      onChange={set("email")}
-                      placeholder="jane@company.com"
-                      className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-base text-viracis-navy outline-none placeholder:text-gray-400 focus:border-viracis-navy transition-colors font-medium"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs tracking-[0.12em] uppercase text-gray-600 font-bold mb-2">
-                       Phone <span className="text-viracis-cyan">*</span>
-                     </label>
-                    <input
-                      type="tel"
-                      value={form.phone}
-                      onChange={set("phone")}
-                      placeholder="(555) 000-0000"
-                      className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-base text-viracis-navy outline-none placeholder:text-gray-400 focus:border-viracis-navy transition-colors font-medium"
+                      placeholder="Doe"
+                      value={form.lastName}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg text-black placeholder:text-gray-400 focus:outline-none focus:border-viracis-navy focus:ring-1 focus:ring-viracis-navy transition-colors"
                     />
                   </div>
                 </div>
 
-                {/* Service interest */}
+                {/* Email */}
                 <div>
-                  <label className="block text-xs tracking-[0.12em] uppercase text-gray-600 font-bold mb-4">
-                    What are you interested in?
+                  <label className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-gray-700 mb-1.5 block">
+                    EMAIL<span className="text-viracis-navy font-bold">*</span>
                   </label>
-                  <div className="flex flex-wrap gap-2">
-                    {services.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setForm((prev) => ({ ...prev, service: s }))}
-                        className={`px-4 py-2.5 text-xs font-bold rounded-full border transition-all duration-200 ${
-                          form.service === s
-                            ? "bg-viracis-navy text-white border-viracis-navy"
-                            : "bg-transparent text-gray-600 border-gray-300 hover:border-viracis-navy hover:text-viracis-navy"
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label className="block text-xs tracking-[0.12em] uppercase text-gray-600 font-bold mb-2">
-                    Message <span className="text-viracis-cyan">*</span>
-                  </label>
-                  <textarea
+                  <input
+                    type="email"
+                    name="email"
                     required
-                    rows={4}
-                    value={form.message}
-                    onChange={set("message")}
-                    placeholder="Tell us a bit about your business..."
-                    className="w-full border-b border-gray-300 bg-transparent px-0 py-3 text-base text-viracis-navy outline-none placeholder:text-gray-400 focus:border-viracis-navy transition-colors resize-none font-medium"
+                    placeholder="jane@company.com"
+                    value={form.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg text-black placeholder:text-gray-400 focus:outline-none focus:border-viracis-navy focus:ring-1 focus:ring-viracis-navy transition-colors"
                   />
                 </div>
 
-                {/* SMS Opt-in (TCR Compliance) */}
-                <div className="flex items-start gap-3 pt-2">
-                  <div className="flex items-center h-5">
+                {/* Job Title & Phone */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-gray-700 mb-1.5 block">
+                      JOB TITLE<span className="text-viracis-navy font-bold">*</span>
+                    </label>
                     <input
-                      id="sms-opt-in"
-                      type="checkbox"
-                      checked={form.smsOptIn}
-                      onChange={(e) => setForm(prev => ({ ...prev, smsOptIn: e.target.checked }))}
-                      className="w-4 h-4 rounded border-gray-300 text-viracis-navy focus:ring-viracis-navy"
+                      type="text"
+                      name="jobTitle"
+                      required
+                      placeholder="Owner / Operations Manager"
+                      value={form.jobTitle}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg text-black placeholder:text-gray-400 focus:outline-none focus:border-viracis-navy focus:ring-1 focus:ring-viracis-navy transition-colors"
                     />
                   </div>
-                  <label htmlFor="sms-opt-in" className="text-xs text-gray-500 leading-relaxed">
-                    I agree to receive text messages from Viracis regarding my inquiry, including Marketing and Customer Care updates. 
-                    Message and data rates may apply. Message frequency varies. Text STOP to opt-out. View our 
-                    <a href="/privacy" className="text-viracis-navy underline mx-1">Privacy Policy</a> and 
-                    <a href="/terms" className="text-viracis-navy underline ml-1">Terms of Service</a>.
-                  </label>
+                  <div>
+                    <label className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-gray-700 mb-1.5 block">
+                      PHONE NUMBER<span className="text-viracis-navy font-bold">*</span>
+                    </label>
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3.5 text-xs text-gray-500 flex items-center gap-1 select-none pointer-events-none">
+                        🇺🇸 <span className="font-mono text-gray-700 text-[11px] font-semibold">+1</span>
+                      </span>
+                      <input
+                        type="tel"
+                        name="phone"
+                        required
+                        placeholder="(555) 000-0000"
+                        value={form.phone}
+                        onChange={handleChange}
+                        className="w-full pl-16 pr-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg text-black placeholder:text-gray-400 focus:outline-none focus:border-viracis-navy focus:ring-1 focus:ring-viracis-navy transition-colors"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="w-full py-4 bg-viracis-navy text-white text-sm font-bold tracking-wide hover:bg-[#122F54] disabled:opacity-50 transition-all duration-300 rounded-xl mt-4"
-                >
-                  {status === "loading" ? "Sending..." : "Send Message"}
-                </button>
+                {/* Company Name */}
+                <div>
+                  <label className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-gray-700 mb-1.5 block">
+                    COMPANY NAME<span className="text-viracis-navy font-bold">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="company"
+                    required
+                    placeholder="Apex Field Services LLC"
+                    value={form.company}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg text-black placeholder:text-gray-400 focus:outline-none focus:border-viracis-navy focus:ring-1 focus:ring-viracis-navy transition-colors"
+                  />
+                </div>
 
-                {status === "error" && (
-                  <p className="text-sm font-medium text-red-500 text-center">
-                    {errorMessage || "Something went wrong. Please try again or email us directly."}
-                  </p>
-                )}
+                {/* Industry Type */}
+                <div>
+                  <label className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-gray-700 mb-1.5 block">
+                    INDUSTRY TYPE<span className="text-viracis-navy font-bold">*</span>
+                  </label>
+                  <select
+                    name="industry"
+                    required
+                    value={form.industry}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 sm:py-3 text-xs sm:text-sm bg-white border border-gray-300 rounded-lg text-black focus:outline-none focus:border-viracis-navy focus:ring-1 focus:ring-viracis-navy transition-colors cursor-pointer"
+                  >
+                    <option value="" disabled>Select your industry</option>
+                    <option value="Roofing & Gutters">Roofing & Gutters</option>
+                    <option value="Solar & Clean Energy">Solar & Clean Energy</option>
+                    <option value="Pest Control">Pest Control</option>
+                    <option value="Turf & Lawn Care">Turf & Lawn Care</option>
+                    <option value="Pressure Washing & Exterior">Pressure Washing & Exterior</option>
+                    <option value="HVAC & Plumbing">HVAC & Plumbing</option>
+                    <option value="Security & Home Automation">Security & Home Automation</option>
+                    <option value="Other Field Service">Other Field Service</option>
+                  </select>
+                </div>
+
+                {/* Support & FAQ note */}
+                <p className="text-[11px] sm:text-xs text-gray-400 leading-relaxed pt-0.5">
+                  If you are looking for support, please email{" "}
+                  <a href="mailto:support@viracis.com" className="text-gray-700 font-medium underline hover:text-viracis-navy">
+                    support@viracis.com
+                  </a>{" "}
+                  or visit our{" "}
+                  <Link href="/faq" className="text-gray-700 font-medium underline hover:text-viracis-navy">
+                    FAQ page
+                  </Link>.
+                </p>
+
+                {/* Submit button: Compact rounded navy button matching Viracis brand */}
+                <div className="flex justify-end pt-2 sm:pt-3">
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className="bg-viracis-navy hover:bg-[#122F54] text-white px-9 sm:px-10 py-2.5 sm:py-3 rounded-full font-bold text-xs sm:text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 cursor-pointer"
+                  >
+                    {status === "loading" ? "Submitting..." : "Submit"}
+                  </button>
+                </div>
               </form>
             )}
-          </motion.div>
+          </div>
         </div>
+
       </div>
-    </section>
+    </div>
   );
 }

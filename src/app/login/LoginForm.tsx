@@ -181,6 +181,8 @@ export default function LoginForm() {
       <div className="mt-4 text-center">
         <a
           href="https://app.viracis.com/login"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-[11px] text-gray-400 hover:text-gray-600 transition-colors"
         >
           Access legacy web portal directly at app.viracis.com ↗

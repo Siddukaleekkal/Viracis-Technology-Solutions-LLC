@@ -29,47 +29,41 @@ export default function LandingBottomCta() {
     setStatus("loading");
     setErrorMessage("");
 
-    const fullName = `${form.firstName} ${form.lastName}`.trim();
-    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          phone: form.phone,
+          company: form.company,
+          jobTitle: form.jobTitle,
+          industry: form.industry,
+          source: "Homepage Bottom CTA",
+        }),
+      });
 
-    if (accessKey) {
-      try {
-        const res = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            access_key: accessKey,
-            subject: `New Demo Request from ${fullName} (${form.company}) via Viracis`,
-            from_name: "Viracis Website Bottom CTA",
-            name: fullName,
-            email: form.email,
-            phone: form.phone,
-            company: form.company,
-            job_title: form.jobTitle,
-            industry: form.industry,
-          }),
-        });
-
-        const data = await res.json();
-        if (res.ok && data.success) {
-          setStatus("success");
-          return;
-        }
-      } catch (err) {
-        console.error("Submission error:", err);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setStatus("success");
+      } else {
+        throw new Error(data.error || "Failed to submit demo request.");
       }
+    } catch (err: any) {
+      console.error("Submission error:", err);
+      // Fallback: seamlessly link to the Book a Demo page (/contact) with prefilled details
+      const fullName = `${form.firstName} ${form.lastName}`.trim();
+      const params = new URLSearchParams({
+        name: fullName,
+        email: form.email,
+        phone: form.phone,
+        company: form.company,
+        service: form.industry || "Field Operations OS",
+      });
+      router.push(`/contact?${params.toString()}`);
     }
-
-    // Seamlessly link to the Book a Demo page (/contact) with prefilled details
-    const params = new URLSearchParams({
-      name: fullName,
-      email: form.email,
-      phone: form.phone,
-      company: form.company,
-      service: form.industry || "Field Operations OS",
-    });
-
-    router.push(`/contact?${params.toString()}`);
   };
 
   return (
