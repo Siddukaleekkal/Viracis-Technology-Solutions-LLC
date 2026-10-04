@@ -28,8 +28,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://viracis.com"),
   title: {
-    default: "Viracis | Enterprise Technology Consulting & Solutions",
-    template: "%s | Viracis | Enterprise Technology Consulting",
+    default: "Viracis | Ultimate Door to Door Operating System",
+    template: "%s | Viracis | Ultimate Door to Door Operating System",
   },
   description:
     "Viracis delivers enterprise-grade technology consulting, specializing in scalable cloud infrastructure, AI-driven automation, and custom enterprise software solutions for global businesses.",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Viracis Technology Solutions" }],
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Viracis | Enterprise Technology Consulting & Solutions",
+    title: "Viracis | Ultimate Door to Door Operating System",
     description:
       "Enterprise-grade technology consulting bridging strategy and execution.",
     url: "https://viracis.com",
