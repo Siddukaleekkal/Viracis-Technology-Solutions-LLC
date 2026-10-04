@@ -48,8 +48,8 @@ export default function LandingHero() {
           {...fadeUp(0.1)}
           className="font-sans text-[26px] sm:text-[36px] md:text-[44px] lg:text-[52px] xl:text-[58px] font-semibold text-black leading-[1.15] tracking-[-0.015em] mb-6 max-w-5xl mx-auto"
         >
-          <span className="block sm:whitespace-nowrap">The All in One Door to Door</span>
-          <span className="block">Operating System</span>
+          <span className="block sm:whitespace-nowrap">Own Your Turf With</span>
+          <span className="block">Data Backed Territory Management</span>
         </motion.h1>
 
         {/* Subtitle in Lexend Deca */}
