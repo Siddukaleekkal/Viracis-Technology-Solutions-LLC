@@ -12,6 +12,7 @@ export default function BlogPage() {
       <LandingNavbar />
       
       <SubPageHero
+        size="compact"
         category="Field Intelligence & Insights"
         title="Direct Sales & Field Operations Insights"
         subtitle="Tactical frameworks, engineering breakdowns, and operational strategies for scaling high-velocity door-to-door sales teams."

@@ -150,6 +150,7 @@ export default function FAQPage() {
 
       {/* Hero */}
       <SubPageHero
+        size="compact"
         category="Knowledge Base"
         title="Frequently Asked Questions"
         subtitle="Detailed operational answers regarding our unified door-to-door operating system, architecture, commercials, and field deployment."
