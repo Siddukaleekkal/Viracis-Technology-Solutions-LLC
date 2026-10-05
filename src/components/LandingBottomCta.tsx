@@ -46,7 +46,7 @@ export default function LandingBottomCta() {
       });
 
       const data = await res.json();
-      if (res.ok && data.success) {
+      if (res.ok && data.success && data.emailDelivered) {
         setStatus("success");
       } else {
         throw new Error(data.error || "Failed to submit demo request.");

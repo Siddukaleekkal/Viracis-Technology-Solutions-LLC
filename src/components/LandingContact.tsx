@@ -76,7 +76,7 @@ export default function LandingContact() {
       });
 
       const data = await res.json();
-      if (res.ok && data.success) {
+      if (res.ok && data.success && data.emailDelivered) {
         setStatus("success");
       } else {
         throw new Error(data.error || "Failed to submit demo request.");
@@ -192,8 +192,14 @@ export default function LandingContact() {
               <form onSubmit={handleSubmit} className="space-y-4.5 sm:space-y-5">
                 {/* Error Banner */}
                 {status === "error" && (
-                  <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-medium">
-                    {errorMessage || "Submission failed. Please check your details and try again."}
+                  <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-medium space-y-1">
+                    <p>{errorMessage || "Submission failed. Please check your details and try again."}</p>
+                    <p className="text-[11px] text-red-500">
+                      You can also reach out directly to{" "}
+                      <a href="mailto:siddu@viracis.com?subject=Viracis%20Demo%20Request" className="font-bold underline text-red-700 hover:text-red-900">
+                        siddu@viracis.com
+                      </a>.
+                    </p>
                   </div>
                 )}
 
