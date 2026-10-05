@@ -15,8 +15,8 @@ const organizationalFacts = [
     subtext: "Founder & Chief Executive Officer",
   },
   {
-    label: "Corporate Offices",
-    value: "Dallas, TX & Richmond, VA",
+    label: "Corporate Office",
+    value: "Richmond, VA",
     subtext: "US-Based Operations & Engineering",
   },
   {
@@ -58,7 +58,7 @@ const principles = [
 const institutionalCommitments = [
   {
     title: "Dedicated US Implementation",
-    body: "Every deployment is paired with dedicated onboarding engineers from our Dallas and Richmond teams. We assist with territory boundary setup, CRM list migration, and dispatcher training.",
+    body: "Every deployment is paired with dedicated onboarding engineers from our Richmond team. We assist with territory boundary setup, CRM list migration, and dispatcher training.",
   },
   {
     title: "Direct Engineering Feedback Loop",
@@ -139,7 +139,7 @@ export default function AboutPage() {
                   </div>
                   <div>
                     <div className="text-[11px] uppercase tracking-wider text-gray-400 font-medium">Headquarters</div>
-                    <div className="text-sm font-medium text-gray-600 mt-0.5">Dallas, TX • Richmond, VA</div>
+                    <div className="text-sm font-medium text-gray-600 mt-0.5">Richmond, VA</div>
                   </div>
                 </div>
               </div>

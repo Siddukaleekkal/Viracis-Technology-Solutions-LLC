@@ -148,7 +148,7 @@ export default function LandingContact() {
           {/* Footer note in left column */}
           <div className="pt-10 mt-10 border-t border-white/10 text-xs text-white/40 flex items-center justify-between">
             <span>© {new Date().getFullYear()} Viracis LLC. All rights reserved.</span>
-            <span>Dallas, TX • Richmond, VA</span>
+            <span>Richmond, VA</span>
           </div>
         </div>
 

@@ -27,7 +27,7 @@ export default function IntroducingViracisAIAssistantPage() {
     ],
     content: `
       <h2 id="why_field_ai">Why Traditional Software Is Slowing Field Operators Down</h2>
-      <p>Running a high velocity field sales or service business requires answering dozens of tactical questions every single hour: <em>Which truck has availability this Thursday? How many solar estimates did we deliver in North Dallas yesterday? What is the most profitable route cluster for crew 2? Why has not the homeowner on Oak Ridge Drive paid their invoice?</em></p>
+      <p>Running a high velocity field sales or service business requires answering dozens of tactical questions every single hour: <em>Which truck has availability this Thursday? How many solar estimates did we deliver in Richmond yesterday? What is the most profitable route cluster for crew 2? Why has not the homeowner on Oak Ridge Drive paid their invoice?</em></p>
       <p>Historically, finding those answers meant navigating complex filter menus, running manual CSV exports, and stitching together disparate dashboards. Even modern CRMs still behave like static digital file cabinets. They store data, but leave all the cognitive burden of synthesis, calculation, and follow up on your shoulders.</p>
       <p>We built <strong>Viracis AI</strong> to fundamentally transform that dynamic. Rather than forcing you to dig through tabs, Viracis now features a deeply integrated, context aware AI assistant that handles operational queries, writes communications, optimizes schedules, and guides sales reps at the touch of a button.</p>
 

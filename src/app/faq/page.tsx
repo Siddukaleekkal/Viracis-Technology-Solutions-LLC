@@ -44,7 +44,7 @@ const faqs: FAQItem[] = [
     id: "onboarding-timeline",
     question: "What does the onboarding process look like, and how long does it take?",
     answer:
-      "Most teams are live in the field within 48 to 72 hours. Our US-based onboarding team in Dallas and Richmond assists with importing your past customer records, uploading territory boundary files (KML/shapefiles), configuring your pipeline stages, and training both office dispatchers and knocking reps.",
+      "Most teams are live in the field within 48 to 72 hours. Our US-based onboarding team in Richmond assists with importing your past customer records, uploading territory boundary files (KML/shapefiles), configuring your pipeline stages, and training both office dispatchers and knocking reps.",
   },
   {
     id: "pricing-transparency",
@@ -68,7 +68,7 @@ const faqs: FAQItem[] = [
     id: "corporate-locations",
     question: "Where is Viracis headquartered and who handles customer support?",
     answer:
-      "Viracis maintains corporate operations in Dallas, TX and Richmond, VA. Our engineering, product development, and customer support teams are 100% US-based. When you reach out for technical assistance or workflow scoping, you work directly with experienced operational specialists.",
+      "Viracis maintains corporate operations in Richmond, VA. Our engineering, product development, and customer support teams are 100% US-based. When you reach out for technical assistance or workflow scoping, you work directly with experienced operational specialists.",
   },
 ];
 
